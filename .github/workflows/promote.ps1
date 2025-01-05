@@ -180,6 +180,7 @@ try {
   # Push the version changes and tags, the protection bypass may be required.
   if ($Push) {
     Write-Host "Pushing$noteDryRun the changes..." -ForegroundColor DarkGreen
+    git push origin $optionDryRun
     git push --tags origin $optionDryRun
     if ($LastExitCode -gt 0) { Write-Host "Push failed. Exiting..." -ForegroundColor Red; exit 1 }
   }
