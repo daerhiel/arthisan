@@ -47,7 +47,7 @@ jobs:
 
     - name: Test
       run: |
-        ng test:ci
+        ng test --code-coverage --watch=false --no-progress --browsers ChromeHeadless
 
     - name: Fix permissions
       if: ${{ inputs.upload-artifacts }}
