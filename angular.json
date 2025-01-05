@@ -32,7 +32,26 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/magenta-violet.css",
+              {
+                "input": "src/theme.rose-red.scss",
+                "bundleName": "rose-red",
+                "inject": false
+              },
+              {
+                "input": "src/theme.azure-blue.scss",
+                "bundleName": "azure-blue",
+                "inject": false
+              },
+              {
+                "input": "src/theme.magenta-violet.scss",
+                "bundleName": "magenta-violet",
+                "inject": false
+              },
+              {
+                "input": "src/theme.cyan-orange.scss",
+                "bundleName": "cyan-orange",
+                "inject": false
+              },
               "src/styles.scss"
             ],
             "scripts": []
@@ -92,7 +111,26 @@
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/magenta-violet.css",
+              {
+                "input": "src/theme.rose-red.scss",
+                "bundleName": "rose-red",
+                "inject": false
+              },
+              {
+                "input": "src/theme.azure-blue.scss",
+                "bundleName": "azure-blue",
+                "inject": false
+              },
+              {
+                "input": "src/theme.magenta-violet.scss",
+                "bundleName": "magenta-violet",
+                "inject": false
+              },
+              {
+                "input": "src/theme.cyan-orange.scss",
+                "bundleName": "cyan-orange",
+                "inject": false
+              },
               "src/styles.scss"
             ],
             "scripts": []
