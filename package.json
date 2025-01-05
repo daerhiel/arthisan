@@ -6,8 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "lint": "ng lint"
+    "test": "ng test --code-coverage",
+    "test:ci": "ng test --code-coverage --watch=false --no-progress --browsers ChromeHeadless",
+    "lint": "ng lint",
+    "checks": "npm run lint && npm run build && npm run test:ci"
   },
   "private": true,
   "dependencies": {
