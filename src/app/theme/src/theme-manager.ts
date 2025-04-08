@@ -65,15 +65,18 @@ export class ThemeManager {
    * @param id Theme identifier to activate.
    */
   set(id: string): void {
-    if (!this.#registry()[id]) {
+    const registry = this.#registry();
+    if (!(id in registry)) {
       throw new Error(`Theme '${id}' does not exist.`);
     }
+
     let style = document.getElementById(APP_THEME_ID) as HTMLStyleElement;
     if (!style) {
       style = document.createElement('link');
       style.id = APP_THEME_ID;
       document.head.appendChild(style);
     }
+
     style.setAttribute('href', `${id}.css`);
     style.setAttribute('rel', 'stylesheet');
     this.#current.set(id);
@@ -84,13 +87,13 @@ export class ThemeManager {
    * @param themes Themes to register.
    */
   register(...themes: Theme[]): void {
-    const values = this.#registry();
+    const registry = this.#registry();
     const current = this.#current();
     for (const { id, name } of themes) {
-      values[id] = name;
+      registry[id] = name;
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       current || this.set(id);
     }
-    this.#registry.set(values);
+    this.#registry.set(registry);
   }
 }
