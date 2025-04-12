@@ -58,6 +58,8 @@ export class ThemeManager {
    */
   constructor() {
     this.register(...inject(APP_THEMES, { optional: true }) ?? []);
+    const id = localStorage.getItem(APP_THEME_ID) || Object.keys(this.#registry())[0];
+    id && this.set(id);
   }
 
   /**
@@ -80,6 +82,7 @@ export class ThemeManager {
     style.setAttribute('href', `${id}.css`);
     style.setAttribute('rel', 'stylesheet');
     this.#current.set(id);
+    localStorage.setItem(APP_THEME_ID, id);
   }
 
   /**
@@ -87,12 +90,9 @@ export class ThemeManager {
    * @param themes Themes to register.
    */
   register(...themes: Theme[]): void {
-    const registry = this.#registry();
-    const current = this.#current();
+    const registry = { ...this.#registry() };
     for (const { id, name } of themes) {
       registry[id] = name;
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      current || this.set(id);
     }
     this.#registry.set(registry);
   }
