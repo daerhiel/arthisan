@@ -1,23 +1,15 @@
 @use "@angular/material" as mat;
-@use "./components" as components;
-
-@include mat.core();
-
-$theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$rose-palette,
-    tertiary: mat.$red-palette,
-  ),
-  density: (
-    scale: 0,
-  )
-));
 
 html {
-  @include components.build($theme);
-}
+  color-scheme: light;
 
-@include mat.app-background();
-@include mat.color-variants-backwards-compatibility($theme);
-@include mat.typography-hierarchy($theme);
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$rose-palette,
+      tertiary: mat.$red-palette
+    ),
+    typography: Roboto,
+    density: 0
+  ));
+}

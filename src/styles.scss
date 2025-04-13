@@ -1,4 +1,23 @@
+@use "@angular/material" as mat;
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-primary-container),
+    container-text-color: var(--mat-sys-primary),
+  ));
+  @include mat.menu-overrides((
+    item-label-text-color: var(--mat-sys-on-surface),
+    item-icon-color: var(--mat-sys-secondary),
+  ));
+  @include mat.button-overrides((
+    filled-container-color: var(--mat-sys-primary-container),
+    filled-label-text-color: var(--mat-sys-primary),
+  ));
+  @include mat.icon-overrides((
+    color: var(--mat-sys-primary),
+  ));
+}
 
 html,
 body {
