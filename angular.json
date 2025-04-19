@@ -33,6 +33,11 @@
             ],
             "styles": [
               {
+                "input": "src/theme.new-world.scss",
+                "bundleName": "new-world",
+                "inject": false
+              },
+              {
                 "input": "src/theme.rose-red.scss",
                 "bundleName": "rose-red",
                 "inject": false
@@ -111,6 +116,11 @@
               }
             ],
             "styles": [
+              {
+                "input": "src/theme.new-world.scss",
+                "bundleName": "new-world",
+                "inject": false
+              },
               {
                 "input": "src/theme.rose-red.scss",
                 "bundleName": "rose-red",

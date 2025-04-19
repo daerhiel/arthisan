@@ -5,7 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-import { ThemeManager } from '@app/theme';
+import { Theme, ThemeManager } from '@app/theme';
 
 @Component({
   selector: 'app-root',
@@ -21,4 +21,13 @@ export class AppComponent {
   protected readonly _themes = inject(ThemeManager);
 
   title = 'arthisan';
+
+  /**
+   * Gets an active icon for the menu option.
+   * @param theme Theme to get the icon for.
+   * @returns The icon name.
+   */
+  protected _getThemeIcon(theme: Theme): string {
+    return this._themes.current().id === theme.id ? 'radio_button_checked' : 'radio_button_unchecked'
+  }
 }
