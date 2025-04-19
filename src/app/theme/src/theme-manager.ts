@@ -58,8 +58,9 @@ export class ThemeManager {
    */
   constructor() {
     this.register(...inject(APP_THEMES, { optional: true }) ?? []);
-    const id = localStorage.getItem(APP_THEME_ID) || Object.keys(this.#registry())[0];
-    id && this.set(id);
+    const registry = this.#registry();
+    const id = localStorage.getItem(APP_THEME_ID) || Object.keys(registry)[0];
+    id && registry[id] && this.set(id);
   }
 
   /**

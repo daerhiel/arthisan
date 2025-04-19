@@ -1,6 +1,9 @@
+import { provideRouter } from '@angular/router';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComponentHarness, parallel } from '@angular/cdk/testing';
-import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatToolbarHarness } from '@angular/material/toolbar/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
@@ -22,14 +25,19 @@ describe('AppComponent', () => {
   let component: AppComponent;
   let harness: AppComponentHarness;
 
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
-      providers: [provideThemes(themes)],
+      imports: [NoopAnimationsModule, AppComponent],
+      providers: [provideRouter([]), provideThemes(themes)]
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
     harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppComponentHarness);
+    fixture.detectChanges();
   });
 
   it(`should have the 'arthisan' title`, () => {
@@ -46,17 +54,18 @@ describe('AppComponent', () => {
     const menu = await harness.getThemeMenu();
     const items = await menu.getItems();
 
-    expect(await menu.isOpen()).toBeFalsy();
+    expect(await menu.isOpen()).toBeFalse();
     expect(await parallel(() => items.map(x => x.getText()))).toEqual([]);
   });
 
   it('should display theme menu on theme button click', async () => {
     const button = await harness.getThemeButton();
     await button.click();
+
     const menu = await harness.getThemeMenu();
     const items = await menu.getItems();
 
-    expect(await menu.isOpen()).toBeTruthy();
+    expect(await menu.isOpen()).toBeTrue();
     expect(await parallel(() => items.map(x => x.getText()))).toEqual(themes.map(x => x.name));
   });
 });

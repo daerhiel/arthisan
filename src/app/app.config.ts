@@ -9,6 +9,7 @@ import { routes } from './app.routes';
  * List of available application themes.
  */
 export const themes = [
+  { id: 'new-world', name: 'New World' },
   { id: 'rose-red', name: 'Rose & Red' },
   { id: 'azure-blue', name: 'Azure & Blue' },
   { id: 'magenta-violet', name: 'Magenta & Violet' },
