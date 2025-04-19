@@ -7,6 +7,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatToolbarHarness } from '@angular/material/toolbar/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
+import { MatIconHarness } from '@angular/material/icon/testing';
 import { MAT_ICONS, withStyleSheet } from '@app/testing';
 
 import { AppComponent } from './app.component';
@@ -17,7 +18,7 @@ class AppComponentHarness extends ComponentHarness {
   static hostSelector = 'app-root';
 
   getToolbar = this.locatorFor(MatToolbarHarness);
-  getThemeButton = this.locatorFor(MatButtonHarness);
+  getThemeButton = this.locatorFor(MatButtonHarness.with({ selector: '#theme-menu' }));
   getThemeMenu = this.locatorFor(MatMenuHarness);
 }
 
@@ -51,6 +52,14 @@ describe('AppComponent', () => {
     const toolbar = await harness.getToolbar();
 
     expect(toolbar).toBeTruthy();
+  });
+
+  it ('should render theme button', async () => {
+    const button = await harness.getThemeButton();
+    expect(button).toBeTruthy();
+
+    const icon = await button.getHarness(MatIconHarness);
+    expect(await icon.getName()).toEqual('format_color_fill');
   });
 
   it('should not display theme menu by default', async () => {
