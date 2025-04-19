@@ -7,6 +7,7 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatToolbarHarness } from '@angular/material/toolbar/testing';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
+import { MAT_ICONS, withStyleSheet } from '@app/testing';
 
 import { AppComponent } from './app.component';
 import { provideThemes } from './theme';
@@ -24,6 +25,8 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
   let harness: AppComponentHarness;
+
+  beforeAll(withStyleSheet(MAT_ICONS));
 
   beforeEach(() => {
     localStorage.clear();
