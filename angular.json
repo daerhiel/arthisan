@@ -75,15 +75,21 @@
                   "maximumError": "8kB"
                 }
               ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prd.ts"
+                }
+              ],
               "outputHashing": "all"
             },
-            "development": {
+            "localhost": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "localhost"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -91,11 +97,11 @@
             "production": {
               "buildTarget": "arthisan:build:production"
             },
-            "development": {
-              "buildTarget": "arthisan:build:development"
+            "localhost": {
+              "buildTarget": "arthisan:build:localhost"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "localhost"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n"

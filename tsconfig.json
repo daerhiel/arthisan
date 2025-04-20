@@ -18,11 +18,14 @@
     "target": "ES2022",
     "module": "ES2022",
     "paths": {
-      "@modules/*": [
-        "./src/app/modules/*"
+      "@app/core/*": [
+        "./src/app/core/*"
       ],
       "@app/*": [
         "./src/app/*"
+      ],
+      "@environments/*": [
+        "./src/environments/*"
       ]
     }
   },
