@@ -19,6 +19,7 @@ import { NwBuddy } from './nw-buddy';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  // eslint-disable-next-line no-unused-private-class-members
   readonly #nw = inject(NwBuddy);
   protected readonly _themes = inject(ThemeManager);
 
