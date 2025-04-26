@@ -9,7 +9,9 @@ import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { MAT_ICONS, withStyleSheet } from '@app/testing';
+import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 
+import { NwBuddyApi } from '@app/nw-buddy';
 import { AppComponent } from './app.component';
 import { provideThemes } from './theme';
 import { themes } from './app.config';
@@ -36,7 +38,10 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, AppComponent],
-      providers: [provideRouter([]), provideThemes(themes)]
+      providers: [
+        provideRouter([]), provideThemes(themes),
+        { provide: NwBuddyApi, useClass: NwBuddyApiMock }
+      ]
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -54,7 +59,7 @@ describe('AppComponent', () => {
     expect(toolbar).toBeTruthy();
   });
 
-  it ('should render theme button', async () => {
+  it('should render theme button', async () => {
     const button = await harness.getThemeButton();
     expect(button).toBeTruthy();
 

@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { Theme, ThemeManager } from '@app/theme';
+import { NwBuddy } from './nw-buddy';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ import { Theme, ThemeManager } from '@app/theme';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  readonly #nw = inject(NwBuddy);
   protected readonly _themes = inject(ThemeManager);
 
   title = 'arthisan';
