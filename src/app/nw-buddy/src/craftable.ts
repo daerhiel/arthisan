@@ -6,10 +6,16 @@ import { NwBuddy } from "./nw-buddy";
 export class Craftable {
   readonly #item = computed(() => this.nw.items.get(this.id));
 
-  readonly name = computed(() => this.nw.items.getName(this.id, x => x.Name));
-  readonly icon = computed(() => this.nw.items.getValue(this.id, x => x.IconPath));
+  readonly name = computed(() => {
+    const name = this.#item()?.Name;
+    return name ? this.nw.translate(name) : null;
+  });
+  readonly icon = computed(() => this.#item()?.IconPath);
   readonly rarity = computed(() => getItemRarity(this.#item()));
-  readonly named = computed(() => isMasterItem(this.#item()) && isItemNamed(this.#item()));
+  readonly named = computed(() => {
+    const item = this.#item();
+    return isMasterItem(item) && isItemNamed(item);
+  });
 
   constructor(protected readonly nw: NwBuddy, readonly id: string) {
   }
