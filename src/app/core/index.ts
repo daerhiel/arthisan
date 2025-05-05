@@ -1,2 +1,2 @@
-export * from './src/cache-map';
+export * from './src/object-map';
 export * from './src/utilities';

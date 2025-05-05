@@ -42,12 +42,12 @@ describe('NwBuddyApi', () => {
     };
     const dataSheets = firstValueFrom(service.getDataSheets(set));
 
-    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/item.json`).flush({ data: 'item' });
-    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/recipe.json`).flush({ data: 'recipe' });
+    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/item.json`).flush([{ data: 'item' }]);
+    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/recipe.json`).flush([{ data: 'recipe' }]);
 
     expect(await dataSheets).toEqual({
-      item: { data: 'item' },
-      recipe: { data: 'recipe' }
+      item: [{ data: 'item' }],
+      recipe: [{ data: 'recipe' }]
     });
   });
 });

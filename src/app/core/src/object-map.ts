@@ -1,8 +1,8 @@
 function transform(key: string): string {
-  return key.toLowerCase();
+  return key?.toLowerCase();
 }
 
-export class CacheMap<T> extends Map<string, T> {
+export class ObjectMap<T> extends Map<string, T> {
   public override has(key: string): boolean {
     return super.has(transform(key));
   }

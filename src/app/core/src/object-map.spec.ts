@@ -1,10 +1,10 @@
-import { CacheMap } from "./cache-map";
+import { ObjectMap } from "./object-map";
 
-describe('CacheMap', () => {
-  let cache: CacheMap<number>;
+describe('ObjectMap', () => {
+  let cache: ObjectMap<number>;
 
   beforeEach(() => {
-    cache = new CacheMap<number>();
+    cache = new ObjectMap<number>();
   });
 
   it('should set and get values correctly', () => {
