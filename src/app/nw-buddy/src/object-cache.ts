@@ -1,8 +1,7 @@
-import { inject, signal } from "@angular/core";
+import { signal } from "@angular/core";
 import { Observable, Subscription, tap } from "rxjs";
 
 import { ObjectMap } from "@app/core";
-import { NwI18n } from "./nw-i18n";
 
 export type GetterFn<T, R> = (item: T) => R;
 
@@ -40,7 +39,6 @@ export abstract class CacheBase<T> {
 }
 
 export class ObjectCache<T> extends CacheBase<T> {
-  readonly #i18n = inject(NwI18n);
   readonly #objects = new ObjectMap<T>();
 
   constructor(source: Observable<Record<string, T[]>>, getter: GetterFn<T, string>) {
@@ -67,20 +65,6 @@ export class ObjectCache<T> extends CacheBase<T> {
     this.version();
     const item = this.#objects.get(id);
     return item ?? null;
-  }
-
-  getName(id: string, getter: GetterFn<T, string>): string | null {
-    this.version();
-    const item = this.#objects.get(id);
-
-    return item ? this.#i18n.get(getter(item)) : null;
-  }
-
-  getValue(id: string, getter: GetterFn<T, string>): string | null {
-    this.version();
-    const item = this.#objects.get(id);
-
-    return item ? getter(item) : null;
   }
 }
 
