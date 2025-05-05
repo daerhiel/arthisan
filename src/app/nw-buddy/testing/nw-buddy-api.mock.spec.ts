@@ -12,4 +12,10 @@ describe('NwBuddyApiMock', () => {
       expect(localization).toEqual(translationsEn);
     });
   });
+
+  it('should get empty translations for unknown locale', () => {
+    service.getTranslations('unknown-locale').subscribe((localization) => {
+      expect(localization).toEqual({});
+    });
+  });
 });
