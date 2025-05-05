@@ -1,8 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, OnDestroy } from '@angular/core';
 
-import { NwBuddyApi } from './nw-buddy-api';
 import { DATASHEETS } from '@app/nw-data';
+import { TableDefinition } from './models/tables';
+import { ObjectCache, CollectionCache } from './object-cache';
+import { NwBuddyApi } from './nw-buddy-api';
+import { NwIcon } from './nw-icon';
+import { Craftable, getIconInputs } from './craftable';
+
 
 /**
  * Represents the NW Buddy module that provides New World database functionality.
@@ -10,16 +14,43 @@ import { DATASHEETS } from '@app/nw-data';
 @Injectable({
   providedIn: 'root'
 })
-export class NwBuddy {
+export class NwBuddy implements OnDestroy {
   readonly #api = inject(NwBuddyApi)
 
   /**
-   * The translations for the NW Buddy data.
+   * The item definitions data.
    */
-  readonly translations = toSignal(this.#api.getTranslations('en-us'), { initialValue: {} });
+  readonly items = new ObjectCache(
+    this.#api.getDataSheets(DATASHEETS.MasterItemDefinitions),
+    item => item.ItemID
+  );
 
   /**
    * The crafting recipe data.
    */
-  readonly crafting = toSignal(this.#api.getDataSheets(DATASHEETS.CraftingRecipeData), { initialValue: null });
+  readonly recipes = new CollectionCache(
+    this.#api.getDataSheets(DATASHEETS.CraftingRecipeData),
+    item => item.ItemID
+  );
+
+  readonly recipeDefs: TableDefinition<Craftable> = {
+    name: 'recipes',
+    columns: [
+      { id: 'icon', displayName: 'Icon', width: '0', value: { component: NwIcon, inputs: getIconInputs } },
+      { id: 'name', displayName: 'Name', width: '100%', value: { get: item => item.name() } }
+    ],
+    data: computed(() => {
+      const objects: Craftable[] = [];
+      for (const key of this.recipes.keys() ?? []) {
+        objects.push(new Craftable(this, key));
+      }
+      return objects;
+    })
+  };
+
+  /** @inheritdoc */
+  ngOnDestroy(): void {
+    this.items.destroy();
+    this.recipes.destroy();
+  }
 }

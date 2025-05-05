@@ -5,7 +5,17 @@ import { from, map, mergeMap, Observable, reduce } from 'rxjs';
 import { environment } from '@environments/environment';
 import { getUrl } from '@app/core';
 import { DataSheetUri } from '@app/nw-data';
-import { Localization } from './localization';
+import { Localization } from './nw-i18n';
+
+/**
+ * Merges two data stores into one.
+ * @param store The existing data store.
+ * @param value The new data to merge.
+ * @returns The merged data store.
+ */
+function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): Record<string, T[]> {
+  return { ...store, ...value };
+};
 
 /**
  * Interface representing the version of the NW Buddy API.
@@ -31,12 +41,12 @@ export class NwBuddyApi {
    * @param set The set of data sheet URIs to retrieve data for.
    * @returns A set of data sheets received.
    */
-  getDataSheets<T, K extends keyof T>(set: Record<string, DataSheetUri<T>>): Observable<Record<K, T>> {
+  getDataSheets<T>(set: Record<string, DataSheetUri<T>>): Observable<Record<string, T[]>> {
     return from(Object.entries(set)).pipe(
-      mergeMap(([key, value]) => this.#http.get<T>(getUrl(this.#url, 'nw-data', value.uri.split('/'))).pipe(
-        map(object => ({ [key]: object })))
-      ),
-      reduce((acc, curr) => ({ ...acc, ...curr }), {} as Record<K, T>)
+      mergeMap(([key, value]) => this.#http.get<T[]>(getUrl(this.#url, 'nw-data', value.uri.split('/'))).pipe(
+        map(object => ({ [key]: object }))
+      )),
+      reduce(mergeData, {})
     );
   }
 }
