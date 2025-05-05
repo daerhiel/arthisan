@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 
-import { NwIcon } from './nw-icon';
+import { ColumnsPipe } from './columns';
+import { ColumnPipe } from './column';
 
 const declarations = [
-  NwIcon
+  ColumnsPipe,
+  ColumnPipe
 ];
 
 @NgModule({
   imports: [...declarations],
   exports: [...declarations]
 })
-export class NwBuddyModule { }
+export class ArtisanModule { }

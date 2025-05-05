@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TableColumn } from './models/tables';
+import { TableColumn } from '@app/core';
 import { ColumnPipe } from './column';
 
 describe('ContentPipe', () => {

@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 
-import { ColumnsPipe, ColumnPipe, NwBuddy } from '@app/nw-buddy';
+import { Artisan, ColumnPipe, ColumnsPipe } from '@features/artisan';
 
 @Component({
   imports: [NgComponentOutlet, MatTableModule, ColumnsPipe, ColumnPipe],
@@ -10,7 +10,7 @@ import { ColumnsPipe, ColumnPipe, NwBuddy } from '@app/nw-buddy';
   styleUrl: './explorer.scss'
 })
 export class ExplorerComponent {
-  readonly #nw = inject(NwBuddy);
+  readonly #nw = inject(Artisan);
 
-  readonly recipes = this.#nw.recipeDefs;
+  readonly craftables = this.#nw.craftables;
 }

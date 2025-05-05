@@ -1,12 +1,9 @@
-import { computed, inject, Injectable, OnDestroy } from '@angular/core';
+import { inject, Injectable, OnDestroy } from '@angular/core';
 
 import { DATASHEETS } from '@app/nw-data';
 import { NwBuddyApi } from './nw-buddy-api';
 import { NwI18n } from './nw-i18n';
-import { TableDefinition } from './models/tables';
 import { ObjectCache, CollectionCache } from './object-cache';
-import { NwIcon } from './nw-icon';
-import { Craftable, getIconInputs } from './craftable';
 
 
 /**
@@ -42,21 +39,6 @@ export class NwBuddy implements OnDestroy {
     this.#api.getDataSheets(DATASHEETS.CraftingRecipeData),
     item => item.ItemID
   );
-
-  readonly recipeDefs: TableDefinition<Craftable> = {
-    name: 'recipes',
-    columns: [
-      { id: 'icon', displayName: 'Icon', width: '0', value: { component: NwIcon, inputs: getIconInputs } },
-      { id: 'name', displayName: 'Name', width: '100%', value: { get: item => item.name() } }
-    ],
-    data: computed(() => {
-      const objects: Craftable[] = [];
-      for (const key of this.recipes.keys() ?? []) {
-        objects.push(new Craftable(this, key));
-      }
-      return objects;
-    })
-  };
 
   /** @inheritdoc */
   ngOnDestroy(): void {

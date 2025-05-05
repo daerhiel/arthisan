@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 
-import { TableDefinition } from './models/tables';
+import { TableDefinition } from '@app/core';
 import { ColumnsPipe } from './columns';
 
 describe('ColumnsPipe', () => {
