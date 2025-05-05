@@ -5,7 +5,8 @@ import { TableDefinition } from './models/tables';
 import { ObjectCache, CollectionCache } from './object-cache';
 import { NwBuddyApi } from './nw-buddy-api';
 import { NwIcon } from './nw-icon';
-import { Craftable } from './models/craftable';
+import { Craftable, getIconInputs } from './craftable';
+
 
 /**
  * Represents the NW Buddy module that provides New World database functionality.
@@ -35,8 +36,8 @@ export class NwBuddy implements OnDestroy {
   readonly recipeDefs: TableDefinition<Craftable> = {
     name: 'recipes',
     columns: [
-      { id: 'icon', displayName: 'Icon', value: { component: NwIcon, inputs: item => ({ path: item.icon(), name: item.name() }) } },
-      { id: 'name', displayName: 'Name', value: { get: item => item.name() } }
+      { id: 'icon', displayName: 'Icon', width: '0', value: { component: NwIcon, inputs: getIconInputs } },
+      { id: 'name', displayName: 'Name', width: '100%', value: { get: item => item.name() } }
     ],
     data: computed(() => {
       const objects: Craftable[] = [];
