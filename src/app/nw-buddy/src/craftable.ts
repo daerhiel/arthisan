@@ -4,7 +4,7 @@ import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
 import { NwBuddy } from "./nw-buddy";
 
 export class Craftable {
-  readonly #item = computed(() => this.nw.items.get(this.id));
+  readonly #item = computed(() => this.nw.items.get(this.id) ?? this.nw.housing.get(this.id));
 
   readonly name = computed(() => {
     const name = this.#item()?.Name;

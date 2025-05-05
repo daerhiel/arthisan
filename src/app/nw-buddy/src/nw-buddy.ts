@@ -28,6 +28,14 @@ export class NwBuddy implements OnDestroy {
   );
 
   /**
+   * The house item definitions data.
+   */
+  readonly housing = new ObjectCache(
+    this.#api.getDataSheets(DATASHEETS.HouseItems),
+    item => item.HouseItemID
+  );
+
+  /**
    * The crafting recipe data.
    */
   readonly recipes = new CollectionCache(
