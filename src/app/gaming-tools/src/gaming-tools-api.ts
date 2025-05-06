@@ -18,7 +18,7 @@ export class GamingToolsApi {
     return this.#http.get<GameServer[]>(getUrl(this.#url, 'prices', ['nwmp', 'servers']));
   }
 
-  getServerPrices(serverName: string): Observable<Commodity[]> {
-    return this.#http.get<Commodity[]>(getUrl(this.#url, 'prices', ['nwmp'], { serverName }));
+  getServerPrices(name: string): Observable<Commodity[]> {
+    return this.#http.get<Commodity[]>(getUrl(this.#url, 'prices', ['nwmp'], { serverName: name }));
   }
 }
