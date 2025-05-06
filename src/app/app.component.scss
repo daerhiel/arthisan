@@ -1,4 +1,8 @@
 :host {
+  mat-toolbar {
+    gap: 0.5rem;
+  }
+
   .app-spacer {
     flex: 1 1 auto;
   }

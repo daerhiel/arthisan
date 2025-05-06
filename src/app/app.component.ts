@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { Theme, ThemeManager } from '@app/theme';
+import { GamingTools } from '@app/gaming-tools';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ import { Theme, ThemeManager } from '@app/theme';
 })
 export class AppComponent {
   protected readonly _themes = inject(ThemeManager);
+  protected readonly _gaming = inject(GamingTools);
 
   title = 'arthisan';
 
