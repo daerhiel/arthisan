@@ -1,15 +1,15 @@
 import { computed } from "@angular/core";
 
 import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
-import { NwBuddy } from "@app/nw-buddy";
+import { Artisan } from "./artisan";
 
 export class Craftable {
-  readonly #item = computed(() => this.nw.items.get(this.id) ?? this.nw.housing.get(this.id));
-  readonly #recipes = computed(() => this.nw.recipes.get(this.id) ?? []);
+  readonly #item = computed(() => this.artisan.getItem(this.id));
+  readonly #recipes = computed(() => this.artisan.getRecipes(this.id));
 
   readonly name = computed(() => {
     const name = this.#item()?.Name;
-    return name ? this.nw.translate(name) : null;
+    return name ? this.artisan.translate(name) : null;
   });
   readonly icon = computed(() => this.#item()?.IconPath);
   readonly rarity = computed(() => getItemRarity(this.#item()));
@@ -18,11 +18,15 @@ export class Craftable {
     return isMasterItem(item) && isItemNamed(item);
   });
 
+  readonly price = computed(() => {
+    return this.artisan.getPrice(this.id);
+  });
+
   readonly recipes = computed(() => {
     return this.#recipes().length;
   });
 
-  constructor(protected readonly nw: NwBuddy, readonly id: string) {
+  constructor(protected readonly artisan: Artisan, readonly id: string) {
   }
 }
 

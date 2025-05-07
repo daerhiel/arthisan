@@ -2,7 +2,6 @@ import { inject, Injectable, OnDestroy } from '@angular/core';
 
 import { DATASHEETS } from '@app/nw-data';
 import { NwBuddyApi } from './nw-buddy-api';
-import { NwI18n } from './nw-i18n';
 import { ObjectCache, CollectionCache } from './object-cache';
 
 
@@ -14,7 +13,6 @@ import { ObjectCache, CollectionCache } from './object-cache';
 })
 export class NwBuddy implements OnDestroy {
   readonly #api = inject(NwBuddyApi)
-  readonly #i18n = inject(NwI18n);
 
   /**
    * The item definitions data.
@@ -44,14 +42,5 @@ export class NwBuddy implements OnDestroy {
   ngOnDestroy(): void {
     this.items.destroy();
     this.recipes.destroy();
-  }
-
-  /**
-   * Translates a given key using the localization data.
-   * @param key The key to translate.
-   * @returns The translated string.
-   */
-  translate(key: string): string {
-    return this.#i18n.get(key);
   }
 }

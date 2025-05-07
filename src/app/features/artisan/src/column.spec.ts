@@ -13,12 +13,12 @@ describe('ContentPipe', () => {
   });
 
   it('should extract content component', () => {
-    const column: TableColumn<{ test: number }> = {
-      id: 'test',
-      displayName: 'Test',
+    const column: TableColumn<{ id: number }> = {
+      id: 'id',
+      displayName: 'Id',
       value: {
         component: class TestComponent {},
-        inputs: (x) => ({ test: x.test }),
+        inputs: (x) => ({ test: x.id }),
       }
     };
     const result = pipe.transform(column, 'content');
@@ -26,11 +26,11 @@ describe('ContentPipe', () => {
   });
 
   it('should extract value getter', () => {
-    const column: TableColumn<{ test: number }> = {
-      id: 'test',
-      displayName: 'Test',
+    const column: TableColumn<{ id: number }> = {
+      id: 'id',
+      displayName: 'Id',
       value: {
-        get: (x) => x.test,
+        get: (x) => x.id,
       }
     };
     const result = pipe.transform(column, 'value');
@@ -38,11 +38,11 @@ describe('ContentPipe', () => {
   });
 
   it('should return null for invalid source', () => {
-    const column: TableColumn<{ test: number }> = {
-      id: 'test',
+    const column: TableColumn<{ id: number }> = {
+      id: 'id',
       displayName: 'Test',
       value: {
-        get: (x) => x.test,
+        get: (x) => x.id,
       }
     };
     const result = pipe.transform(column, null!);

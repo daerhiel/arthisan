@@ -5,7 +5,7 @@ import { catchError, map, of, retry } from 'rxjs';
 import { Broadcast, getStorageItem, handleError, retryStrategy, setStorageItem } from '@app/core';
 import { GamingToolsApi } from './gaming-tools-api';
 import { GameServer } from './game-server';
-import { indexCommodities } from './commodity';
+import { CommodityIndex, indexCommodities } from './commodity';
 
 export const GAME_SERVER_PROPERTY_NAME = 'game.server';
 
@@ -35,8 +35,8 @@ export class GamingTools {
     loader: ({ request }) => request ? this.#api.getServerPrices(request.name).pipe(
       map(x => indexCommodities(x)),
       retry(retryStrategy({ delay: 3000, count: 3, span: 5000 })),
-      catchError(handleError(this.#broadcast, {}))
-    ) : of({}),
+      catchError(handleError<CommodityIndex>(this.#broadcast, {}))
+    ) : of<CommodityIndex>({}),
     defaultValue: {}
   });
   readonly commodities = this.#commodities.value.asReadonly();
