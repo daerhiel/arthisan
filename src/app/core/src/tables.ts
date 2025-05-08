@@ -16,6 +16,7 @@ export interface TableColumn<T> {
   id: keyof T;
   displayName: string;
   width?: string;
+  align?: 'left' | 'center' | 'right';
   value: TableCellValue<T> | TableCellContent<T>;
 }
 

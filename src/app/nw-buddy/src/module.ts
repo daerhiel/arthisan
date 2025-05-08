@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 
 import { NwIcon } from './nw-icon';
+import { NwPrice } from './nw-price';
 
 const declarations = [
-  NwIcon
+  NwIcon,
+  NwPrice
 ];
 
 @NgModule({

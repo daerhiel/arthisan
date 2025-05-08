@@ -2,6 +2,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 :root {
+  @include mat.table-overrides((
+    row-item-outline-color: var(--mat-sys-surface-container-high),
+  ));
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
     container-text-color: var(--mat-sys-primary),

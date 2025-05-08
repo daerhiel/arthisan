@@ -1,10 +1,10 @@
+import { Component } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NwIcon } from './nw-icon';
-import { Component } from '@angular/core';
 import { ItemRarity } from '@app/nw-data';
+import { NwIcon } from './nw-icon';
 
 describe('NwIcon', () => {
   let component: TestComponent;
@@ -12,8 +12,6 @@ describe('NwIcon', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NwIcon],
-      teardown: { destroyAfterEach: false },
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestComponent);

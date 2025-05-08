@@ -1,5 +1,6 @@
 import { computed } from "@angular/core";
 
+import { GetterFn } from "@app/core";
 import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
 import { Artisan } from "./artisan";
 
@@ -32,4 +33,10 @@ export class Craftable {
 
 export function getIconInputs(item: Craftable) {
   return { path: item.icon(), name: item.name(), rarity: item.rarity(), named: item.named(), size: 12 };
+}
+
+export function getPriceInputs<R>(getter: GetterFn<Craftable, R>) {
+  return (item: Craftable) => {
+    return { value: getter(item) };
+  }
 }

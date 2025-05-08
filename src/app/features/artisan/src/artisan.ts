@@ -2,9 +2,9 @@ import { computed, inject, Injectable } from '@angular/core';
 
 import { TableDefinition } from '@app/core';
 import { CraftingRecipeData, HouseItems, MasterItemDefinitions } from '@app/nw-data';
-import { NwBuddy, NwI18n, NwIcon } from '@app/nw-buddy';
+import { NwBuddy, NwI18n, NwIcon, NwPrice } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
-import { Craftable, getIconInputs } from './craftable';
+import { Craftable, getIconInputs, getPriceInputs } from './craftable';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +19,16 @@ export class Artisan {
     columns: [
       { id: 'icon', displayName: 'Icon', width: '0', value: { component: NwIcon, inputs: getIconInputs } },
       { id: 'name', displayName: 'Name', width: '98%', value: { get: item => item.name() } },
-      { id: 'price', displayName: 'Price', width: '0%', value: { get: item => item.price() } },
+      { id: 'price', displayName: 'Price', width: '0%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price())  } },
       { id: 'recipes', displayName: 'Recipes', width: '2%', value: { get: item => item.recipes().toString() } }
     ],
     data: computed(() => {
       const objects: Craftable[] = [];
       for (const key of this.#data.recipes.keys() ?? []) {
-        objects.push(new Craftable(this, key));
+        const item = this.#data.items.get(key);
+        if (item && item.ItemClass.includes('Resource') && item.ItemClass.includes('Gem')) {
+          objects.push(new Craftable(this, key));
+        }
       }
       return objects;
     })
