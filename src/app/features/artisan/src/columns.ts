@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { TableDefinition } from './models/tables';
+import { TableDefinition } from '@app/core';
 
 @Pipe({
   name: 'columns'

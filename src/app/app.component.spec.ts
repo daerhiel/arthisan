@@ -10,8 +10,10 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 import { MatIconHarness } from '@angular/material/icon/testing';
 import { MAT_ICONS, withStyleSheet } from '@app/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { AppComponent } from './app.component';
 import { provideThemes } from './theme';
 import { themes } from './app.config';
@@ -20,8 +22,8 @@ class AppComponentHarness extends ComponentHarness {
   static hostSelector = 'app-root';
 
   getToolbar = this.locatorFor(MatToolbarHarness);
-  getThemeButton = this.locatorFor(MatButtonHarness.with({ selector: '#theme-menu' }));
-  getThemeMenu = this.locatorFor(MatMenuHarness);
+  getThemeButton = this.locatorFor(MatButtonHarness.with({ ancestor: '[app-theme]', selector: '#theme' }));
+  getThemeMenu = this.locatorFor(MatMenuHarness.with({ ancestor: '[app-theme]' }));
 }
 
 describe('AppComponent', () => {
@@ -40,7 +42,8 @@ describe('AppComponent', () => {
       imports: [NoopAnimationsModule, AppComponent],
       providers: [
         provideRouter([]), provideThemes(themes),
-        { provide: NwBuddyApi, useClass: NwBuddyApiMock }
+        { provide: NwBuddyApi, useClass: NwBuddyApiMock },
+        { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);

@@ -5,7 +5,7 @@ import { ObjectMap } from "@app/core";
 
 export type GetterFn<T, R> = (item: T) => R;
 
-type HydrateFn<T> = (value: T) => void;
+type HydrateFn<T> = (name: string, value: T) => void;
 type IteratorFn<T> = (data: Record<string, T[]>) => void;
 
 export abstract class CacheBase<T> {
@@ -18,9 +18,9 @@ export abstract class CacheBase<T> {
 
   protected _merge(hydrate: HydrateFn<T>): IteratorFn<T> {
     return data => {
-      for (const [, values] of Object.entries(data)) {
+      for (const [name, values] of Object.entries(data)) {
         for (const value of values ?? []) {
-          hydrate(value);
+          hydrate(name, value);
         }
       }
       this.#version.set(this.#version() + 1);
@@ -43,9 +43,9 @@ export class ObjectCache<T> extends CacheBase<T> {
 
   constructor(source: Observable<Record<string, T[]>>, getter: GetterFn<T, string>) {
     super();
-    this._subscribe(source.pipe(tap(this._merge(value => {
+    this._subscribe(source.pipe(tap(this._merge((name, value) => {
       const key = getter(value);
-      if (!key) {
+      if (!key || key === 'DEFAULTS') {
         return;
       }
       if (!this.#objects.has(key)) {
@@ -73,7 +73,7 @@ export class CollectionCache<T> extends CacheBase<T> {
 
   constructor(source: Observable<Record<string, T[]>>, getter: GetterFn<T, string>) {
     super();
-    this._subscribe(source.pipe(tap(this._merge(value => {
+    this._subscribe(source.pipe(tap(this._merge((_, value) => {
       const key = getter(value);
       if (!key) {
         return;

@@ -48,4 +48,18 @@ describe('NwI18n', () => {
     const result = i18n.get(key);
     expect(result).toBe('Item Name 1');
   });
+
+  it('should return the key if no translation with prefix', () => {
+    const key = 'unknown_key';
+    const prefix = 'item';
+    const result = i18n.get(key, prefix);
+    expect(result).toBe('unknown_key');
+  });
+
+  it('should return the translated string with prefix', () => {
+    const key = 'name1';
+    const prefix = 'item';
+    const result = i18n.get(key, prefix);
+    expect(result).toBe('Item Name 1');
+  });
 });

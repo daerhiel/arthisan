@@ -1,16 +1,31 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject, ViewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
-import { ColumnsPipe, ColumnPipe, NwBuddy } from '@app/nw-buddy';
+import { Artisan, ColumnPipe, ColumnsPipe, Craftable } from '@features/artisan';
 
 @Component({
-  imports: [NgComponentOutlet, MatTableModule, ColumnsPipe, ColumnPipe],
+  imports: [
+    NgComponentOutlet,
+    MatTableModule, MatSortModule,
+    ColumnsPipe, ColumnPipe
+  ],
   templateUrl: './explorer.html',
   styleUrl: './explorer.scss'
 })
 export class ExplorerComponent {
-  readonly #nw = inject(NwBuddy);
+  readonly #nw = inject(Artisan);
 
-  readonly recipes = this.#nw.recipeDefs;
+  readonly craftables = this.#nw.craftables;
+  readonly data = new MatTableDataSource<Craftable>();
+
+  protected _refresh = effect(() => {
+    this.data.data = this.#nw.craftables.data();
+  });
+
+  @ViewChild(MatSort)
+  set sort(sort: MatSort) {
+    this.data.sort = sort;
+  }
 }

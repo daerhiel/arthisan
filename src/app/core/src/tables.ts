@@ -4,7 +4,7 @@ export type GetterFn<T, R> = (item: T) => R;
 export type MapperFn<T> = (item: T) => Record<string, unknown>;
 
 export interface TableCellValue<T> {
-  get: GetterFn<T, T[keyof T] | null>;
+  get: GetterFn<T, unknown>;
 }
 
 export interface TableCellContent<T> {
@@ -16,6 +16,7 @@ export interface TableColumn<T> {
   id: keyof T;
   displayName: string;
   width?: string;
+  align?: 'left' | 'center' | 'right';
   value: TableCellValue<T> | TableCellContent<T>;
 }
 

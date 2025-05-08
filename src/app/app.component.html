@@ -6,18 +6,34 @@
   <a id="title" mat-button [routerLink]="['']">{{title}}</a>
   <span class="app-spacer"></span>
 
-  <button id="theme-menu" mat-icon-button color="primary" [matMenuTriggerFor]="menu">
-    <mat-icon fontIcon="format_color_fill"></mat-icon>
-  </button>
-
-  <mat-menu #menu="matMenu">
-    @for (theme of _themes.registry(); track theme.id) {
-    <button mat-menu-item (click)="_themes.set(theme.id)">
-      <mat-icon color="accent" [fontIcon]="_getThemeIcon(theme)"></mat-icon>
-      <span>{{theme.name}}</span>
+  <div app-server>
+    <button id="server" mat-button [matMenuTriggerFor]="server" aria-label="Server selector" [disabled]="!_gaming.servers()?.length">
+      {{_gaming.server()?.name ?? '(Server)'}}
     </button>
-    }
-  </mat-menu>
+    <mat-menu #server="matMenu">
+      @for (server of _gaming.servers(); track server.name) {
+      <button mat-menu-item (click)="_gaming.select(server)">
+        <span>{{server.name}}</span>
+      </button>
+      }
+    </mat-menu>
+  </div>
+
+
+  <div app-theme>
+    <button id="theme" mat-icon-button color="primary" [matMenuTriggerFor]="theme">
+      <mat-icon fontIcon="format_color_fill"></mat-icon>
+    </button>
+
+    <mat-menu #theme="matMenu">
+      @for (theme of _themes.registry(); track theme.id) {
+      <button mat-menu-item (click)="_themes.set(theme.id)">
+        <mat-icon color="accent" [fontIcon]="_getThemeIcon(theme)"></mat-icon>
+        <span>{{theme.name}}</span>
+      </button>
+      }
+    </mat-menu>
+  </div>
 </mat-toolbar>
 
 <router-outlet />
