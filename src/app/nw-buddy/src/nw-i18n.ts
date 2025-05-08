@@ -33,13 +33,25 @@ export class NwI18n {
   /**
    * Gets the translation value for a specified key.
    * @param key The key to retrieve the translation for.
+   * @param prefixes Optional prefixes to prepend to the key.
    * @returns The translated string or the original key if not found.
    */
-  get(key: string): string {
+  get(key: string, ...prefixes: string[]): string {
     const strings = this.#strings.value();
-    if (key && /^@/ig.test(key)) {
-      const value = strings[key.replace(/^@/ig, '').toLowerCase()];
-      return value ?? key;
+    if (key) {
+      if (prefixes.length) {
+        for (const prefix of prefixes) {
+          const value = strings[`${prefix}_${key.toLowerCase()}`];
+          if (value) {
+            return value;
+          }
+        }
+      } else {
+        if (/^@/ig.test(key)) {
+          const value = strings[key.replace(/^@/ig, '').toLowerCase()];
+          return value ?? key;
+        }
+      }
     }
     return key;
   }

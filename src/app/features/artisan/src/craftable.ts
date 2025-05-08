@@ -19,6 +19,20 @@ export class Craftable {
     return isMasterItem(item) && isItemNamed(item);
   });
 
+  readonly category = computed(() => {
+    const category = this.#item()?.TradingCategory;
+    return category ? this.artisan.translate(category, 'categorydata') : null;
+  });
+  readonly family = computed(() => {
+    const family = this.#item()?.TradingFamily;
+    return family ? this.artisan.translate(family, 'categorydata') : null;
+  });
+  readonly type = computed(() => {
+    const type = this.#item()?.ItemType;
+    return type ? this.artisan.translate(type, 'ui', 'ui_itemtypedescription') : null;
+  });
+  readonly tier = computed(() => this.#item()?.Tier ?? null);
+
   readonly price = computed(() => {
     return this.artisan.getPrice(this.id);
   });

@@ -18,8 +18,12 @@ export class Artisan {
     name: 'recipes',
     columns: [
       { id: 'icon', displayName: 'Icon', width: '0', value: { component: NwIcon, inputs: getIconInputs } },
-      { id: 'name', displayName: 'Name', width: '98%', value: { get: item => item.name() } },
-      { id: 'price', displayName: 'Price', width: '0%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price())  } },
+      { id: 'name', displayName: 'Name', width: '58%', value: { get: item => item.name() } },
+      { id: 'category', displayName: 'Category', width: '7%', value: { get: item => item.category() } },
+      { id: 'family', displayName: 'Family', width: '13%', value: { get: item => item.family() } },
+      { id: 'type', displayName: 'Type', width: '10%', value: { get: item => item.type() } },
+      { id: 'tier', displayName: 'Tier', width: '5%', align: 'right', value: { get: item => item.tier() } },
+      { id: 'price', displayName: 'Price', width: '5%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price()) } },
       { id: 'recipes', displayName: 'Recipes', width: '2%', value: { get: item => item.recipes().toString() } }
     ],
     data: computed(() => {
@@ -37,10 +41,11 @@ export class Artisan {
   /**
    * Translates a given key using the localization data.
    * @param key The key to translate.
+   * @param prefixes Optional prefixes to prepend to the key.
    * @returns The translated string.
    */
-  translate(key: string): string {
-    return this.#i18n.get(key);
+  translate(key: string, ...prefixes: string[]): string {
+    return this.#i18n.get(key, ...prefixes);
   }
 
   /**
