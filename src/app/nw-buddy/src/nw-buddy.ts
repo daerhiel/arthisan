@@ -31,6 +31,14 @@ export class NwBuddy implements OnDestroy {
   );
 
   /**
+   * The crafting category data.
+   */
+  readonly categories = new ObjectCache(
+    this.#api.getDataSheets(DATASHEETS.CraftingCategoryData),
+    item => item.CategoryID
+  );
+
+  /**
    * The crafting recipe data.
    */
   readonly recipes = new CollectionCache(

@@ -20,4 +20,24 @@ describe('NwBuddy', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should get items', () => {
+    const items = service.items.get('oret1');
+    expect(items).toBeTruthy();
+  });
+
+  it('should get housing items', () => {
+    const housingItems = service.housing.get('House_HousingItem_Lighting_CandleHolder_A');
+    expect(housingItems).toBeTruthy();
+  });
+
+  it('should get recipes', () => {
+    const recipes = service.recipes.get('ingott2');
+    expect(recipes).toBeTruthy();
+  });
+
+  it('should get categories', () => {
+    const categories = service.categories.get('FluxReagentsT5');
+    expect(categories).toBeTruthy();
+  });
 });
