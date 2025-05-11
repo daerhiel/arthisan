@@ -170,4 +170,30 @@ describe('CollectionCache', () => {
       expect(cache.get('4')).toEqual([{ id: '4', name: 'Item 4' }]);
     });
   });
+
+  describe('undefined keys', () => {
+    const data: Record<string, Item[]> = {
+      group1: [{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 2' }],
+      group2: [{ id: undefined!, name: 'Item 3' }, { id: '4', name: 'Item 4' }]
+    }
+
+    beforeEach(() => {
+      cache = new CollectionCache(of(data), obj => obj.id);
+    });
+
+    it('should create an instance', () => {
+      expect(cache).toBeTruthy();
+    });
+
+    it('should get keys', () => {
+      const keys = Array.from(cache.keys()).sort();
+      expect(keys).toEqual(['1', '4']);
+    });
+
+    it('should return the correct values', () => {
+      expect(cache.get('1')).toEqual([{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 2' }]);
+      expect(cache.get(undefined!)).toEqual(null);
+      expect(cache.get('4')).toEqual([{ id: '4', name: 'Item 4' }]);
+    });
+  });
 });
