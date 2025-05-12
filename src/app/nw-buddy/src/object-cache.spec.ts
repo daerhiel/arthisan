@@ -16,11 +16,6 @@ describe('ObjectCache', () => {
 
   beforeEach(() => {
     spyOn(console, 'warn');
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: NwBuddyApi, useClass: NwBuddyApiMock }
-      ]
-    });
   });
 
   describe('regular data', () => {

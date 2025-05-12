@@ -15,6 +15,7 @@ describe('NwBuddy', () => {
       ]
     });
     service = TestBed.inject(NwBuddy);
+    TestBed.flushEffects();
   });
 
   it('should be created', () => {
@@ -39,5 +40,10 @@ describe('NwBuddy', () => {
   it('should get categories', () => {
     const categories = service.categories.get('FluxReagentsT5');
     expect(categories).toBeTruthy();
+  });
+
+  it('should get ingredients', () => {
+    const ingredients = service.ingredients.get('AlchemyFire');
+    expect(ingredients).toBeTruthy();
   });
 });
