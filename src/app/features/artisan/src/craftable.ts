@@ -3,6 +3,7 @@ import { computed } from "@angular/core";
 import { GetterFn } from "@app/core";
 import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
 import { Artisan } from "./artisan";
+import { Blueprint } from "./blueprint";
 
 export class Craftable {
   readonly #item = computed(() => this._artisan.getItem(this.id));
@@ -37,8 +38,8 @@ export class Craftable {
     return this._artisan.getPrice(this.id);
   });
 
-  readonly recipes = computed(() => {
-    return this.#recipes().length;
+  readonly blueprints = computed(() => {
+    return this.#recipes()?.map(recipe => new Blueprint(this._artisan, this, recipe)) ?? null;
   });
 
   constructor(private readonly _artisan: Artisan, readonly id: string) {

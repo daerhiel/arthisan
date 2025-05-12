@@ -24,7 +24,7 @@ export class Artisan {
       { id: 'type', displayName: 'Type', width: '10%', value: { get: item => item.type() } },
       { id: 'tier', displayName: 'Tier', width: '5%', align: 'right', value: { get: item => item.tier() } },
       { id: 'price', displayName: 'Price', width: '5%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price()) } },
-      { id: 'recipes', displayName: 'Recipes', width: '2%', value: { get: item => item.recipes().toString() } }
+      { id: 'blueprints', displayName: 'Recipes', width: '2%', value: { get: item => item.blueprints()?.length.toString() } }
     ],
     data: computed(() => {
       const objects: Craftable[] = [];
@@ -62,8 +62,10 @@ export class Artisan {
    * @param id The ID of the recipes to retrieve.
    * @returns An array of crafting recipes.
    */
-  getRecipes(id: string): CraftingRecipeData[] {
-    return this.#data.recipes.get(id) ?? [];
+  getRecipes(id: string): CraftingRecipeData[] | null {
+    return this.#data.recipes.get(id);
+  }
+
   }
 
   /**
