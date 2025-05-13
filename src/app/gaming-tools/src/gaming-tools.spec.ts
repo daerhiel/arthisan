@@ -70,4 +70,26 @@ describe('GamingTools', () => {
     }
     expect(service.commodities()).toEqual({});
   });
+
+  it('should get price for existing item', async () => {
+    const server = { name: 'Server1', age: 100 };
+    service.select(server);
+
+    while (service.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
+    const price = service.get('gold');
+    expect(price).toEqual(100);
+  });
+
+  it('should return null for non-existing item', async () => {
+    const server = { name: 'Server1', age: 100 };
+    service.select(server);
+
+    while (service.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
+    const price = service.get('non-existing-item');
+    expect(price).toBeNull();
+  });
 });

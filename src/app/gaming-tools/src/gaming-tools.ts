@@ -50,4 +50,13 @@ export class GamingTools {
     this.#server.set(server);
     setStorageItem(GAME_SERVER_PROPERTY_NAME, this.#server());
   }
+
+  /**
+   * Gets the price of a specific item from commodity data.
+   * @param id The ID of an item to retrieve the price for.
+   * @returns The price of the item if found; otherwise, null.
+   */
+  get(id: string): number | null {
+    return this.commodities()[id] ?? null;
+  }
 }

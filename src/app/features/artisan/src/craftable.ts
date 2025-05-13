@@ -6,12 +6,12 @@ import { Artisan } from "./artisan";
 import { Blueprint } from "./blueprint";
 
 export class Craftable {
-  readonly #item = computed(() => this._artisan.getItem(this.id));
-  readonly #recipes = computed(() => this._artisan.getRecipes(this.id));
+  readonly #item = computed(() => this._artisan.data.items.get(this.id) ?? this._artisan.data.housing.get(this.id));
+  readonly #recipes = computed(() => this._artisan.data.recipes.get(this.id));
 
   readonly name = computed(() => {
     const name = this.#item()?.Name;
-    return name ? this._artisan.translate(name) : null;
+    return name ? this._artisan.i18n.get(name) : null;
   });
   readonly icon = computed(() => this.#item()?.IconPath);
   readonly rarity = computed(() => getItemRarity(this.#item()));
@@ -22,20 +22,20 @@ export class Craftable {
 
   readonly category = computed(() => {
     const category = this.#item()?.TradingCategory;
-    return category ? this._artisan.translate(category, 'categorydata') : null;
+    return category ? this._artisan.i18n.get(category, 'categorydata') : null;
   });
   readonly family = computed(() => {
     const family = this.#item()?.TradingFamily;
-    return family ? this._artisan.translate(family, 'categorydata') : null;
+    return family ? this._artisan.i18n.get(family, 'categorydata') : null;
   });
   readonly type = computed(() => {
     const type = this.#item()?.ItemType;
-    return type ? this._artisan.translate(type, 'ui', 'ui_itemtypedescription') : null;
+    return type ? this._artisan.i18n.get(type, 'ui', 'ui_itemtypedescription') : null;
   });
   readonly tier = computed(() => this.#item()?.Tier ?? null);
 
   readonly price = computed(() => {
-    return this._artisan.getPrice(this.id);
+    return this._artisan.gaming.get(this.id);
   });
 
   readonly blueprints = computed(() => {
