@@ -14,6 +14,8 @@ export abstract class CacheBase<T> {
 
   readonly version = this.#version.asReadonly();
 
+  abstract has(id: string): boolean;
+
   abstract keys(): MapIterator<string>;
 
   protected _merge(hydrate: HydrateFn<T>): IteratorFn<T> {
@@ -56,6 +58,11 @@ export class ObjectCache<T> extends CacheBase<T> {
     }))));
   }
 
+  override has(id: string): boolean {
+    this.version();
+    return this.#objects.has(id);
+  }
+
   override keys(): MapIterator<string> {
     this.version();
     return this.#objects.keys();
@@ -83,6 +90,11 @@ export class CollectionCache<T> extends CacheBase<T> {
       }
       objects.push(value);
     }))));
+  }
+
+  override has(id: string): boolean {
+    this.version();
+    return this.#objects.has(id);
   }
 
   override keys(): MapIterator<string> {

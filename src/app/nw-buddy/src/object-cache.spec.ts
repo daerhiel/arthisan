@@ -32,6 +32,18 @@ describe('ObjectCache', () => {
       expect(cache).toBeTruthy();
     });
 
+    it('should detect the present keys', () => {
+      expect(cache.has('1')).toBe(true);
+      expect(cache.has('2')).toBe(true);
+      expect(cache.has('3')).toBe(true);
+      expect(cache.has('4')).toBe(true);
+    });
+
+    it('should not detect the absent keys', () => {
+      expect(cache.has('5')).toBe(false);
+      expect(cache.has('6')).toBe(false);
+    });
+
     it('should get keys', () => {
       const keys = Array.from(cache.keys()).sort();
       expect(keys).toEqual(['1', '2', '3', '4']);
@@ -124,6 +136,18 @@ describe('CollectionCache', () => {
 
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
+    });
+
+    it('should detect the present keys', () => {
+      expect(cache.has('1')).toBe(true);
+      expect(cache.has('2')).toBe(true);
+      expect(cache.has('3')).toBe(true);
+      expect(cache.has('4')).toBe(true);
+    });
+
+    it('should not detect the absent keys', () => {
+      expect(cache.has('5')).toBe(false);
+      expect(cache.has('6')).toBe(false);
     });
 
     it('should get keys', () => {
