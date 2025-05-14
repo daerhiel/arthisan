@@ -1,5 +1,6 @@
-import { GamingToolsApiMock } from './gaming-tools-api.mock';
-import { Commodity, GameServer } from '@app/gaming-tools';
+import { firstValueFrom } from 'rxjs';
+
+import { commodities, GamingToolsApiMock } from './gaming-tools-api.mock';
 
 describe('GamingToolsApiMock', () => {
   let mock: GamingToolsApiMock;
@@ -8,29 +9,23 @@ describe('GamingToolsApiMock', () => {
     mock = new GamingToolsApiMock();
   });
 
-  it('should return mock servers', (done) => {
-    mock.getServers().subscribe((servers: GameServer[]) => {
-      expect(servers.length).toBe(3);
-      expect(servers[0].name).toBe('Server1');
-      expect(servers[1].age).toBe(200);
-      done();
-    });
+  it('should return mock servers', async () => {
+    const result = await firstValueFrom(mock.getServers());
+    expect(result).toEqual([
+      { name: 'Server1', age: 100 },
+      { name: 'Server2', age: 200 },
+      { name: 'Server3', age: 300 }
+    ]);
   });
 
-  it('should return mock commodities for Server1', (done) => {
-    mock.getServerPrices('Server1').subscribe((commodities: Commodity[]) => {
-      expect(commodities.length).toBe(2);
-      expect(commodities[0].id).toBe('gold');
-      expect(commodities[1].price).toBe(50);
-      done();
-    });
+  it('should return mock commodities for Server1', async () => {
+    const result = await firstValueFrom(mock.getServerPrices('Server1'));
+    expect(result).toEqual(commodities);
   });
 
-  it('should return empty array for unknown server', (done) => {
-    mock.getServerPrices('Unknown').subscribe((commodities: Commodity[]) => {
-      expect(commodities.length).toBe(0);
-      done();
-    });
+  it('should return empty array for unknown server', async () => {
+    const result = await firstValueFrom(mock.getServerPrices('Unknown'));
+    expect(result).toEqual([]);
   });
 });
 

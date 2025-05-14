@@ -7,10 +7,58 @@ function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): R
   return { ...store, ...value };
 }
 
-export const translationsEn = {
+const translationsEnData = {
   'item_name1': 'Item Name 1',
-  'item_name2': 'Item Name 2'
+  'item_name2': 'Item Name 2',
+  'ui_itemtypedescription_resource': 'Resource',
+  'ui_itemtypedescription_housingitem': 'Housing Item',
+  'CategoryData_Resources': 'Resources',
+  'CategoryData_RawResources': 'Raw Resources',
+  'CategoryData_RefinedResources': 'Refined Resources',
+  'IngotT52_MasterName': 'Mythril Ingot',
+  'IngotT52_Description': 'Crafting Material.',
+  'OreT52_MasterName': 'Mythril Ore',
+  'OreT52_Description': 'Raw Resource used in crafting. Can be refined.',
+  'IngotT5_MasterName': 'Orichalcum Ingot',
+  'IngotT5_Description': 'Crafting Material.',
+  'OreT5_MasterName': 'Orichalcum Ore',
+  'OreT5_Description': 'Raw Resource used in crafting. Can be refined.',
+  'IngotT4_MasterName': 'Starmetal Ingot',
+  'IngotT4_Description': 'Crafting Material.',
+  'OreT4_MasterName': 'Starmetal Ore',
+  'OreT4_Description': 'Raw Resource used in crafting. Can be refined.',
+  'IngotT3_MasterName': 'Steel Ingot',
+  'IngotT3_Description': 'Crafting Material.',
+  'IngotT2_MasterName': 'Iron Ingot',
+  'IngotT2_Description': 'Crafting Material.',
+  'OreT1_MasterName': 'Iron Ore',
+  'OreT1_Description': 'Raw Resource used in crafting. Can be refined.',
+  'FluxT5_MasterName': 'Obsidian Flux',
+  'FluxT5_Description': 'A flux made from obsidian sand, used for smelting.',
+  'ReagentConverterT5_MasterName': 'Masterwork Material Converter',
+  'ReagentConverterT5_Description': 'A masterfully made, one-time-use machine that uses alchemy to convert one item to another. The process is inherently imperfect, so some loss is expected.',
+  'CharcoalT1_MasterName': 'Charcoal',
+  'CharcoalT1_Description': 'Crafting Material.',
+  'WoodenCoin_MasterName': 'Wooden Coin',
+  'WoodenCoin_Description': 'A small wooden coin found in Elite Chests, that can be used at a stonecutting station to craft heart gem runes.',
+  'BeeswaxT1_MasterName': 'Beeswax',
+  'BeeswaxT1_Description': 'The result of the relentless hard work of bees.',
+  'AlchemyFireT1_MasterName': 'Fire Mote',
+  'AlchemyFireT1_Description': 'A faint Essence of Fire. Used in Alchemy.',
+  'House_HousingItem_Lighting_CandleHolder_A_MasterName': 'Rusty Iron Candelabra',
+  'House_HousingItem_Lighting_CandleHolder_A_Description': 'Three tall candles, burning bright, keeping back the endless night.',
+  'RefiningReagentsT5_GroupName': 'Refining Materials Tier 5',
+  'Wood_CategoryName': 'Wood'
+};
+
+export function getIconPath(id: string): string {
+  return `lyshineui/images/icons/items/resource/${id.toLowerCase()}.webp`;
 }
+
+export const translationsEn = Object.keys(translationsEnData).reduce<Localization>((o, k) => {
+  o[k.toLowerCase()] = translationsEnData[k as keyof typeof translationsEnData];
+  return o;
+}, {});
 
 export class NwBuddyApiMock {
   readonly data = {

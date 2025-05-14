@@ -1,4 +1,11 @@
-import { NwBuddyApiMock, translationsEn } from "./nw-buddy-api.mock";
+import { NwBuddyApiMock, getIconPath, translationsEn } from "./nw-buddy-api.mock";
+
+describe('getIconPath', () => {
+  it('should get icon path', () => {
+    const iconPath = getIconPath('OreT1');
+    expect(iconPath).toBe('lyshineui/images/icons/items/resource/oret1.webp');
+  });
+});
 
 describe('NwBuddyApiMock', () => {
   let service: NwBuddyApiMock;

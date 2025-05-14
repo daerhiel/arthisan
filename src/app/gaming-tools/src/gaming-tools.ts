@@ -57,6 +57,6 @@ export class GamingTools {
    * @returns The price of the item if found; otherwise, null.
    */
   get(id: string): number | null {
-    return this.commodities()[id] ?? null;
+    return this.commodities()[id?.toLowerCase()] ?? null;
   }
 }

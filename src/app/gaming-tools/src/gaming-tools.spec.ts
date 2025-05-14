@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, timer } from 'rxjs';
 
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { commodities, GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { GamingToolsApi } from './gaming-tools-api';
 import { GamingTools } from './gaming-tools';
+import { indexCommodities } from './commodity';
 
 describe('GamingTools', () => {
   let service: GamingTools;
@@ -54,10 +55,7 @@ describe('GamingTools', () => {
     while (service.isLoading()) {
       await firstValueFrom(timer(100));
     }
-    expect(service.commodities()).toEqual({
-      gold: 100,
-      silver: 50
-    });
+    expect(service.commodities()).toEqual(indexCommodities(commodities));
   });
 
   it('should return empty commodities for null server', async () => {
