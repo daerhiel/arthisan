@@ -11,9 +11,9 @@ export class Craftable {
 
   readonly name = computed(() => {
     const name = this.#item()?.Name;
-    return name ? this._artisan.i18n.get(name) : null;
+    return name ? this._artisan.i18n.get(name) : this.id;
   });
-  readonly icon = computed(() => this.#item()?.IconPath);
+  readonly icon = computed(() => this.#item()?.IconPath ?? null);
   readonly rarity = computed(() => getItemRarity(this.#item()));
   readonly named = computed(() => {
     const item = this.#item();
