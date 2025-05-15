@@ -10,8 +10,8 @@ function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): R
 const translationsEnData = {
   'item_name1': 'Item Name 1',
   'item_name2': 'Item Name 2',
-  'ui_itemtypedescription_resource': 'Resource',
-  'ui_itemtypedescription_housingitem': 'Housing Item',
+  'UI_ItemTypeDescription_Resource': 'Resource',
+  'UI_ItemTypeDescription_HousingItem': 'Housing Item',
   'CategoryData_Resources': 'Resources',
   'CategoryData_RawResources': 'Raw Resources',
   'CategoryData_RefinedResources': 'Refined Resources',
@@ -67,7 +67,7 @@ export class NwBuddyApiMock {
         "ItemID": "IngotT52",
         "Name": "@IngotT52_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@IngotT52_Description",
         "ItemClass": [
           "Resource",
@@ -104,7 +104,7 @@ export class NwBuddyApiMock {
         "ItemID": "OreT52",
         "Name": "@OreT52_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@OreT52_Description",
         "ItemClass": [
           "Resource",
@@ -137,7 +137,7 @@ export class NwBuddyApiMock {
         "ItemID": "IngotT5",
         "Name": "@IngotT5_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@IngotT5_Description",
         "ItemClass": [
           "Resource",
@@ -175,7 +175,7 @@ export class NwBuddyApiMock {
         "ItemID": "OreT5",
         "Name": "@OreT5_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@OreT5_Description",
         "ItemClass": [
           "Resource",
@@ -211,7 +211,7 @@ export class NwBuddyApiMock {
         "ItemID": "IngotT4",
         "Name": "@IngotT4_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@IngotT4_Description",
         "ItemClass": [
           "Resource",
@@ -248,7 +248,7 @@ export class NwBuddyApiMock {
         "ItemID": "OreT4",
         "Name": "@OreT4_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@OreT4_Description",
         "ItemClass": [
           "Resource",
@@ -284,7 +284,7 @@ export class NwBuddyApiMock {
         "ItemID": "IngotT3",
         "Name": "@IngotT3_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@IngotT3_Description",
         "ItemClass": [
           "Resource",
@@ -321,7 +321,7 @@ export class NwBuddyApiMock {
         "ItemID": "IngotT2",
         "Name": "@IngotT2_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@IngotT2_Description",
         "ItemClass": [
           "Resource",
@@ -358,7 +358,7 @@ export class NwBuddyApiMock {
         "ItemID": "OreT1",
         "Name": "@OreT1_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@OreT1_Description",
         "ItemClass": [
           "Resource",
@@ -394,7 +394,7 @@ export class NwBuddyApiMock {
         "ItemID": "FluxT5",
         "Name": "@FluxT5_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@FluxT5_Description",
         "ItemClass": [
           "Resource"
@@ -433,7 +433,7 @@ export class NwBuddyApiMock {
         "ItemID": "ReagentConverterT5",
         "Name": "@ReagentConverterT5_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@ReagentConverterT5_Description",
         "ItemClass": [
           "Resource"
@@ -465,7 +465,7 @@ export class NwBuddyApiMock {
         "ItemID": "CharcoalT1",
         "Name": "@CharcoalT1_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@CharcoalT1_Description",
         "ItemClass": [
           "Resource"
@@ -497,7 +497,7 @@ export class NwBuddyApiMock {
         "ItemID": "WoodenCoin",
         "Name": "@WoodenCoin_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@WoodenCoin_Description",
         "ItemClass": [
           "Resource"
@@ -529,7 +529,7 @@ export class NwBuddyApiMock {
         "ItemID": "BeeswaxT1",
         "Name": "@BeeswaxT1_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@BeeswaxT1_Description",
         "ItemClass": [
           "Resource"
@@ -561,7 +561,7 @@ export class NwBuddyApiMock {
         "ItemID": "AlchemyFireT1",
         "Name": "@AlchemyFireT1_MasterName",
         "ItemType": "Resource",
-        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_resource",
         "Description": "@AlchemyFireT1_Description",
         "ItemClass": [
           "Resource",
@@ -631,7 +631,7 @@ export class NwBuddyApiMock {
         "Tier": 2,
         "BindOnPickup": false,
         "MaxStackSize": 4,
-        "ItemTypeDisplayName": "@ui_itemtypedescription_housingitem"
+        "ItemTypeDisplayName": "@UI_ItemTypeDescription_HousingItem"
       }
     ] satisfies Partial<HouseItems>[],
     [DATASHEETS.CraftingRecipeData.CraftingRecipes.uri]: [

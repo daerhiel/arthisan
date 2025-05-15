@@ -22,15 +22,15 @@ export class Craftable {
 
   readonly category = computed(() => {
     const category = this.#item()?.TradingCategory;
-    return category ? this._artisan.i18n.get(category, 'categorydata') : null;
+    return category ? this._artisan.i18n.get(category, 'CategoryData') : null;
   });
   readonly family = computed(() => {
     const family = this.#item()?.TradingFamily;
-    return family ? this._artisan.i18n.get(family, 'categorydata') : null;
+    return family ? this._artisan.i18n.get(family, 'CategoryData') : null;
   });
   readonly type = computed(() => {
     const type = this.#item()?.ItemType;
-    return type ? this._artisan.i18n.get(type, 'ui', 'ui_itemtypedescription') : null;
+    return type ? this._artisan.i18n.get(type, 'UI', 'UI_ItemTypeDescription') : null;
   });
   readonly tier = computed(() => this.#item()?.Tier ?? null);
 
