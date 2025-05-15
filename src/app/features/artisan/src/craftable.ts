@@ -43,6 +43,9 @@ export class Craftable {
   });
 
   constructor(private readonly _artisan: Artisan, readonly id: string) {
+    if (!_artisan) {
+      throw new Error('Invalid artisan instance.');
+    }
   }
 }
 

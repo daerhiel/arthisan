@@ -31,6 +31,10 @@ describe('Craftable', () => {
     }
   });
 
+  it('should throw on missing artisan instance', () => {
+    expect(() => new Craftable(null!, null!)).toThrowError('Invalid artisan instance.');
+  });
+
   it('should create a non-existing item', () => {
     const craftable = new Craftable(service, 'UnknownId');
     expect(craftable).toBeTruthy();
