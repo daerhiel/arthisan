@@ -26,6 +26,10 @@ export function isMasterItem(item: unknown): item is MasterItemDefinitions {
   return item != null && typeof item === 'object' && 'ItemID' in item
 }
 
+export function isHousingItem(item: unknown): item is HouseItems {
+  return item != null && typeof item === 'object' && 'HouseItemID' in item
+}
+
 export function isItemNamed(item: Pick<MasterItemDefinitions, 'ItemClass'> | null) {
   return item?.ItemClass?.includes('Named') ?? false;
 }

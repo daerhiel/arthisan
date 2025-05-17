@@ -1,18 +1,25 @@
 import { computed, inject, Injectable } from '@angular/core';
 
-import { TableDefinition } from '@app/core';
-import { CraftingRecipeData, HouseItems, MasterItemDefinitions } from '@app/nw-data';
+import { ObjectMap, TableDefinition } from '@app/core';
+import { CraftingIngredientType } from '@app/nw-data';
 import { NwBuddy, NwI18n, NwIcon, NwPrice } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
 import { Craftable, getIconInputs, getPriceInputs } from './craftable';
+import { Category } from './category';
 
+/**
+ * Represents the Artisan module that provides crafting functionality.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class Artisan {
-  readonly #i18n = inject(NwI18n);
-  readonly #data = inject(NwBuddy);
-  readonly #gaming = inject(GamingTools);
+  readonly i18n = inject(NwI18n);
+  readonly data = inject(NwBuddy);
+  readonly gaming = inject(GamingTools);
+
+  readonly #items = new ObjectMap<Craftable>();
+  readonly #categories = new ObjectMap<Category>();
 
   readonly craftables: TableDefinition<Craftable> = {
     name: 'recipes',
@@ -24,14 +31,15 @@ export class Artisan {
       { id: 'type', displayName: 'Type', width: '10%', value: { get: item => item.type() } },
       { id: 'tier', displayName: 'Tier', width: '5%', align: 'right', value: { get: item => item.tier() } },
       { id: 'price', displayName: 'Price', width: '5%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price()) } },
-      { id: 'recipes', displayName: 'Recipes', width: '2%', value: { get: item => item.recipes().toString() } }
+      { id: 'blueprints', displayName: 'Recipes', width: '2%', value: { get: item => item.blueprints()?.length.toString() } }
     ],
     data: computed(() => {
       const objects: Craftable[] = [];
-      for (const key of this.#data.recipes.keys() ?? []) {
-        const item = this.#data.items.get(key);
+      for (const key of this.data.recipes.keys() ?? []) {
+        const item = this.data.items.get(key);
         if (item && item.ItemClass.includes('Resource') && item.ItemClass.includes('Gem')) {
-          objects.push(new Craftable(this, key));
+          const craftable = this.getItem(key);
+          craftable && objects.push(craftable);
         }
       }
       return objects;
@@ -39,40 +47,47 @@ export class Artisan {
   };
 
   /**
-   * Translates a given key using the localization data.
-   * @param key The key to translate.
-   * @param prefixes Optional prefixes to prepend to the key.
-   * @returns The translated string.
+   * Gets a craftable item from cache; creates a new one if not found.
+   * @param id The ID of an item to retrieve.
+   * @returns The item if found or created; otherwise, null.
    */
-  translate(key: string, ...prefixes: string[]): string {
-    return this.#i18n.get(key, ...prefixes);
+  getItem(id: string): Craftable | null {
+    let item = this.#items.get(id) ?? null;
+    if (!item && (this.data.items.has(id) || this.data.housing.has(id))) {
+      item = new Craftable(this, id);
+      item && this.#items.set(id, item);
+    }
+    return item;
   }
 
   /**
-   * Gets an item or a housing item from database.
-   * @param id The ID of an item to retrieve.
-   * @returns The item or housing item if found; otherwise, null.
+   * Gets a category from cache; creates a new one if not found.
+   * @param id The ID of a category to retrieve.
+   * @returns The category if found or created; otherwise, null.
    */
-  getItem(id: string): MasterItemDefinitions | HouseItems | null {
-    return this.#data.items.get(id) ?? this.#data.housing.get(id);
+  getCategory(id: string): Category | null {
+    let category = this.#categories.get(id) ?? null;
+    if (!category && this.data.categories.has(id)) {
+      category = new Category(this, id);
+      category && this.#categories.set(id, category);
+    }
+    return category;
   }
 
   /**
    * Gets a list of recipes that craft a specific item.
-   * @param id The ID of the recipes to retrieve.
-   * @returns An array of crafting recipes.
+   * @param id The ID of an ingredient to retrieve.
+   * @param type The type of an ingredient to get.
+   * @returns The ingredient if found; otherwise, null.
    */
-  getRecipes(id: string): CraftingRecipeData[] {
-    return this.#data.recipes.get(id) ?? [];
-  }
-
-  /**
-   * Gets the price of a specific item from the Gaming Tools.
-   * @param id The ID of an item to retrieve the price for.
-   * @returns The price of the item if found; otherwise, null.
-   */
-  getPrice(id: string): number | null {
-    const commodities = this.#gaming.commodities();
-    return commodities[id] ?? null;
+  getIngredient(id: string, type: CraftingIngredientType): Craftable | Category | null {
+    switch (type) {
+      case 'Item':
+        return this.getItem(id);
+      case 'Category_Only':
+        return this.getCategory(id);
+      default:
+        throw new Error(`Ingredient type is not supported: ${type}`);
+    }
   }
 }

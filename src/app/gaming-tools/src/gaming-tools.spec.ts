@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, timer } from 'rxjs';
 
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { commodities, GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { GamingToolsApi } from './gaming-tools-api';
 import { GamingTools } from './gaming-tools';
+import { indexCommodities } from './commodity';
 
 describe('GamingTools', () => {
   let service: GamingTools;
@@ -54,10 +55,7 @@ describe('GamingTools', () => {
     while (service.isLoading()) {
       await firstValueFrom(timer(100));
     }
-    expect(service.commodities()).toEqual({
-      gold: 100,
-      silver: 50
-    });
+    expect(service.commodities()).toEqual(indexCommodities(commodities));
   });
 
   it('should return empty commodities for null server', async () => {
@@ -69,5 +67,27 @@ describe('GamingTools', () => {
       await firstValueFrom(timer(100));
     }
     expect(service.commodities()).toEqual({});
+  });
+
+  it('should get price for existing item', async () => {
+    const server = { name: 'Server1', age: 100 };
+    service.select(server);
+
+    while (service.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
+    const price = service.get('gold');
+    expect(price).toEqual(100);
+  });
+
+  it('should return null for non-existing item', async () => {
+    const server = { name: 'Server1', age: 100 };
+    service.select(server);
+
+    while (service.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
+    const price = service.get('non-existing-item');
+    expect(price).toBeNull();
   });
 });

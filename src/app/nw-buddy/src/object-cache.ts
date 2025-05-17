@@ -1,4 +1,4 @@
-import { signal } from "@angular/core";
+import { signal, untracked } from "@angular/core";
 import { Observable, Subscription, tap } from "rxjs";
 
 import { ObjectMap } from "@app/core";
@@ -14,6 +14,8 @@ export abstract class CacheBase<T> {
 
   readonly version = this.#version.asReadonly();
 
+  abstract has(id: string): boolean;
+
   abstract keys(): MapIterator<string>;
 
   protected _merge(hydrate: HydrateFn<T>): IteratorFn<T> {
@@ -23,7 +25,7 @@ export abstract class CacheBase<T> {
           hydrate(name, value);
         }
       }
-      this.#version.set(this.#version() + 1);
+      this.#version.set(untracked(() => this.#version()) + 1);
     };
   }
 
@@ -56,6 +58,11 @@ export class ObjectCache<T> extends CacheBase<T> {
     }))));
   }
 
+  override has(id: string): boolean {
+    this.version();
+    return this.#objects.has(id);
+  }
+
   override keys(): MapIterator<string> {
     this.version();
     return this.#objects.keys();
@@ -63,8 +70,7 @@ export class ObjectCache<T> extends CacheBase<T> {
 
   get(id: string): T | null {
     this.version();
-    const item = this.#objects.get(id);
-    return item ?? null;
+    return this.#objects.get(id) ?? null;
   }
 }
 
@@ -86,6 +92,11 @@ export class CollectionCache<T> extends CacheBase<T> {
     }))));
   }
 
+  override has(id: string): boolean {
+    this.version();
+    return this.#objects.has(id);
+  }
+
   override keys(): MapIterator<string> {
     this.version();
     return this.#objects.keys();
@@ -93,7 +104,6 @@ export class CollectionCache<T> extends CacheBase<T> {
 
   get(id: string): T[] | null {
     this.version();
-    const item = this.#objects.get(id);
-    return item ?? null;
+    return this.#objects.get(id) ?? null;
   }
 }

@@ -16,11 +16,6 @@ describe('ObjectCache', () => {
 
   beforeEach(() => {
     spyOn(console, 'warn');
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: NwBuddyApi, useClass: NwBuddyApiMock }
-      ]
-    });
   });
 
   describe('regular data', () => {
@@ -35,6 +30,18 @@ describe('ObjectCache', () => {
 
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
+    });
+
+    it('should detect the present keys', () => {
+      expect(cache.has('1')).toBe(true);
+      expect(cache.has('2')).toBe(true);
+      expect(cache.has('3')).toBe(true);
+      expect(cache.has('4')).toBe(true);
+    });
+
+    it('should not detect the absent keys', () => {
+      expect(cache.has('5')).toBe(false);
+      expect(cache.has('6')).toBe(false);
     });
 
     it('should get keys', () => {
@@ -131,6 +138,18 @@ describe('CollectionCache', () => {
       expect(cache).toBeTruthy();
     });
 
+    it('should detect the present keys', () => {
+      expect(cache.has('1')).toBe(true);
+      expect(cache.has('2')).toBe(true);
+      expect(cache.has('3')).toBe(true);
+      expect(cache.has('4')).toBe(true);
+    });
+
+    it('should not detect the absent keys', () => {
+      expect(cache.has('5')).toBe(false);
+      expect(cache.has('6')).toBe(false);
+    });
+
     it('should get keys', () => {
       const keys = Array.from(cache.keys()).sort();
       expect(keys).toEqual(['1', '2', '3', '4']);
@@ -167,6 +186,32 @@ describe('CollectionCache', () => {
       expect(cache.get('1')).toEqual([{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 3' }]);
       expect(cache.get('2')).toEqual([{ id: '2', name: 'Item 2' }]);
       expect(cache.get('3')).toEqual(null);
+      expect(cache.get('4')).toEqual([{ id: '4', name: 'Item 4' }]);
+    });
+  });
+
+  describe('undefined keys', () => {
+    const data: Record<string, Item[]> = {
+      group1: [{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 2' }],
+      group2: [{ id: undefined!, name: 'Item 3' }, { id: '4', name: 'Item 4' }]
+    }
+
+    beforeEach(() => {
+      cache = new CollectionCache(of(data), obj => obj.id);
+    });
+
+    it('should create an instance', () => {
+      expect(cache).toBeTruthy();
+    });
+
+    it('should get keys', () => {
+      const keys = Array.from(cache.keys()).sort();
+      expect(keys).toEqual(['1', '4']);
+    });
+
+    it('should return the correct values', () => {
+      expect(cache.get('1')).toEqual([{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 2' }]);
+      expect(cache.get(undefined!)).toEqual(null);
       expect(cache.get('4')).toEqual([{ id: '4', name: 'Item 4' }]);
     });
   });

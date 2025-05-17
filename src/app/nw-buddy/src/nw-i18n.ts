@@ -39,16 +39,17 @@ export class NwI18n {
   get(key: string, ...prefixes: string[]): string {
     const strings = this.#strings.value();
     if (key) {
+      const id = key.toLowerCase();
       if (prefixes.length) {
         for (const prefix of prefixes) {
-          const value = strings[`${prefix}_${key.toLowerCase()}`];
+          const value = strings[`${prefix.toLowerCase()}_${id}`];
           if (value) {
             return value;
           }
         }
       } else {
-        if (/^@/ig.test(key)) {
-          const value = strings[key.replace(/^@/ig, '').toLowerCase()];
+        if (/^@/ig.test(id)) {
+          const value = strings[id.replace(/^@/ig, '')];
           return value ?? key;
         }
       }

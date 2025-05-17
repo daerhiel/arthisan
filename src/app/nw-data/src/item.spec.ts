@@ -1,7 +1,7 @@
 import { NW_MAX_GEAR_SCORE, NW_MAX_GEAR_SCORE_UPGRADABLE, NW_MIN_GEAR_SCORE, NW_ROLL_PERK_ON_UPGRADE_TIER } from './constants';
 import { MasterItemDefinitions } from './types';
 import {
-  isMasterItem, isItemNamed, isItemArtifact,
+  isMasterItem, isHousingItem, isItemNamed, isItemArtifact,
   isItemUpgradable, getItemPerkIds, getItemPerkBucketIds, getItemPerkBucketKeys,
   getItemRarity, getItemRarityLabel,
   getItemMaxGearScore, getItemMinGearScore, getItemGearScoreLabel,
@@ -21,6 +21,23 @@ describe('isMasterItem', () => {
   tests.forEach(({ name, input, expected }) => {
     it(`should detect ${name}: ${expected}`, () => {
       expect(isMasterItem(input)).toBe(expected);
+    });
+  });
+});
+
+describe('isHousingItem', () => {
+  const tests = [
+    { name: 'item with id', input: { HouseItemID: 1, Name: 'Test Item' }, expected: true },
+    { name: 'item without id', input: { Name: 'Test Item' }, expected: false },
+    { name: 'item with empty id', input: { HouseItemID: '', Name: 'Test Item' }, expected: true },
+    { name: 'item with null id', input: { HouseItemID: null, Name: 'Test Item' }, expected: true },
+    { name: 'item with undefined id', input: { HouseItemID: undefined, Name: 'Test Item' }, expected: true },
+    { name: 'empty object', input: {}, expected: false }
+  ];
+
+  tests.forEach(({ name, input, expected }) => {
+    it(`should detect ${name}: ${expected}`, () => {
+      expect(isHousingItem(input)).toBe(expected);
     });
   });
 });
