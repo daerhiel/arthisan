@@ -1,10 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { firstValueFrom, timer } from 'rxjs';
 
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { NwBuddyApi } from '@app/nw-buddy';
-import { GamingToolsApi } from '@app/gaming-tools';
+import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
+import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { ExplorerComponent } from './explorer';
 
 describe('ExplorerComponent', () => {
@@ -19,6 +20,16 @@ describe('ExplorerComponent', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     }).compileComponents();
+
+    const i18n = TestBed.inject(NwI18n);
+    while (i18n.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
+    const gaming = TestBed.inject(GamingTools);
+    gaming.select({ name: 'Server1', age: 100 });
+    while (gaming.isLoading()) {
+      await firstValueFrom(timer(100));
+    }
 
     fixture = TestBed.createComponent(ExplorerComponent);
     component = fixture.componentInstance;

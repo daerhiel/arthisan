@@ -34,13 +34,11 @@ export class Craftable {
   });
   readonly tier = computed(() => this.#item()?.Tier ?? null);
 
-  readonly price = computed(() => {
-    return this._artisan.gaming.get(this.id);
-  });
+  readonly price = computed(() => this._artisan.gaming.get(this.id));
 
-  readonly blueprints = computed(() => {
-    return this.#recipes()?.map(recipe => new Blueprint(this._artisan, this, recipe)) ?? null;
-  });
+  readonly blueprints = computed(() => this.#recipes()?.map(recipe =>
+    new Blueprint(this._artisan, this, recipe)) ?? null
+  );
 
   constructor(private readonly _artisan: Artisan, readonly id: string) {
     if (!_artisan) {
