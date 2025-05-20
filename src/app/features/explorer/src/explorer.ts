@@ -23,6 +23,19 @@ export class ExplorerComponent {
   readonly #artisan = inject(Artisan);
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
 
+  readonly #data = computed(() => {
+    const objects: Craftable[] = [];
+    for (const key of this.#artisan.data.recipes.keys() ?? []) {
+      const item = this.#artisan.data.items.get(key);
+      if (item && this.#classes.every(name => item.ItemClass.includes(name))) {
+        const craftable = this.#artisan.getItem(key);
+        craftable && objects.push(craftable);
+      }
+    }
+    return objects;
+  });
+
+  readonly data = new MatTableDataSource<Craftable>();
   readonly craftables: TableDefinition<Craftable> = {
     name: 'recipes',
     columns: [
@@ -35,22 +48,10 @@ export class ExplorerComponent {
       { id: 'price', displayName: 'Price', width: '5%', align: 'right', value: { component: NwPrice, inputs: getPriceInputs(x => x.price()) } },
       { id: 'blueprints', displayName: 'Recipes', width: '2%', value: { get: item => item.blueprints()?.length.toString() } }
     ],
-    data: computed(() => {
-      const objects: Craftable[] = [];
-      for (const key of this.#artisan.data.recipes.keys() ?? []) {
-        const item = this.#artisan.data.items.get(key);
-        if (item && this.#classes.every(name => item.ItemClass.includes(name))) {
-          const craftable = this.#artisan.getItem(key);
-          craftable && objects.push(craftable);
-        }
-      }
-      return objects;
-    })
   };
 
-  readonly data = new MatTableDataSource<Craftable>();
   protected _refresh = effect(() => {
-    this.data.data = this.craftables.data();
+    this.data.data = this.#data();
   });
 
   @ViewChild(MatSort)

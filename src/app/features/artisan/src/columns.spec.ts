@@ -1,5 +1,3 @@
-import { signal } from '@angular/core';
-
 import { TestBed } from '@angular/core/testing';
 
 import { TableDefinition } from '@app/core';
@@ -25,8 +23,7 @@ describe('ColumnsPipe', () => {
       columns: [
         { id: 'id', displayName: 'Id', value: { get: (x) => x.id } },
         { id: 'name', displayName: 'Name', value: { get: (x) => x.name } }
-      ],
-      data: signal([])
+      ]
     };
     const result = pipe.transform(table);
     expect(result).toEqual(['id', 'name']);

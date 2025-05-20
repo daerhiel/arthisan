@@ -1,7 +1,8 @@
 import { computed } from "@angular/core";
 
-import { GetterFn } from "@app/core";
+import { defineColumn, GetterFn } from "@app/core";
 import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
+import { NwIcon, NwPrice } from "@app/nw-buddy";
 import { Artisan } from "./artisan";
 import { Blueprint } from "./blueprint";
 
@@ -56,3 +57,61 @@ export function getPriceInputs<R>(getter: GetterFn<Craftable, R>) {
     return { value: getter(item) };
   }
 }
+
+export const columnIcon = defineColumn<Craftable>({
+  id: 'icon',
+  displayName: 'Icon',
+  width: '0',
+  value: { component: NwIcon, inputs: getIconInputs }
+});
+
+export const columnName = defineColumn<Craftable>({
+  id: 'name',
+  displayName: 'Name',
+  width: '58%',
+  value: { get: x => x.name() }
+});
+
+export const columnCategory = defineColumn<Craftable>({
+  id: 'category',
+  displayName: 'Category',
+  width: '7%',
+  value: { get: x => x.category() }
+});
+
+export const columnFamily = defineColumn<Craftable>({
+  id: 'family',
+  displayName: 'Family',
+  width: '13%',
+  value: { get: x => x.family() }
+});
+
+export const columnType = defineColumn<Craftable>({
+  id: 'type',
+  displayName: 'Type',
+  width: '10%',
+  value: { get: x => x.type() }
+});
+
+export const columnTier = defineColumn<Craftable>({
+  id: 'tier',
+  displayName: 'Tier',
+  width: '5%',
+  align: 'right',
+  value: { get: x => x.tier() }
+});
+
+export const columnPrice = defineColumn<Craftable>({
+  id: 'price',
+  displayName: 'Price',
+  width: '5%',
+  align: 'right',
+  value: { component: NwPrice, inputs: getPriceInputs(x => x.price()) }
+});
+
+export const columnBlueprints = defineColumn<Craftable>({
+  id: 'blueprints',
+  displayName: 'Recipes',
+  width: '2%',
+  value: { get: x => x.blueprints()?.length.toString() }
+});
