@@ -6,7 +6,7 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
-import { ExplorerComponent } from './explorer';
+import { EXPLORE_ITEM_CLASSES, ExplorerComponent } from './explorer';
 
 describe('ExplorerComponent', () => {
   let component: ExplorerComponent;
@@ -17,7 +17,8 @@ describe('ExplorerComponent', () => {
       imports: [ExplorerComponent],
       providers: [
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
-        { provide: GamingToolsApi, useClass: GamingToolsApiMock }
+        { provide: GamingToolsApi, useClass: GamingToolsApiMock },
+        { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource'] }
       ]
     }).compileComponents();
 
