@@ -6,3 +6,6 @@ export * from './src/craftable';
 export * from './src/blueprint';
 export * from './src/ingredient';
 export * from './src/category';
+export * from './src/assembly';
+export * from './src/projection';
+export * from './src/provision';
