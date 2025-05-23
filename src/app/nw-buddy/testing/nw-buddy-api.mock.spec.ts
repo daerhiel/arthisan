@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { NwBuddyApiMock, getIconPath, translationsEn } from "./nw-buddy-api.mock";
 
 describe('getIconPath', () => {
@@ -14,15 +16,11 @@ describe('NwBuddyApiMock', () => {
     service = new NwBuddyApiMock();
   });
 
-  it('should get translations', () => {
-    service.getTranslations('en-us').subscribe((localization) => {
-      expect(localization).toEqual(translationsEn);
-    });
+  it('should get translations', async () => {
+    expect(await firstValueFrom(service.getTranslations('en-us'))).toEqual(translationsEn);
   });
 
-  it('should get empty translations for unknown locale', () => {
-    service.getTranslations('unknown-locale').subscribe((localization) => {
-      expect(localization).toEqual({});
-    });
+  it('should get empty translations for unknown locale', async () => {
+    expect(await firstValueFrom(service.getTranslations('unknown-locale'))).toEqual({});
   });
 });

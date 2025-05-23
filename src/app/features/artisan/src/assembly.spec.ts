@@ -4,7 +4,7 @@ import { TestBed } from "@angular/core/testing";
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
+import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from "./artisan";
 import { Assembly } from './assembly';
@@ -20,10 +20,6 @@ describe('Assembly', () => {
       ]
     });
     service = TestBed.inject(Artisan);
-    const i18n = TestBed.inject(NwI18n);
-    while (i18n.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {

@@ -6,10 +6,7 @@ export class Category {
   readonly #items = computed(() => this._artisan.data.ingredients.get(this.id));
   readonly #category = computed(() => this._artisan.data.categories.get(this.id));
 
-  readonly name = computed(() => {
-    const name = this.#category()?.DisplayText;
-    return name ? this._artisan.i18n.get(name) : null;
-  });
+  readonly name = computed(() => this.#category()?.DisplayText ?? null);
 
   readonly items = computed(() => {
     const items = this.#items();

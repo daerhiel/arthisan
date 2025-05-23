@@ -5,6 +5,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { TableDefinition } from '@app/core';
 import { ItemClass } from '@app/nw-data';
+import { NwI18n } from '@app/nw-buddy';
 import { Artisan, Assembly, assemblyTable, ColumnPipe, ColumnsPipe } from '@features/artisan';
 
 export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITEM_CLASSES');
@@ -21,6 +22,7 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
 export class ExplorerComponent {
   readonly #artisan = inject(Artisan);
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
+  protected readonly _i18n = inject(NwI18n);
 
   readonly #data = computed(() => {
     const objects: Assembly[] = [];

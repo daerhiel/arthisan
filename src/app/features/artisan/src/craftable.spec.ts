@@ -4,7 +4,7 @@ import { TestBed } from "@angular/core/testing";
 import { getIconPath, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
+import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from "./artisan";
 import { Craftable, getIconInputs, getPriceInputs } from "./craftable";
@@ -20,10 +20,6 @@ describe('Craftable', () => {
       ]
     });
     service = TestBed.inject(Artisan);
-    const i18n = TestBed.inject(NwI18n);
-    while (i18n.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {
@@ -39,7 +35,7 @@ describe('Craftable', () => {
     const craftable = new Craftable(service, 'UnknownId');
     expect(craftable).toBeTruthy();
     expect(craftable.id).toBe('UnknownId');
-    expect(craftable.name()).toBe('UnknownId');
+    expect(craftable.name()).toBe(null);
     expect(craftable.icon()).toBe(null);
     expect(craftable.rarity()).toBe('common');
     expect(craftable.named()).toBe(false);
@@ -56,12 +52,12 @@ describe('Craftable', () => {
     expect(craftable).toBeTruthy();
 
     expect(craftable.id).toBe('OreT1');
-    expect(craftable.name()).toBe('Iron Ore');
+    expect(craftable.name()).toBe('@OreT1_MasterName');
     expect(craftable.icon()).toBe(getIconPath('OreT1'));
     expect(craftable.rarity()).toBe('common');
     expect(craftable.named()).toBe(false);
     expect(craftable.category()).toBe('Resources');
-    expect(craftable.family()).toBe('Raw Resources');
+    expect(craftable.family()).toBe('RawResources');
     expect(craftable.type()).toBe('Resource');
     expect(craftable.tier()).toBe(1);
     expect(craftable.price()).toBe(0.5);
@@ -73,12 +69,12 @@ describe('Craftable', () => {
     expect(craftable).toBeTruthy();
 
     expect(craftable.id).toBe('IngotT2');
-    expect(craftable.name()).toBe('Iron Ingot');
+    expect(craftable.name()).toBe('@IngotT2_MasterName');
     expect(craftable.icon()).toBe(getIconPath('IngotT2'));
     expect(craftable.rarity()).toBe('common');
     expect(craftable.named()).toBe(false);
     expect(craftable.category()).toBe('Resources');
-    expect(craftable.family()).toBe('Refined Resources');
+    expect(craftable.family()).toBe('RefinedResources');
     expect(craftable.type()).toBe('Resource');
     expect(craftable.tier()).toBe(2);
     expect(craftable.price()).toBe(4);
@@ -91,7 +87,7 @@ describe('Craftable', () => {
       const inputs = getIconInputs(craftable);
       expect(inputs).toEqual({
         path: getIconPath('OreT1'),
-        name: 'Iron Ore',
+        name: '@OreT1_MasterName',
         rarity: 'common',
         named: false,
         size: 12
@@ -100,9 +96,11 @@ describe('Craftable', () => {
   });
 
   describe('getPriceInputs', () => {
-    it('should return price inputs', () => {
+  const i18n = { get: (key: string) => key };
+
+  it('should return price inputs', () => {
       const craftable = new Craftable(service, 'OreT1');
-      const inputs = getPriceInputs(x => x.price())(craftable);
+      const inputs = getPriceInputs(x => x.price())(craftable, i18n);
       expect(inputs).toEqual({ value: 0.5 });
     });
   });

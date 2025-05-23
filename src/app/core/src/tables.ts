@@ -1,15 +1,19 @@
 import { Type } from "@angular/core";
 
-export type GetterFn<T, R> = (item: T) => R;
-export type MapperFn<T> = (item: T) => Record<string, unknown>;
+export interface I18n {
+  get(key: string, ...prefixes: string[]): string;
+}
+
+export type FitterFn<T, R> = (item: T, i18n: I18n) => R;
+export type MapperFn<T> = (item: T, i18n: I18n) => Record<string, unknown>;
 
 export interface TableCellValue<T> {
-  get: GetterFn<T, unknown>;
+  fit: FitterFn<T, unknown>;
 }
 
 export interface TableCellContent<T> {
   component: Type<unknown>;
-  inputs: MapperFn<T>;
+  map: MapperFn<T>;
 }
 
 export interface TableColumn<T extends object> {
@@ -31,7 +35,7 @@ export interface TableDefinition<T extends object> {
  * @returns True if the value is a TableCellValue; otherwise, false.
  */
 export function isTableCellValue<T extends object>(value: TableCellValue<T> | TableCellContent<T>): value is TableCellValue<T> {
-  return value != null && 'get' in value;
+  return value != null && 'fit' in value;
 }
 
 /**
@@ -40,7 +44,7 @@ export function isTableCellValue<T extends object>(value: TableCellValue<T> | Ta
  * @returns True if the value is a TableCellContent; otherwise, false.
  */
 export function isTableCellContent<T extends object>(value: TableCellValue<T> | TableCellContent<T>): value is TableCellContent<T> {
-  return value != null && 'component' in value;
+  return value != null && 'component' in value && 'map' in value;
 }
 
 /**
@@ -74,13 +78,13 @@ export function defineColumn<T extends object>(column: TableColumn<T>): TableCol
 export function referValue<T extends object, R extends object>(id: keyof T, value: TableCellValue<R> | TableCellContent<R>): TableCellValue<T> | TableCellContent<T> {
   if (isTableCellValue(value)) {
     return {
-      get: (item: T) => value.get(item[id] as R)
+      fit: (item: T, i18n: I18n) => value.fit(item[id] as R, i18n)
     };
   }
   if (isTableCellContent(value)) {
     return {
       component: value.component,
-      inputs: (item: T) => value.inputs(item[id] as R)
+      map: (item: T, i18n: I18n) => value.map(item[id] as R, i18n)
     };
   }
   throw new Error('Invalid value type');

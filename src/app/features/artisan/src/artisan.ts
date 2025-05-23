@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ObjectMap } from '@app/core';
 import { CraftingIngredientType } from '@app/nw-data';
-import { NwBuddy, NwI18n } from '@app/nw-buddy';
+import { NwBuddy } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
 import { Craftable } from './craftable';
 import { Category } from './category';
@@ -14,7 +14,6 @@ import { Category } from './category';
   providedIn: 'root'
 })
 export class Artisan {
-  readonly i18n = inject(NwI18n);
   readonly data = inject(NwBuddy);
   readonly gaming = inject(GamingTools);
 

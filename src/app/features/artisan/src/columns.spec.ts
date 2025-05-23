@@ -21,8 +21,8 @@ describe('ColumnsPipe', () => {
     const table: TableDefinition<{ id: number, name: string }> = {
       name: 'Test Table',
       columns: [
-        { id: 'id', displayName: 'Id', value: { get: (x) => x.id } },
-        { id: 'name', displayName: 'Name', value: { get: (x) => x.name } }
+        { id: 'id', displayName: 'Id', value: { fit: x => x.id } },
+        { id: 'name', displayName: 'Name', value: { fit: x => x.name } }
       ]
     };
     const result = pipe.transform(table);

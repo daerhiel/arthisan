@@ -1,4 +1,8 @@
-import { isTableCellValue, isTableCellContent, defineTable, defineColumn, referValue, referColumns, TableCellValue, TableCellContent, TableColumn, TableDefinition } from "./tables";
+import {
+  isTableCellValue, isTableCellContent,
+  defineTable, defineColumn, referValue, referColumns,
+  TableColumn, TableDefinition, TableCellValue, TableCellContent
+} from "./tables";
 
 interface Container { entity: Entity; }
 
@@ -8,12 +12,12 @@ class Dummy { }
 
 describe('isTableCellValue', () => {
   it('should return true for cell value', () => {
-    const value: TableCellValue<Entity> = { get: item => item.value };
+    const value: TableCellValue<Entity> = { fit: item => item.value };
     expect(isTableCellValue(value)).toBe(true);
   });
 
   it('should return false for cell content', () => {
-    const value: TableCellContent<Entity> = { component: Dummy, inputs: (item) => ({ value: item.value }) };
+    const value: TableCellContent<Entity> = { component: Dummy, map: item => ({ value: item.value }) };
     expect(isTableCellValue(value)).toBe(false);
   });
 
@@ -24,12 +28,12 @@ describe('isTableCellValue', () => {
 
 describe('isTableCellContent', () => {
   it('should return true for cell content', () => {
-    const value: TableCellContent<Entity> = { component: Dummy, inputs: (item) => ({ value: item.value }) };
+    const value: TableCellContent<Entity> = { component: Dummy, map: item => ({ value: item.value }) };
     expect(isTableCellContent(value)).toBe(true);
   });
 
   it('should return false for cell value', () => {
-    const value: TableCellValue<Entity> = { get: item => item.value };
+    const value: TableCellValue<Entity> = { fit: item => item.value };
     expect(isTableCellContent(value)).toBe(false);
   });
 
@@ -47,26 +51,28 @@ describe('defineTable', () => {
 
 describe('defineColumn', () => {
   it('should define column', () => {
-    const column: TableColumn<Entity> = { id: 'value', displayName: 'Value', value: { get: item => item.value } };
+    const column: TableColumn<Entity> = { id: 'value', displayName: 'Value', value: { fit: item => item.value } };
     expect(defineColumn<Entity>(column)).toBe(column);
   });
 });
 
 describe('referValue', () => {
+  const i18n = { get: (key: string) => key };
+
   it('should wrap cell value for nested property', () => {
-    const value = referValue<Container, Entity>('entity', { get: item => item.value });
+    const value = referValue<Container, Entity>('entity', { fit: item => item.value });
     expect(isTableCellValue(value)).toBeTrue();
     if (isTableCellValue(value)) {
-      expect(value.get({ entity: { value: 'test' } })).toEqual('test');
+      expect(value.fit({ entity: { value: 'test' } }, i18n)).toEqual('test');
     }
   });
 
   it('should wrap cell content for nested property', () => {
-    const value = referValue<Container, Entity>('entity', { component: Dummy, inputs: item => ({ value: item.value }) });
+    const value = referValue<Container, Entity>('entity', { component: Dummy, map: item => ({ value: item.value }) });
     expect(isTableCellContent(value)).toBeTrue();
     if (isTableCellContent(value)) {
       expect(value.component).toBe(Dummy);
-      expect(value.inputs({ entity: { value: 'test' } })).toEqual({ value: 'test' });
+      expect(value.map({ entity: { value: 'test' } }, i18n)).toEqual({ value: 'test' });
     }
   });
 
@@ -78,7 +84,7 @@ describe('referValue', () => {
 describe('referColumns', () => {
   it('should map columns and wrap values', () => {
     const columns = referColumns<Container, Entity>('entity',
-      { id: 'value', displayName: 'Value', width: '100%', align: 'center', value: { get: item => item.value } }
+      { id: 'value', displayName: 'Value', width: '100%', align: 'center', value: { fit: item => item.value } }
     );
     expect(columns.map(x => x.id)).toEqual(['entity.value' as keyof Container]);
     expect(columns.map(x => x.displayName)).toEqual(['Value']);
