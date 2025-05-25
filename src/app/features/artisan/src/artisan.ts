@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 
 import { ObjectMap } from '@app/core';
-import { CraftingIngredientType } from '@app/nw-data';
+import { CraftingIngredientType, CraftingTradeskill } from '@app/nw-data';
 import { NwBuddy } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
 import { Craftable } from './craftable';
 import { Category } from './category';
+import { Equipment } from './equipment';
 
 /**
  * Represents the Artisan module that provides crafting functionality.
@@ -19,6 +20,10 @@ export class Artisan {
 
   readonly #items = new ObjectMap<Craftable>();
   readonly #categories = new ObjectMap<Category>();
+  readonly #equipment: Partial<Record<CraftingTradeskill, Equipment>> = {
+    'Smelting': new Equipment(0.05),
+    'Jewelcrafting': new Equipment(0.05)
+  };
 
   /**
    * Gets a craftable item from cache; creates a new one if not found.
@@ -63,5 +68,14 @@ export class Artisan {
       default:
         throw new Error(`Ingredient type is not supported: ${type}`);
     }
+  }
+
+  /**
+   * Gets the equipment context for a specific tradeskill.
+   * @param tradeskill The tradeskill to get the equipment context for.
+   * @returns The equipment context if found; otherwise, null.
+   */
+  getContext(tradeskill: CraftingTradeskill): Equipment | null {
+    return this.#equipment[tradeskill] ?? null;
   }
 }

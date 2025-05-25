@@ -2,12 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
+import { CraftingRecipeData } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Blueprint } from './blueprint';
 import { Ingredient } from './ingredient';
-import { CraftingRecipeData } from '@app/nw-data';
+import { Equipment } from './equipment';
 
 function extractData(ingredient: Ingredient) {
   return {
@@ -46,7 +47,10 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 4 }]);
+      { id: 'OreT1', type: 'Item', quantity: 4 }
+    ]);
+    expect(blueprint.bonus).toBe(0);
+    expect(blueprint.chance).toBe(0.3);
   });
 
   it('should create a blueprint for T3 ingot', () => {
@@ -61,6 +65,8 @@ describe('Blueprint', () => {
       { id: 'FluxT5', type: 'Item', quantity: 1 },
       { id: 'CharcoalT1', type: 'Item', quantity: 2 }
     ]);
+    expect(blueprint.bonus).toBe(-0.02);
+    expect(blueprint.chance).toBeCloseTo(0.28);
   });
 
   it('should create a blueprint with T4 ingot', () => {
@@ -76,6 +82,8 @@ describe('Blueprint', () => {
       { id: 'FluxT5', type: 'Item', quantity: 1 },
       { id: 'CharcoalT1', type: 'Item', quantity: 2 }
     ]);
+    expect(blueprint.bonus).toBe(-0.05);
+    expect(blueprint.chance).toBe(0.25);
   });
 
   it('should create a blueprint with T5 ingot', () => {
@@ -91,6 +99,8 @@ describe('Blueprint', () => {
       { id: 'FluxT5', type: 'Item', quantity: 1 },
       { id: 'CharcoalT1', type: 'Item', quantity: 2 }
     ]);
+    expect(blueprint.bonus).toBe(-0.07);
+    expect(blueprint.chance).toBeCloseTo(0.23);
   });
 
   it('should create a blueprint with T52 ingot', () => {
@@ -106,6 +116,8 @@ describe('Blueprint', () => {
       { id: 'FluxT5', type: 'Item', quantity: 1 },
       { id: 'CharcoalT1', type: 'Item', quantity: 2 }
     ]);
+    expect(blueprint.bonus).toBe(-0.2);
+    expect(blueprint.chance).toBeCloseTo(0.1);
   });
 
   it('should create empty blueprint', () => {
@@ -313,5 +325,23 @@ describe('Blueprint', () => {
       { id: 'OreT1', type: 'Item', quantity: 6 },
       { id: 'OreT1', type: 'Item', quantity: 7 }
     ]);
+  });
+
+  it('should not get context for raw resource', () => {
+    const id = 'OreT1';
+    const item = service.getItem(id)!;
+    const [recipe] = service.data.recipes.get(id) ?? [];
+    const blueprint = new Blueprint(service, item, recipe);
+    const context = blueprint.getContext();
+    expect(context).toBeNull();
+  });
+
+  it('should get context for refined resource', () => {
+    const id = 'IngotT2';
+    const item = service.getItem(id)!;
+    const [recipe] = service.data.recipes.get(id) ?? [];
+    const blueprint = new Blueprint(service, item, recipe);
+    const context = blueprint.getContext();
+    expect(context).toBeInstanceOf(Equipment);
   });
 });

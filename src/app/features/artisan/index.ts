@@ -9,3 +9,4 @@ export * from './src/category';
 export * from './src/assembly';
 export * from './src/projection';
 export * from './src/provision';
+export * from './src/equipment';
