@@ -31,16 +31,16 @@ describe('Assembly', () => {
     const craftable = service.getItem('OreT1')!;
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
-    expect(assembly.item).toBe(craftable);
-    expect(assembly.projects()?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
+    expect(assembly.craftable).toBe(craftable);
+    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
   });
 
   it('should create for existing craftable', () => {
     const craftable = service.getItem('IngotT2')!;
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
-    expect(assembly.item).toBe(craftable);
-    expect(assembly.projects()?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
+    expect(assembly.craftable).toBe(craftable);
+    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
   });
 
   it('should throw for non-existing craftable', () => {

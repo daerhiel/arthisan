@@ -30,9 +30,9 @@ describe('Provision', () => {
 
   it('should create for existing ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
-    const material = new Provision(ingredient);
-    expect(material).toBeTruthy();
-    expect(material.ingredient).toBe(ingredient);
+    const provision = new Provision(ingredient);
+    expect(provision).toBeTruthy();
+    expect(provision.ingredient).toBe(ingredient);
   });
 
   it('should throw for non-existing ingredient', () => {
@@ -41,39 +41,39 @@ describe('Provision', () => {
 
   it('should create a non-existing item ingredient', () => {
     const ingredient = new Ingredient(service, 'UnknownId', 'Item', 1);
-    const material = new Provision(ingredient);
-    expect(material.item()).toBe(null);
+    const provision = new Provision(ingredient);
+    expect(provision.assembly?.craftable).toBeFalsy();
   });
 
   it('should create a regular item ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
-    const material = new Provision(ingredient);
-    expect(material.item()?.id).toBe('OreT1');
+    const provision = new Provision(ingredient);
+    expect(provision.assembly?.craftable.id).toBe('OreT1');
   });
 
   it('should create a non-existing category ingredient', () => {
     const ingredient = new Ingredient(service, 'UnknownId', 'Category_Only', 1);
-    const material = new Provision(ingredient);
-    expect(material.item()).toBeNull();
+    const provision = new Provision(ingredient);
+    expect(provision.assembly?.craftable).toBeFalsy();
   });
 
   it('should create a regular category ingredient', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
-    const material = new Provision(ingredient);
-    expect(material.item()).toBeNull();
+    const provision = new Provision(ingredient);
+    expect(provision.assembly?.craftable).toBeFalsy();
   });
 
   it('should select an item in category ingredient', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
-    const material = new Provision(ingredient);
-    material.selected.set('TanninT5');
-    expect(material.item()?.id).toBe('TanninT5');
+    const provision = new Provision(ingredient);
+    provision.selected.set('TanninT5');
+    expect(provision.assembly?.craftable.id).toBe('TanninT5');
   });
 
   it('should auto select cheapest item', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
-    const material = new Provision(ingredient);
-    material.automatic.set(true);
-    expect(material.item()?.id).toBe('SolventT5');
+    const provision = new Provision(ingredient);
+    provision.automatic.set(true);
+    expect(provision.assembly?.craftable.id).toBe('SolventT5');
   });
 });

@@ -1,20 +1,33 @@
 import { computed } from '@angular/core';
 
-import { defineTable, referColumns } from '@app/core';
+import { defineTable, greater, referColumns } from '@app/core';
 import {
-  columnIcon, columnName, columnCategory, columnFamily,
-  columnType, columnTier, columnPrice, columnBlueprints,
+  craftableIcon, craftableName, craftableCategory, craftableFamily,
+  craftableType, craftableTier, craftablePrice, craftableBlueprints,
   Craftable
 } from './craftable';
-import { Projection } from './projection';
+import {
+  projectionCost, projectionProfit, projectionChance,
+  Projection
+} from './projection';
 
 export class Assembly {
-  readonly projects = computed(() =>
-    this.item.blueprints()?.map(blueprint => new Projection(blueprint)) ?? null
+  readonly #projections = computed(() =>
+    this.craftable.blueprints()?.map(blueprint => new Projection(blueprint)) ?? null
   );
+  get projections(): Projection[] | null {
+    return this.#projections();
+  }
 
-  constructor(readonly item: Craftable) {
-    if (!item) {
+  readonly #projection = computed(() =>
+    this.projections?.reduce((p, c) => greater(p.cost, c.cost) ? p : c) ?? null
+  );
+  get projection(): Projection | null {
+    return this.#projection();
+  }
+
+  constructor(readonly craftable: Craftable) {
+    if (!craftable) {
       throw new Error('Invalid craftable instance.');
     }
   }
@@ -23,9 +36,12 @@ export class Assembly {
 export const assemblyTable = defineTable<Assembly>({
   name: 'assemblies',
   columns: [
-    ...referColumns<Assembly, Craftable>('item',
-      columnIcon, columnName, columnCategory, columnFamily,
-      columnType, columnTier, columnPrice, columnBlueprints
+    ...referColumns<Assembly, Craftable>('craftable',
+      craftableIcon, craftableName, craftableCategory, craftableFamily,
+      craftableType, craftableTier, craftablePrice, craftableBlueprints
+    ),
+    ...referColumns<Assembly, Projection>('projection',
+      projectionCost, projectionProfit, projectionChance
     )
   ]
 });

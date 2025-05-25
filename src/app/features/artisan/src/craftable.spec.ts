@@ -7,7 +7,7 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Craftable, getIconInputs, getPriceInputs } from './craftable';
+import { Craftable, getIconInputs } from './craftable';
 
 describe('Craftable', () => {
   let service: Artisan;
@@ -92,16 +92,6 @@ describe('Craftable', () => {
         named: false,
         size: 12
       });
-    });
-  });
-
-  describe('getPriceInputs', () => {
-  const i18n = { get: (key: string) => key };
-
-  it('should return price inputs', () => {
-      const craftable = new Craftable(service, 'OreT1');
-      const inputs = getPriceInputs(x => x.price())(craftable, i18n);
-      expect(inputs).toEqual({ value: 0.5 });
     });
   });
 });

@@ -1,8 +1,8 @@
 import { computed } from '@angular/core';
 
-import { defineColumn, FitterFn, I18n } from '@app/core';
+import { defineColumn } from '@app/core';
 import { getItemRarity, isItemNamed, isMasterItem } from '@app/nw-data';
-import { NwIcon, NwPrice } from '@app/nw-buddy';
+import { getPriceInputs, NwIcon, NwPrice } from '@app/nw-buddy';
 import { Artisan } from './artisan';
 import { Blueprint } from './blueprint';
 
@@ -40,50 +40,50 @@ export function getIconInputs(item: Craftable) {
   return { path: item.icon(), name: item.name(), rarity: item.rarity(), named: item.named(), size: 12 };
 }
 
-export function getPriceInputs<R>(fitter: FitterFn<Craftable, R>) {
-  return (item: Craftable, i18n: I18n) => {
-    return { value: fitter(item, i18n) };
-  }
-}
-
-export const columnIcon = defineColumn<Craftable>({
+export const craftableIcon = defineColumn<Craftable>({
   id: 'icon',
   displayName: 'Icon',
   width: '0',
   value: { component: NwIcon, map: getIconInputs }
 });
 
-export const columnName = defineColumn<Craftable>({
+export const craftableName = defineColumn<Craftable>({
   id: 'name',
   displayName: 'Name',
-  width: '58%',
-  value: { fit: (x, i18n) => {
-    const name = x.name();
-    return name ? i18n.get(name) : x.id;
-  } }
+  width: '48%',
+  value: {
+    fit: (x, i18n) => {
+      const name = x.name();
+      return name ? i18n.get(name) : x.id;
+    }
+  }
 });
 
-export const columnCategory = defineColumn<Craftable>({
+export const craftableCategory = defineColumn<Craftable>({
   id: 'category',
   displayName: 'Category',
   width: '7%',
-  value: { fit: (x, i18n) => {
-    const category = x.category();
-    return category ? i18n.get(category, 'CategoryData') : null;
-  } }
+  value: {
+    fit: (x, i18n) => {
+      const category = x.category();
+      return category ? i18n.get(category, 'CategoryData') : null;
+    }
+  }
 });
 
-export const columnFamily = defineColumn<Craftable>({
+export const craftableFamily = defineColumn<Craftable>({
   id: 'family',
   displayName: 'Family',
   width: '13%',
-  value: { fit: (x, i18n) => {
-    const family = x.family();
-    return family ? i18n.get(family, 'CategoryData') : null;
-  } }
+  value: {
+    fit: (x, i18n) => {
+      const family = x.family();
+      return family ? i18n.get(family, 'CategoryData') : null;
+    }
+  }
 });
 
-export const columnType = defineColumn<Craftable>({
+export const craftableType = defineColumn<Craftable>({
   id: 'type',
   displayName: 'Type',
   width: '10%',
@@ -95,7 +95,7 @@ export const columnType = defineColumn<Craftable>({
   }
 });
 
-export const columnTier = defineColumn<Craftable>({
+export const craftableTier = defineColumn<Craftable>({
   id: 'tier',
   displayName: 'Tier',
   width: '5%',
@@ -103,7 +103,7 @@ export const columnTier = defineColumn<Craftable>({
   value: { fit: x => x.tier() }
 });
 
-export const columnPrice = defineColumn<Craftable>({
+export const craftablePrice = defineColumn<Craftable>({
   id: 'price',
   displayName: 'Price',
   width: '5%',
@@ -111,7 +111,7 @@ export const columnPrice = defineColumn<Craftable>({
   value: { component: NwPrice, map: getPriceInputs(x => x.price()) }
 });
 
-export const columnBlueprints = defineColumn<Craftable>({
+export const craftableBlueprints = defineColumn<Craftable>({
   id: 'blueprints',
   displayName: 'Recipes',
   width: '2%',

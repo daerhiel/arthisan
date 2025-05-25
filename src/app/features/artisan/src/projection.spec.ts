@@ -33,7 +33,7 @@ describe('Projection', () => {
     const projection = new Projection(blueprint);
     expect(projection).toBeTruthy();
     expect(projection.blueprint).toBe(blueprint);
-    expect(projection.materials().map(x => x.ingredient)).toEqual(blueprint.ingredients);
+    expect(projection.provisions.map(x => x.ingredient)).toEqual(blueprint.ingredients);
   });
 
   it('should throw on missing blueprint', () => {
