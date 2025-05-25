@@ -1,4 +1,4 @@
-import { Type } from '@angular/core';
+import { Signal, Type } from '@angular/core';
 
 export interface I18n {
   get(key: string, ...prefixes: string[]): string;
@@ -78,13 +78,19 @@ export function defineColumn<T extends object>(column: TableColumn<T>): TableCol
 export function referValue<T extends object, R extends object>(id: keyof T, value: TableCellValue<R> | TableCellContent<R>): TableCellValue<T> | TableCellContent<T> {
   if (isTableCellValue(value)) {
     return {
-      fit: (item: T, i18n: I18n) => value.fit(item[id] as R, i18n)
+      fit: (item: T, i18n: I18n) => {
+        const prop = item[id] as R | Signal<R>;
+        return value.fit(prop instanceof Function ? prop() : prop, i18n);
+      }
     };
   }
   if (isTableCellContent(value)) {
     return {
       component: value.component,
-      map: (item: T, i18n: I18n) => value.map(item[id] as R, i18n)
+      map: (item: T, i18n: I18n) => {
+        const prop = item[id] as R | Signal<R>;
+        return value.map(prop instanceof Function ? prop() : prop, i18n);
+      }
     };
   }
   throw new Error('Invalid value type');

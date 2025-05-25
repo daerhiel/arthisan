@@ -1,3 +1,5 @@
+import { signal, Signal } from '@angular/core';
+
 import {
   isTableCellValue, isTableCellContent,
   defineTable, defineColumn, referValue, referColumns,
@@ -5,6 +7,7 @@ import {
 } from './tables';
 
 interface Container { entity: Entity; }
+interface Dynamic { entity: Signal<Entity>; }
 
 interface Entity { value: string; }
 
@@ -67,12 +70,29 @@ describe('referValue', () => {
     }
   });
 
+  it('should wrap cell content for nested signal property', () => {
+    const value = referValue<Dynamic, Entity>('entity', { fit: item => item.value });
+    expect(isTableCellValue(value)).toBeTrue();
+    if (isTableCellValue(value)) {
+      expect(value.fit({ entity: signal({ value: 'test' }) }, i18n)).toEqual('test');
+    }
+  });
+
   it('should wrap cell content for nested property', () => {
     const value = referValue<Container, Entity>('entity', { component: Dummy, map: item => ({ value: item.value }) });
     expect(isTableCellContent(value)).toBeTrue();
     if (isTableCellContent(value)) {
       expect(value.component).toBe(Dummy);
       expect(value.map({ entity: { value: 'test' } }, i18n)).toEqual({ value: 'test' });
+    }
+  });
+
+  it('should wrap cell content for nested signal property', () => {
+    const value = referValue<Dynamic, Entity>('entity', { component: Dummy, map: item => ({ value: item.value }) });
+    expect(isTableCellContent(value)).toBeTrue();
+    if (isTableCellContent(value)) {
+      expect(value.component).toBe(Dummy);
+      expect(value.map({ entity: signal({ value: 'test' }) }, i18n)).toEqual({ value: 'test' });
     }
   });
 
