@@ -1,7 +1,7 @@
-import { inject, Injectable, signal } from "@angular/core";
-import { rxResource } from "@angular/core/rxjs-interop";
+import { inject, Injectable, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 
-import { NwBuddyApi } from "./nw-buddy-api";
+import { NwBuddyApi } from './nw-buddy-api';
 
 export type Localization = Record<string, string>;
 

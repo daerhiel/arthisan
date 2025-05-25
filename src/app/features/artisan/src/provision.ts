@@ -1,7 +1,7 @@
-import { computed, signal } from "@angular/core";
+import { computed, signal } from '@angular/core';
 
-import { Ingredient } from "./ingredient";
-import { Category } from "./category";
+import { Ingredient } from './ingredient';
+import { Category } from './category';
 
 function max(a: number | null, b: number | null): boolean {
   return a != null && b != null ? a > b : a != null ? true : false;

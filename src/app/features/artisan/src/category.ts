@@ -1,6 +1,6 @@
-import { computed } from "@angular/core";
+import { computed } from '@angular/core';
 
-import { Artisan } from "./artisan";
+import { Artisan } from './artisan';
 
 export class Category {
   readonly #items = computed(() => this._artisan.data.ingredients.get(this.id));

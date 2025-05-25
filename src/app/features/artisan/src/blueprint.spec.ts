@@ -1,13 +1,13 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
-import { Artisan } from "./artisan";
-import { Blueprint } from "./blueprint";
-import { Ingredient } from "./ingredient";
-import { CraftingRecipeData } from "@app/nw-data";
+import { Artisan } from './artisan';
+import { Blueprint } from './blueprint';
+import { Ingredient } from './ingredient';
+import { CraftingRecipeData } from '@app/nw-data';
 
 function extractData(ingredient: Ingredient) {
   return {

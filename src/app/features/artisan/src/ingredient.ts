@@ -1,7 +1,7 @@
-import { computed } from "@angular/core";
+import { computed } from '@angular/core';
 
-import { CraftingIngredientType } from "@app/nw-data";
-import { Artisan } from "./artisan";
+import { CraftingIngredientType } from '@app/nw-data';
+import { Artisan } from './artisan';
 
 export class Ingredient {
   readonly source = computed(() => this._artisan.getIngredient(this.id, this.type));

@@ -1,13 +1,13 @@
-import { firstValueFrom, timer } from "rxjs";
+import { firstValueFrom, timer } from 'rxjs';
 
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 import { getIconPath, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
-import { Artisan } from "./artisan";
-import { Craftable, getIconInputs, getPriceInputs } from "./craftable";
+import { Artisan } from './artisan';
+import { Craftable, getIconInputs, getPriceInputs } from './craftable';
 
 describe('Craftable', () => {
   let service: Artisan;

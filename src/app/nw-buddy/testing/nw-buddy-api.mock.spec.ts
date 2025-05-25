@@ -1,6 +1,6 @@
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
-import { NwBuddyApiMock, getIconPath, translationsEn } from "./nw-buddy-api.mock";
+import { NwBuddyApiMock, getIconPath, translationsEn } from './nw-buddy-api.mock';
 
 describe('getIconPath', () => {
   it('should get icon path', () => {

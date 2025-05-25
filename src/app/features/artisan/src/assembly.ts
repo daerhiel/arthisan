@@ -1,12 +1,12 @@
-import { computed } from "@angular/core";
+import { computed } from '@angular/core';
 
-import { defineTable, referColumns } from "@app/core";
+import { defineTable, referColumns } from '@app/core';
 import {
   columnIcon, columnName, columnCategory, columnFamily,
   columnType, columnTier, columnPrice, columnBlueprints,
   Craftable
-} from "./craftable";
-import { Projection } from "./projection";
+} from './craftable';
+import { Projection } from './projection';
 
 export class Assembly {
   readonly projects = computed(() =>

@@ -1,7 +1,7 @@
-import { signal, untracked } from "@angular/core";
-import { Observable, Subscription, tap } from "rxjs";
+import { signal, untracked } from '@angular/core';
+import { Observable, Subscription, tap } from 'rxjs';
 
-import { ObjectMap } from "@app/core";
+import { ObjectMap } from '@app/core';
 
 export type GetterFn<T, R> = (item: T) => R;
 

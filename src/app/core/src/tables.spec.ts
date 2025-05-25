@@ -2,7 +2,7 @@ import {
   isTableCellValue, isTableCellContent,
   defineTable, defineColumn, referValue, referColumns,
   TableColumn, TableDefinition, TableCellValue, TableCellContent
-} from "./tables";
+} from './tables';
 
 interface Container { entity: Entity; }
 

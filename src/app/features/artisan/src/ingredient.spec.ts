@@ -1,15 +1,15 @@
-import { firstValueFrom, timer } from "rxjs";
+import { firstValueFrom, timer } from 'rxjs';
 
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
-import { Artisan } from "./artisan";
-import { Ingredient } from "./ingredient";
-import { Craftable } from "./craftable";
-import { Category } from "./category";
+import { Artisan } from './artisan';
+import { Ingredient } from './ingredient';
+import { Craftable } from './craftable';
+import { Category } from './category';
 
 describe('Ingredient', () => {
   let service: Artisan;

@@ -1,10 +1,10 @@
-import { computed } from "@angular/core";
+import { computed } from '@angular/core';
 
-import { defineColumn, FitterFn, I18n } from "@app/core";
-import { getItemRarity, isItemNamed, isMasterItem } from "@app/nw-data";
-import { NwIcon, NwPrice } from "@app/nw-buddy";
-import { Artisan } from "./artisan";
-import { Blueprint } from "./blueprint";
+import { defineColumn, FitterFn, I18n } from '@app/core';
+import { getItemRarity, isItemNamed, isMasterItem } from '@app/nw-data';
+import { NwIcon, NwPrice } from '@app/nw-buddy';
+import { Artisan } from './artisan';
+import { Blueprint } from './blueprint';
 
 export class Craftable {
   readonly #item = computed(() => this._artisan.data.items.get(this.id) ?? this._artisan.data.housing.get(this.id));

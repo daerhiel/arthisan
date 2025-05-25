@@ -1,8 +1,8 @@
-import { CraftingIngredientType, CraftingRecipeData } from "@app/nw-data";
+import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 
-import { Artisan } from "./artisan";
-import { Craftable } from "./craftable";
-import { Ingredient } from "./ingredient";
+import { Artisan } from './artisan';
+import { Craftable } from './craftable';
+import { Ingredient } from './ingredient';
 
 export class Blueprint {
   readonly ingredients: Ingredient[] = [];
