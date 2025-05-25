@@ -1,0 +1,12 @@
+:host {
+  --nw-negative-color: #f44336;
+  --nw-positive-color: #69f0ae;
+
+  &.nw-positive {
+    color: var(--nw-positive-color);
+  }
+
+  &.nw-negative {
+    color: var(--nw-negative-color);
+  }
+}
