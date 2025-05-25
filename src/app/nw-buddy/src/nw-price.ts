@@ -1,6 +1,8 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
+import { FitterFn, I18n } from '@app/core';
+
 const OPACITY_FULL = 1;
 const OPACITY_FAINT = 0.25;
 const OPACITY_NORMAL = 0.6;
@@ -11,6 +13,12 @@ interface Components {
   pointOp: number | null;
   decimal: string | null;
   decimalOp: number | null;
+}
+
+export function getPriceInputs<T, R>(fitter: FitterFn<T, R>) {
+  return (item: T, i18n: I18n) => {
+    return { value: fitter(item, i18n) };
+  }
 }
 
 @Component({

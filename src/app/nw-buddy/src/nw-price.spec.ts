@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NwPrice } from './nw-price';
+import { getPriceInputs, NwPrice } from './nw-price';
 
 describe('NwPriceComponent', () => {
   let component: TestComponent;
@@ -73,6 +73,20 @@ describe('NwPriceComponent', () => {
       expect(price).toBeTruthy();
       expect(price.nativeElement.innerText).toBe(pipe.transform(value, '1.2-2') ?? '');
     });
+  });
+});
+
+describe('getPriceInputs', () => {
+  const i18n = { get: (key: string) => key };
+
+  interface Inputs {
+    value: number;
+  }
+
+  it('should return price inputs', () => {
+    const object = { value: 42 };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value)(object, i18n);
+    expect(inputs).toEqual({ value: 42 });
   });
 });
 
