@@ -35,8 +35,8 @@ describe('Category', () => {
     const category = new Category(service, 'UnknownId');
     expect(category).toBeTruthy();
     expect(category.id).toBe('UnknownId');
-    expect(category.name()).toBe(null);
-    expect(category.items()).toBe(null);
+    expect(category.name).toBe(null);
+    expect(category.entities).toBe(null);
   });
 
   it('should create a regular category', () => {
@@ -44,8 +44,8 @@ describe('Category', () => {
     expect(category).toBeTruthy();
 
     expect(category.id).toBe('FluxReagentsT5');
-    expect(category.name()).toBe('@RefiningReagentsT5_GroupName');
-    expect(category.items()?.map(x => x.id)).toEqual([
+    expect(category.name).toBe('@RefiningReagentsT5_GroupName');
+    expect(category.entities?.map(x => x.id)).toEqual([
       'SandpaperT5', 'TanninT5', 'SolventT5', 'ClothWeaveT5'
     ]);
   });

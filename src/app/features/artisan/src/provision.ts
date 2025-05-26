@@ -9,30 +9,39 @@ export class Provision {
   readonly selected = signal<string | null>(null);
   readonly automatic = signal(false);
 
+  /**
+   * The assembly matching an item or category of items.
+   */
   readonly #assembly = computed(() => {
-    let item = this.ingredient.source();
-    if (item instanceof Category) {
-      const items = item.items();
+    let entity = this.ingredient.entity;
+    if (entity instanceof Category) {
+      const entities = entity.entities;
       if (this.automatic()) {
-        item = items?.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
+        entity = entities?.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
       } else {
         const selected = this.selected();
-        item = items?.find(item => item.id === selected) ?? null;
+        entity = entities?.find(item => item.id === selected) ?? null;
       }
     }
-    return item ? new Assembly(item) : null;
+    return entity ? new Assembly(entity) : null;
   });
   get assembly(): Assembly | null {
     return this.#assembly();
   }
 
+  /**
+   * The crafting cost.
+   */
   readonly #cost = computed(() =>
-    product(this.assembly?.craftable.price() ?? null, this.ingredient.quantity)
+    product(this.assembly?.entity.price() ?? null, this.ingredient.quantity)
   );
   get cost(): number | null {
     return this.#cost();
   }
 
+  /**
+   * The chance to craft additional items.
+   */
   readonly #chance = computed(() =>
     this.assembly?.projection?.blueprint.bonus ?? null
   );
@@ -40,6 +49,20 @@ export class Provision {
     return this.#chance();
   }
 
+  // readonly effectiveValue = computed(() => {
+  //   const bonus = this.#parent.extraItemChance();
+  //   if (bonus) {
+  //     const total = product(product(this.entity.requestedVolume(), this.entity.effectiveValue()), this.entity.getRatio(this.#parent));
+  //     return ratio(total, (this.#parent.requestedVolume() * this.quantity));
+  //   }
+  //   return this.entity.effectiveValue();
+  // });
+
+  /**
+   * Creates a new Provision instance.
+   * @param ingredient The ingredient to provision.
+   * @throws Will throw an error if the ingredient is invalid.
+   */
   constructor(readonly ingredient: Ingredient) {
     if (!ingredient) {
       throw new Error('Invalid ingredient instance.');

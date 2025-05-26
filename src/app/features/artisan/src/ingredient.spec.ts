@@ -38,7 +38,7 @@ describe('Ingredient', () => {
     expect(ingredient.id).toBe('UnknownId');
     expect(ingredient.type).toBe('Item');
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.source()).toBe(null);
+    expect(ingredient.entity).toBeNull();
   });
 
   it('should create a regular item ingredient', () => {
@@ -46,7 +46,7 @@ describe('Ingredient', () => {
     expect(ingredient.id).toBe('OreT1');
     expect(ingredient.type).toBe('Item');
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.source()).toBeInstanceOf(Craftable);
+    expect(ingredient.entity).toBeInstanceOf(Craftable);
   });
 
   it('should create a non-existing category ingredient', () => {
@@ -54,7 +54,7 @@ describe('Ingredient', () => {
     expect(ingredient.id).toBe('UnknownId');
     expect(ingredient.type).toBe('Category_Only');
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.source()).toBe(null);
+    expect(ingredient.entity).toBeNull();
   });
 
   it('should create a regular category ingredient', () => {
@@ -62,6 +62,6 @@ describe('Ingredient', () => {
     expect(ingredient.id).toBe('FluxReagentsT5');
     expect(ingredient.type).toBe('Category_Only');
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.source()).toBeInstanceOf(Category);
+    expect(ingredient.entity).toBeInstanceOf(Category);
   });
 });

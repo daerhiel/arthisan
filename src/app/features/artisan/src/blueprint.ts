@@ -33,8 +33,8 @@ export class Blueprint {
    * @throws Will throw an error if the artisan or item is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
    */
-  constructor(private readonly _artisan: Artisan, readonly item: Craftable, private readonly recipe: CraftingRecipeData) {
-    if (!_artisan) {
+  constructor(private readonly artisan: Artisan, readonly item: Craftable, private readonly recipe: CraftingRecipeData) {
+    if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
     if (!item) {
@@ -64,7 +64,7 @@ export class Blueprint {
       items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
     }
     for (const item of items) {
-      this.ingredients.push(new Ingredient(this._artisan, item.id, item.type, item.qty));
+      this.ingredients.push(new Ingredient(this.artisan, item.id, item.type, item.qty));
     }
   }
 
@@ -73,6 +73,6 @@ export class Blueprint {
    * @returns The equipment context if available; otherwise, null.
    */
   getContext(): Equipment | null {
-    return this._artisan.getContext(this.recipe?.Tradeskill);
+    return this.artisan.getContext(this.recipe?.Tradeskill);
   }
 }

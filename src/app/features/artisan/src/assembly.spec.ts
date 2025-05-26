@@ -31,7 +31,7 @@ describe('Assembly', () => {
     const craftable = service.getItem('OreT1')!;
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
-    expect(assembly.craftable).toBe(craftable);
+    expect(assembly.entity).toBe(craftable);
     expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
   });
 
@@ -39,7 +39,7 @@ describe('Assembly', () => {
     const craftable = service.getItem('IngotT2')!;
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
-    expect(assembly.craftable).toBe(craftable);
+    expect(assembly.entity).toBe(craftable);
     expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
   });
 
