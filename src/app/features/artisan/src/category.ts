@@ -1,23 +1,44 @@
-import { computed } from "@angular/core";
+import { computed } from '@angular/core';
 
-import { Artisan } from "./artisan";
+import { Artisan } from './artisan';
+import { Craftable } from './craftable';
 
+/**
+ * Represents a category of items in the artisan system.
+ */
 export class Category {
-  readonly #items = computed(() => this._artisan.data.ingredients.get(this.id));
-  readonly #category = computed(() => this._artisan.data.categories.get(this.id));
+  readonly #items = computed(() => this.artisan.data.ingredients.get(this.id));
+  readonly #category = computed(() => this.artisan.data.categories.get(this.id));
 
-  readonly name = computed(() => {
-    const name = this.#category()?.DisplayText;
-    return name ? this._artisan.i18n.get(name) : null;
-  });
+  /**
+   * The category name.
+   */
+  readonly #name = computed(() =>
+    this.#category()?.DisplayText ?? null
+  );
+  get name(): string | null {
+    return this.#name();
+  }
 
-  readonly items = computed(() => {
+  /**
+   * The list of entities in the category.
+   */
+  readonly #entities = computed(() => {
     const items = this.#items();
-    return items ? items.map(item => this._artisan.getItem(item.ItemID)).filter(item => !!item) : null;
+    return items ? items.map(item => this.artisan.getItem(item.ItemID)).filter(item => !!item) : null;
   });
+  get entities(): Craftable[] | null {
+    return this.#entities();
+  }
 
-  constructor(private readonly _artisan: Artisan, readonly id: string) {
-    if (!_artisan) {
+  /**
+   * Creates a new Category instance.
+   * @param artisan The artisan instance to use for crafting.
+   * @param id A category ID.
+   * @throws Will throw an error if the artisan is invalid.
+   */
+  constructor(private readonly artisan: Artisan, readonly id: string) {
+    if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
   }

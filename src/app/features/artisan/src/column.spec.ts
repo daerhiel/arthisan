@@ -18,7 +18,7 @@ describe('ContentPipe', () => {
       displayName: 'Id',
       value: {
         component: class TestComponent {},
-        inputs: (x) => ({ test: x.id }),
+        map: x => ({ test: x.id }),
       }
     };
     const result = pipe.transform(column, 'content');
@@ -30,11 +30,11 @@ describe('ContentPipe', () => {
       id: 'id',
       displayName: 'Id',
       value: {
-        get: (x) => x.id,
+        fit: x => x.id,
       }
     };
     const result = pipe.transform(column, 'value');
-    expect(result.get).toBeInstanceOf(Function);
+    expect(result.fit).toBeInstanceOf(Function);
   });
 
   it('should return null for invalid source', () => {
@@ -42,7 +42,7 @@ describe('ContentPipe', () => {
       id: 'id',
       displayName: 'Test',
       value: {
-        get: (x) => x.id,
+        fit: x => x.id,
       }
     };
     const result = pipe.transform(column, null!);

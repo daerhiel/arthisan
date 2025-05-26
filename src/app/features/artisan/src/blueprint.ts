@@ -1,14 +1,40 @@
-import { CraftingIngredientType, CraftingRecipeData } from "@app/nw-data";
+import { sum } from '@app/core';
+import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
+import { Artisan } from './artisan';
+import { Craftable } from './craftable';
+import { Ingredient } from './ingredient';
+import { Equipment } from './equipment';
 
-import { Artisan } from "./artisan";
-import { Craftable } from "./craftable";
-import { Ingredient } from "./ingredient";
-
+/**
+ * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
+ */
 export class Blueprint {
   readonly ingredients: Ingredient[] = [];
 
-  constructor(private readonly _artisan: Artisan, readonly item: Craftable, recipe: CraftingRecipeData) {
-    if (!_artisan) {
+  /**
+   * Gets the bonus items chance for the current item.
+   */
+  get bonus(): number {
+    return this.recipe.BonusItemChance;
+  }
+
+  /**
+   * Gets the crafting equipment context for the current blueprint.
+   */
+  get chance(): number {
+    return sum(this.bonus, this.getContext()?.chance ?? null);
+  }
+
+  /**
+   * Creates a new Blueprint instance.
+   * @param artisan The artisan instance to use for crafting.
+   * @param item The craftable item associated with this blueprint.
+   * @param recipe The crafting recipe data for this blueprint.
+   * @throws Will throw an error if the artisan or item is invalid.
+   * @throws Will throw an error if the recipe is invalid or missing required ingredients.
+   */
+  constructor(private readonly artisan: Artisan, readonly item: Craftable, private readonly recipe: CraftingRecipeData) {
+    if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
     if (!item) {
@@ -38,7 +64,15 @@ export class Blueprint {
       items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
     }
     for (const item of items) {
-      this.ingredients.push(new Ingredient(this._artisan, item.id, item.type, item.qty));
+      this.ingredients.push(new Ingredient(this.artisan, item.id, item.type, item.qty));
     }
+  }
+
+  /**
+   * Gets the crafting equipment context for the current blueprint.
+   * @returns The equipment context if available; otherwise, null.
+   */
+  getContext(): Equipment | null {
+    return this.artisan.getContext(this.recipe?.Tradeskill);
   }
 }

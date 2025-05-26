@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { provideThemes } from '@app/theme';
+import { EXPLORE_ITEM_CLASSES } from '@features/explorer';
 import { routes } from './app.routes';
 
 /**
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([])),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideThemes(themes)
+    provideThemes(themes),
+    { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource', 'Gem'] }
   ]
 };

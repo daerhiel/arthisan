@@ -1,7 +1,7 @@
-import { Observable, of } from "rxjs";
+import { Observable, of } from 'rxjs';
 
-import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData } from "@app/nw-data";
-import { Localization } from "@app/nw-buddy";
+import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData } from '@app/nw-data';
+import { Localization } from '@app/nw-buddy';
 
 function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): Record<string, T[]> {
   return { ...store, ...value };

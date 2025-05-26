@@ -2,9 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
+import { CraftingTradeskill } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Equipment } from './equipment';
 
 describe('Artisan', () => {
   let service: Artisan;
@@ -78,5 +80,17 @@ describe('Artisan', () => {
   it('should throw error for unsupported ingredient type', () => {
     const type = 'Currency';
     expect(() => service.getIngredient('OreT1', type)).toThrowError(/ingredient type is not supported/i);
+  });
+
+  it('should get equipment context', () => {
+    const tradeskill = 'Jewelcrafting';
+    const equipment = service.getContext(tradeskill);
+    expect(equipment).toBeInstanceOf(Equipment);
+  });
+
+  it('should return null for non-existing tradeskill', () => {
+    const tradeskill = 'Unknown';
+    const equipment = service.getContext(tradeskill as CraftingTradeskill);
+    expect(equipment).toBeNull();
   });
 });

@@ -1,13 +1,13 @@
-import { firstValueFrom, timer } from "rxjs";
+import { firstValueFrom, timer } from 'rxjs';
 
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
-import { GamingToolsApi } from '@app/gaming-tools';
-import { Artisan } from "./artisan";
-import { Category } from "./category";
+import { NwBuddyApi } from '@app/nw-buddy';
+import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { Artisan } from './artisan';
+import { Category } from './category';
 
 describe('Category', () => {
   let service: Artisan;
@@ -20,8 +20,9 @@ describe('Category', () => {
       ]
     });
     service = TestBed.inject(Artisan);
-    const i18n = TestBed.inject(NwI18n);
-    while (i18n.isLoading()) {
+    const gaming = TestBed.inject(GamingTools);
+    gaming.select({ name: 'Server1', age: 100 });
+    while (gaming.isLoading()) {
       await firstValueFrom(timer(100));
     }
   });
@@ -34,8 +35,8 @@ describe('Category', () => {
     const category = new Category(service, 'UnknownId');
     expect(category).toBeTruthy();
     expect(category.id).toBe('UnknownId');
-    expect(category.name()).toBe(null);
-    expect(category.items()).toBe(null);
+    expect(category.name).toBe(null);
+    expect(category.entities).toBe(null);
   });
 
   it('should create a regular category', () => {
@@ -43,8 +44,8 @@ describe('Category', () => {
     expect(category).toBeTruthy();
 
     expect(category.id).toBe('FluxReagentsT5');
-    expect(category.name()).toBe('Refining Materials Tier 5');
-    expect(category.items()?.map(x => x.id)).toEqual([
+    expect(category.name).toBe('@RefiningReagentsT5_GroupName');
+    expect(category.entities?.map(x => x.id)).toEqual([
       'SandpaperT5', 'TanninT5', 'SolventT5', 'ClothWeaveT5'
     ]);
   });

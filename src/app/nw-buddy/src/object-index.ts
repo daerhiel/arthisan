@@ -1,7 +1,7 @@
-import { effect, signal, untracked } from "@angular/core";
+import { effect, signal, untracked } from '@angular/core';
 
-import { GetterFn, ObjectMap } from "@app/core";
-import { ObjectCache } from "./object-cache";
+import { GetterFn, ObjectMap } from '@app/core';
+import { ObjectCache } from './object-cache';
 
 /**
  * Represents an object index that allows for efficient retrieval of objects based on a key.

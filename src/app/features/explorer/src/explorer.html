@@ -7,10 +7,10 @@
     </th>
     <td mat-cell *matCellDef="let object" [style.text-align]="column.align">
       @if (column | column: 'content'; as content) {
-      <ng-container *ngComponentOutlet="content.component; inputs: content.inputs(object)"></ng-container>
+      <ng-container *ngComponentOutlet="content.component; inputs: content.map(object, _i18n)"></ng-container>
       }
       @if (column | column: 'value'; as content) {
-      {{content.get(object)}}
+      {{content.fit(object, _i18n)}}
       }
     </td>
   </ng-container>

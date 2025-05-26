@@ -1,4 +1,4 @@
-import { Params } from "@angular/router";
+import { Params } from '@angular/router';
 
 export function getUrl(baseUrl: string, version: string, actions?: string[], params: Params = {}): string {
   const parameters = new URLSearchParams();

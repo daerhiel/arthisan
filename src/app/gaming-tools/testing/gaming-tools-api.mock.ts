@@ -1,6 +1,6 @@
-import { Observable, of } from "rxjs";
+import { Observable, of } from 'rxjs';
 
-import { Commodity, GameServer } from "@app/gaming-tools";
+import { Commodity, GameServer } from '@app/gaming-tools';
 
 export const commodities: Commodity[] = [
   { id: "gold", price: 100 },

@@ -1,4 +1,4 @@
-import { ObjectMap } from "./object-map";
+import { ObjectMap } from './object-map';
 
 describe('ObjectMap', () => {
   let cache: ObjectMap<number>;

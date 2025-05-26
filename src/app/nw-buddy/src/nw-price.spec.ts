@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NwPrice } from './nw-price';
+import { getPriceInputs, NwPrice } from './nw-price';
 
 describe('NwPriceComponent', () => {
   let component: TestComponent;
@@ -74,12 +74,65 @@ describe('NwPriceComponent', () => {
       expect(price.nativeElement.innerText).toBe(pipe.transform(value, '1.2-2') ?? '');
     });
   });
+
+  it('should not render state by default', () => {
+    const price = fixture.debugElement.query(By.css('span[nw-price]'));
+    expect(price).toBeTruthy();
+    expect(price.nativeElement).not.toHaveClass('nw-positive');
+    expect(price.nativeElement).not.toHaveClass('nw-negative');
+  });
+
+  it('should render positive state', () => {
+    component.state = true;
+    fixture.detectChanges();
+
+    const price = fixture.debugElement.query(By.css('span[nw-price]'));
+    expect(price).toBeTruthy();
+    expect(price.nativeElement).toHaveClass('nw-positive');
+    expect(price.nativeElement).not.toHaveClass('nw-negative');
+  });
+
+  it('should render negative state', () => {
+    component.state = false;
+    fixture.detectChanges();
+
+    const price = fixture.debugElement.query(By.css('span[nw-price]'));
+    expect(price).toBeTruthy();
+    expect(price.nativeElement).not.toHaveClass('nw-positive');
+    expect(price.nativeElement).toHaveClass('nw-negative');
+  });
+});
+
+describe('getPriceInputs', () => {
+  interface Inputs {
+    value: number;
+    state?: boolean | null;
+  }
+
+  it('should return price inputs', () => {
+    const object = { value: 42 };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value)(object);
+    expect(inputs).toEqual({ value: 42, state: null });
+  });
+
+  it('should return price inputs with positive state', () => {
+    const object = { value: 42, state: true };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, x => x.state ?? null)(object);
+    expect(inputs).toEqual({ value: 42, state: true });
+  });
+
+  it('should return price inputs with negative state', () => {
+    const object = { value: 42, state: false };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, x => x.state ?? null)(object);
+    expect(inputs).toEqual({ value: 42, state: false });
+  });
 });
 
 @Component({
   imports: [NwPrice],
-  template: `<span nw-price [value]="value!"></span>`,
+  template: `<span nw-price [value]="value!" [state]="state!"></span>`,
 })
 export class TestComponent {
   value?: number | null;
+  state?: boolean | null;
 }

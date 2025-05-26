@@ -1,6 +1,6 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Observable, of, RetryConfig, timer } from "rxjs";
-import { Broadcast } from "./broadcast";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, RetryConfig, timer } from 'rxjs';
+import { Broadcast } from './broadcast';
 
 export function retryStrategy(config: { delay: number, count: number, span: number }): RetryConfig {
   return {
