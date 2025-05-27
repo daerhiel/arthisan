@@ -2,8 +2,11 @@ import { computed } from '@angular/core';
 
 import { defineTable, greater, referColumns } from '@app/core';
 import {
-  craftableIcon, craftableName, craftableCategory, craftableFamily,
-  craftableType, craftableTier, craftablePrice, craftableBlueprints,
+  entityIcon, entityName, entityCategory, entityFamily,
+  entityType, entityTier, entityPrice
+} from './entity';
+import {
+  craftableBlueprints,
   Craftable
 } from './craftable';
 import {
@@ -51,8 +54,8 @@ export const assemblyTable = defineTable<Assembly>({
   name: 'assemblies',
   columns: [
     ...referColumns<Assembly, Craftable>('entity',
-      craftableIcon, craftableName, craftableCategory, craftableFamily,
-      craftableType, craftableTier, craftablePrice, craftableBlueprints
+      entityIcon, entityName, entityCategory, entityFamily,
+      entityType, entityTier, entityPrice, craftableBlueprints
     ),
     ...referColumns<Assembly, Projection>('projection',
       projectionCost, projectionProfit, projectionChance
