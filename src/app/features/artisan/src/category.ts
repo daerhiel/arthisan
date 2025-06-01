@@ -1,7 +1,7 @@
 import { computed } from '@angular/core';
 
 import { Artisan } from './artisan';
-import { Craftable } from './craftable';
+import { Entity } from './entity';
 
 /**
  * Represents a category of items in the artisan system.
@@ -25,9 +25,9 @@ export class Category {
    */
   readonly #entities = computed(() => {
     const items = this.#items();
-    return items ? items.map(item => this.artisan.getItem(item.ItemID)).filter(item => !!item) : null;
+    return items ? items.map(item => this.artisan.getEntity(item.ItemID)).filter(item => !!item) : null;
   });
-  get entities(): Craftable[] | null {
+  get entities(): Entity[] | null {
     return this.#entities();
   }
 

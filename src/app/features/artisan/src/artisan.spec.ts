@@ -7,6 +7,8 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Equipment } from './equipment';
+import { Entity } from './entity';
+import { Craftable } from './craftable';
 
 describe('Artisan', () => {
   let service: Artisan;
@@ -25,16 +27,25 @@ describe('Artisan', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get craftable item', () => {
+  it('should get an entity', () => {
+    const itemId = 'OreT1';
+    const entity = service.getEntity(itemId);
+    expect(entity).toBeTruthy();
+    expect(entity).toBeInstanceOf(Entity);
+    expect(entity?.id).toBe(itemId);
+  });
+
+  it('should get a craftable entity', () => {
     const itemId = 'IngotT2';
-    const craftable = service.getItem(itemId);
+    const craftable = service.getEntity(itemId);
     expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
     expect(craftable?.id).toBe(itemId);
   });
 
   it('should get null for non-existing item', () => {
     const itemId = 'NonExistingItem';
-    const craftable = service.getItem(itemId);
+    const craftable = service.getEntity(itemId);
     expect(craftable).toBeNull();
   });
 

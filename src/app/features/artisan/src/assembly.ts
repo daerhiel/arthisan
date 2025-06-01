@@ -1,23 +1,18 @@
 import { computed } from '@angular/core';
 
-import { defineTable, greater, referColumns } from '@app/core';
-import {
-  entityIcon, entityName, entityCategory, entityFamily,
-  entityType, entityTier, entityPrice
-} from './entity';
-import {
-  craftableBlueprints,
-  Craftable
-} from './craftable';
-import {
-  projectionCost, projectionProfit, projectionChance,
-  Projection
-} from './projection';
+import { greater } from '@app/core';
+import { Purchase } from './purchase';
+import { Craftable } from './craftable';
+import { Projection } from './projection';
 
 /**
  * Represents an assembly of craftable items, which includes projections based on blueprints.
  */
-export class Assembly {
+export class Assembly extends Purchase {
+  override get bonus(): number | null {
+    return this.projection?.blueprint.bonus ?? null;
+  }
+
   /**
    * The list of projections for this assembly associated with source ingredients.
    */
@@ -43,22 +38,7 @@ export class Assembly {
    * @param entity The craftable entity associated with this assembly.
    * @throws Will throw an error if the entity is invalid.
    */
-  constructor(readonly entity: Craftable) {
-    if (!entity) {
-      throw new Error('Invalid craftable instance.');
-    }
+  constructor(override readonly entity: Craftable) {
+    super(entity);
   }
 }
-
-export const assemblyTable = defineTable<Assembly>({
-  name: 'assemblies',
-  columns: [
-    ...referColumns<Assembly, Craftable>('entity',
-      entityIcon, entityName, entityCategory, entityFamily,
-      entityType, entityTier, entityPrice, craftableBlueprints
-    ),
-    ...referColumns<Assembly, Projection>('projection',
-      projectionCost, projectionProfit, projectionChance
-    )
-  ]
-});

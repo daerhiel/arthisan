@@ -7,6 +7,7 @@ import { GamingTools } from '@app/gaming-tools';
 import { Craftable } from './craftable';
 import { Category } from './category';
 import { Equipment } from './equipment';
+import { Entity } from './entity';
 
 /**
  * Represents the Artisan module that provides crafting functionality.
@@ -18,7 +19,7 @@ export class Artisan {
   readonly data = inject(NwBuddy);
   readonly gaming = inject(GamingTools);
 
-  readonly #items = new ObjectMap<Craftable>();
+  readonly #entities = new ObjectMap<Entity>();
   readonly #categories = new ObjectMap<Category>();
   readonly #equipment: Partial<Record<CraftingTradeskill, Equipment>> = {
     'Smelting': new Equipment(0.05),
@@ -26,17 +27,64 @@ export class Artisan {
   };
 
   /**
-   * Gets a craftable item from cache; creates a new one if not found.
+   * Gets an entity from cache; creates a new one if not found.
    * @param id The ID of an item to retrieve.
    * @returns The item if found or created; otherwise, null.
    */
-  getItem(id: string): Craftable | null {
-    let item = this.#items.get(id) ?? null;
-    if (!item && (this.data.items.has(id) || this.data.housing.has(id))) {
-      item = new Craftable(this, id);
-      item && this.#items.set(id, item);
+  getEntity(id: string): Entity | null {
+    let entity = this.#entities.get(id) ?? null;
+    if (!entity && (this.data.items.has(id) || this.data.housing.has(id))) {
+      if (!this.data.items.version()) {
+        throw new Error('Items data are not loaded yet.');
+      }
+      if (!this.data.housing.version()) {
+        throw new Error('Housing data are not loaded yet.');
+      }
+      if (!this.data.recipes.version()) {
+        throw new Error('Recipes data are not loaded yet.');
+      }
+
+      const item = this.data.items.get(id) ?? this.data.housing.get(id);
+      if (!item) {
+        throw new Error(`Master item is not found: ${id}`);
+      }
+      const recipes = this.data.recipes.get(id);
+      entity = recipes ? new Craftable(this, id) : new Entity(this, id);
+      entity && this.#entities.set(id, entity);
     }
-    return item;
+    return entity;
+  }
+
+  /**
+   * Gets a craftable entity from cache; creates a new one if not found.
+   * @param id The ID of an item to retrieve.
+   * @returns The item if found or created; otherwise, null.
+   */
+  getCraftable(id: string): Craftable | null {
+    let entity = this.#entities.get(id) ?? null;
+    if (!entity || !(entity instanceof Craftable)) {
+      if (!this.data.items.version()) {
+        throw new Error('Items data are not loaded yet.');
+      }
+      if (!this.data.housing.version()) {
+        throw new Error('Housing data are not loaded yet.');
+      }
+      if (!this.data.recipes.version()) {
+        throw new Error('Recipes data are not loaded yet.');
+      }
+
+      const item = this.data.items.get(id) ?? this.data.housing.get(id);
+      if (!item) {
+        throw new Error(`Master item is not found: ${id}`);
+      }
+      const recipes = this.data.recipes.get(id);
+      if (!recipes) {
+        throw new Error(`Recipes are not found: ${id}`);
+      }
+      entity = new Craftable(this, id);
+      entity && this.#entities.set(id, entity);
+    }
+    return entity as Craftable;
   }
 
   /**
@@ -59,10 +107,10 @@ export class Artisan {
    * @param type The type of an ingredient to get.
    * @returns The ingredient if found; otherwise, null.
    */
-  getIngredient(id: string, type: CraftingIngredientType): Craftable | Category | null {
+  getIngredient(id: string, type: CraftingIngredientType): Entity | Category | null {
     switch (type) {
       case 'Item':
-        return this.getItem(id);
+        return this.getEntity(id);
       case 'Category_Only':
         return this.getCategory(id);
       default:

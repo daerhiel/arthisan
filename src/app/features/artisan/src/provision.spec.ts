@@ -42,38 +42,38 @@ describe('Provision', () => {
   it('should create a non-existing item ingredient', () => {
     const ingredient = new Ingredient(service, 'UnknownId', 'Item', 1);
     const provision = new Provision(ingredient);
-    expect(provision.assembly?.entity).toBeFalsy();
+    expect(provision.purchase?.entity).toBeFalsy();
   });
 
   it('should create a regular item ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
     const provision = new Provision(ingredient);
-    expect(provision.assembly?.entity.id).toBe('OreT1');
+    expect(provision.purchase?.entity.id).toBe('OreT1');
   });
 
   it('should create a non-existing category ingredient', () => {
     const ingredient = new Ingredient(service, 'UnknownId', 'Category_Only', 1);
     const provision = new Provision(ingredient);
-    expect(provision.assembly?.entity).toBeFalsy();
+    expect(provision.purchase?.entity).toBeFalsy();
   });
 
   it('should create a regular category ingredient', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
     const provision = new Provision(ingredient);
-    expect(provision.assembly?.entity).toBeFalsy();
+    expect(provision.purchase?.entity).toBeFalsy();
   });
 
   it('should select an item in category ingredient', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
     const provision = new Provision(ingredient);
     provision.selected.set('TanninT5');
-    expect(provision.assembly?.entity.id).toBe('TanninT5');
+    expect(provision.purchase?.entity.id).toBe('TanninT5');
   });
 
   it('should auto select cheapest item', () => {
     const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
     const provision = new Provision(ingredient);
     provision.automatic.set(true);
-    expect(provision.assembly?.entity.id).toBe('SolventT5');
+    expect(provision.purchase?.entity.id).toBe('SolventT5');
   });
 });

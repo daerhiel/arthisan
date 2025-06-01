@@ -7,9 +7,9 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Assembly } from './assembly';
+import { Purchase } from './purchase';
 
-describe('Assembly', () => {
+describe('Purchase', () => {
   let service: Artisan;
 
   beforeEach(async () => {
@@ -27,20 +27,19 @@ describe('Assembly', () => {
     }
   });
 
-  // it('should throw for existing entity', () => {
-  //   const craftable = service.getEntity('OreT1') as Craftable;
-  //   expect(() => new Assembly(craftable)).toThrowError(/invalid craftable instance/i);
-  // });
-
-  it('should create for existing craftable', () => {
-    const craftable = service.getCraftable('IngotT2')!;
-    const assembly = new Assembly(craftable);
-    expect(assembly).toBeTruthy();
-    expect(assembly.entity).toBe(craftable);
-    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
+  it('should create for existing entity', () => {
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity);
+    expect(purchase).toBeTruthy();
+    expect(purchase.entity).toBe(entity);
+    expect(purchase.bonus).toBeNull();
   });
 
-  it('should throw for non-existing craftable', () => {
-    expect(() => new Assembly(null!)).toThrowError(/invalid entity instance/i);
+  it('should create for existing craftable', () => {
+    const entity = service.getEntity('IngotT2')!;
+    const purchase = new Purchase(entity);
+    expect(purchase).toBeTruthy();
+    expect(purchase.entity).toBe(entity);
+    expect(purchase.bonus).toBeNull();
   });
 });

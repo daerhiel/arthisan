@@ -2,7 +2,7 @@ import { computed } from '@angular/core';
 
 import { CraftingIngredientType } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Craftable } from './craftable';
+import { Entity } from './entity';
 import { Category } from './category';
 
 /**
@@ -15,7 +15,7 @@ export class Ingredient {
   readonly #entity = computed(() =>
     this.artisan.getIngredient(this.id, this.type)
   );
-  get entity(): Craftable | Category | null {
+  get entity(): Entity | Category | null {
     return this.#entity();
   }
 

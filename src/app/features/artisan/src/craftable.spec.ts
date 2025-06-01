@@ -8,6 +8,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Craftable } from './craftable';
+import { Assembly } from './assembly';
 
 describe('Craftable', () => {
   let service: Artisan;
@@ -36,13 +37,20 @@ describe('Craftable', () => {
     expect(craftable.blueprints()).toBe(null);
   });
 
-  it('should create a regular item', () => {
+  it('should create an entity', () => {
     const craftable = new Craftable(service, 'OreT1');
     expect(craftable.blueprints()).toBe(null);
   });
 
-  it('should create a craftable item', () => {
+  it('should create a craftable entity', () => {
     const craftable = new Craftable(service, 'IngotT2');
     expect(craftable.blueprints()?.map(x => x.item.id)).toEqual(['IngotT2']);
+  });
+
+  it('should request an assembly', () => {
+    const craftable = new Craftable(service, 'IngotT2');
+    const assembly = craftable.request();
+    expect(assembly).toBeInstanceOf(Assembly);
+    expect(assembly.entity).toBe(craftable);
   });
 });

@@ -1,8 +1,7 @@
 import { computed } from '@angular/core';
 
-import { defineColumn, subtract, sum } from '@app/core';
+import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
-import { getPriceInputs, NwPrice } from '@app/nw-buddy';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
@@ -62,32 +61,3 @@ export class Projection {
     this.provisions = blueprint.ingredients.map(ingredient => new Provision(ingredient));
   }
 }
-
-function getPriceState(projection: Projection): boolean | null {
-  const profit = projection.profit;
-  return profit ? profit > 0 : null;
-}
-
-export const projectionCost = defineColumn<Projection>({
-  id: 'cost',
-  displayName: 'Cost',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.cost) }
-});
-
-export const projectionProfit = defineColumn<Projection>({
-  id: 'profit',
-  displayName: 'Profit',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.profit, getPriceState) }
-});
-
-export const projectionChance = defineColumn<Projection>({
-  id: 'chance',
-  displayName: 'Chance',
-  width: '5%',
-  align: 'right',
-  value: { fit: x => x.chance }
-});

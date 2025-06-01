@@ -28,7 +28,7 @@ export class Blueprint {
   /**
    * Creates a new Blueprint instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param item The craftable item associated with this blueprint.
+   * @param item The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
    * @throws Will throw an error if the artisan or item is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.

@@ -3,7 +3,7 @@ import { computed, signal } from '@angular/core';
 import { greater, product } from '@app/core';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
-import { Assembly } from './assembly';
+import { Purchase } from './purchase';
 
 export class Provision {
   readonly selected = signal<string | null>(null);
@@ -12,7 +12,7 @@ export class Provision {
   /**
    * The assembly matching an item or category of items.
    */
-  readonly #assembly = computed(() => {
+  readonly #purchase = computed(() => {
     let entity = this.ingredient.entity;
     if (entity instanceof Category) {
       const entities = entity.entities;
@@ -23,17 +23,17 @@ export class Provision {
         entity = entities?.find(item => item.id === selected) ?? null;
       }
     }
-    return entity ? new Assembly(entity) : null;
+    return entity?.request() ?? null;
   });
-  get assembly(): Assembly | null {
-    return this.#assembly();
+  get purchase(): Purchase | null {
+    return this.#purchase();
   }
 
   /**
    * The crafting cost.
    */
   readonly #cost = computed(() =>
-    product(this.assembly?.entity.price() ?? null, this.ingredient.quantity)
+    product(this.purchase?.entity.price() ?? null, this.ingredient.quantity)
   );
   get cost(): number | null {
     return this.#cost();
@@ -43,7 +43,7 @@ export class Provision {
    * The chance to craft additional items.
    */
   readonly #chance = computed(() =>
-    this.assembly?.projection?.blueprint.bonus ?? null
+    this.purchase?.bonus ?? null
   );
   get chance(): number | null {
     return this.#chance();

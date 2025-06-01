@@ -10,6 +10,7 @@ import { Artisan } from './artisan';
 import { Ingredient } from './ingredient';
 import { Craftable } from './craftable';
 import { Category } from './category';
+import { Entity } from './entity';
 
 describe('Ingredient', () => {
   let service: Artisan;
@@ -41,9 +42,17 @@ describe('Ingredient', () => {
     expect(ingredient.entity).toBeNull();
   });
 
-  it('should create a regular item ingredient', () => {
+  it('should create a regular entity ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
     expect(ingredient.id).toBe('OreT1');
+    expect(ingredient.type).toBe('Item');
+    expect(ingredient.quantity).toBe(1);
+    expect(ingredient.entity).toBeInstanceOf(Entity);
+  });
+
+  it('should create a regular craftable ingredient', () => {
+    const ingredient = new Ingredient(service, 'IngotT2', 'Item', 1);
+    expect(ingredient.id).toBe('IngotT2');
     expect(ingredient.type).toBe('Item');
     expect(ingredient.quantity).toBe(1);
     expect(ingredient.entity).toBeInstanceOf(Craftable);

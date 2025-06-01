@@ -1,14 +1,14 @@
 import { computed } from '@angular/core';
 
-import { defineColumn } from '@app/core';
 import { getItemRarity, isItemNamed, isMasterItem } from '@app/nw-data';
-import { getPriceInputs, NwIcon, NwPrice } from '@app/nw-buddy';
 import { Artisan } from './artisan';
+import { Materials } from './contracts';
+import { Purchase } from './purchase';
 
 /**
  * Represents an entity in the artisan system, which can be an item or housing.
  */
-export class Entity {
+export class Entity implements Materials<Purchase> {
   readonly #item = computed(() => this.artisan.data.items.get(this.id) ?? this.artisan.data.housing.get(this.id));
 
   readonly name = computed(() => this.#item()?.Name ?? null);
@@ -37,84 +37,18 @@ export class Entity {
       throw new Error('Invalid artisan instance.');
     }
   }
+
+  /** @inheritdoc */
+  request(): Purchase {
+      return new Purchase(this);
+  }
 }
 
 /**
- * Gets the inputs required for rendering an icon component for an entity item.
- * @param item The entity item for which to get icon inputs.
+ * Gets the inputs required for rendering an icon component for an entity.
+ * @param item The entity for which to get icon inputs.
  * @returns An object containing the path, name, rarity, named status, and size for the icon.
  */
 export function getIconInputs(item: Entity) {
   return { path: item.icon(), name: item.name(), rarity: item.rarity(), named: item.named(), size: 12 };
 }
-
-export const entityIcon = defineColumn<Entity>({
-  id: 'icon',
-  displayName: 'Icon',
-  width: '0',
-  value: { component: NwIcon, map: getIconInputs }
-});
-
-export const entityName = defineColumn<Entity>({
-  id: 'name',
-  displayName: 'Name',
-  width: '48%',
-  value: {
-    fit: (x, i18n) => {
-      const name = x.name();
-      return name ? i18n.get(name) : x.id;
-    }
-  }
-});
-
-export const entityCategory = defineColumn<Entity>({
-  id: 'category',
-  displayName: 'Category',
-  width: '7%',
-  value: {
-    fit: (x, i18n) => {
-      const category = x.category();
-      return category ? i18n.get(category, 'CategoryData') : null;
-    }
-  }
-});
-
-export const entityFamily = defineColumn<Entity>({
-  id: 'family',
-  displayName: 'Family',
-  width: '13%',
-  value: {
-    fit: (x, i18n) => {
-      const family = x.family();
-      return family ? i18n.get(family, 'CategoryData') : null;
-    }
-  }
-});
-
-export const entityType = defineColumn<Entity>({
-  id: 'type',
-  displayName: 'Type',
-  width: '10%',
-  value: {
-    fit: (x, i18n) => {
-      const type = x.type();
-      return type ? i18n.get(type, 'UI', 'UI_ItemTypeDescription') : null;
-    }
-  }
-});
-
-export const entityTier = defineColumn<Entity>({
-  id: 'tier',
-  displayName: 'Tier',
-  width: '5%',
-  align: 'right',
-  value: { fit: x => x.tier() }
-});
-
-export const entityPrice = defineColumn<Entity>({
-  id: 'price',
-  displayName: 'Price',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.price()) }
-});
