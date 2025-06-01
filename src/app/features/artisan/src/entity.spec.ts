@@ -9,9 +9,10 @@ import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Entity, getIconInputs } from "./entity";
 import { Purchase } from './purchase';
+import { MasterItemDefinitions } from '@app/nw-data';
 
 describe('Entity', () => {
-    let service: Artisan;
+  let service: Artisan;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -36,12 +37,12 @@ describe('Entity', () => {
     expect(() => new Entity(service, null!)).toThrowError('Invalid item data.');
   });
 
-  it('should create an entity', () => {
+  it('should create a master data entity', () => {
     const item = service.data.items.get('OreT1')!;
     const entity = new Entity(service, item);
     expect(entity.id).toBe('OreT1');
     expect(entity.name).toBe('@OreT1_MasterName');
-    expect(entity.icon).toBe(getIconPath('OreT1'));
+    expect(entity.icon).toBe(getIconPath('Resource', 'OreT1'));
     expect(entity.rarity).toBe('common');
     expect(entity.named).toBe(false);
     expect(entity.category).toBe('Resources');
@@ -49,6 +50,39 @@ describe('Entity', () => {
     expect(entity.type).toBe('Resource');
     expect(entity.tier).toBe(1);
     expect(entity.price()).toBe(0.5);
+  });
+
+  it('should get a master data entity', () => {
+    const item = service.data.items.get('IngotT2')!;
+    const entity = new Entity(service, item);
+    expect(entity.id).toBe('IngotT2');
+    expect(entity.name).toBe('@IngotT2_MasterName');
+    expect(entity.icon).toBe(getIconPath('Resource', 'IngotT2'));
+    expect(entity.rarity).toBe('common');
+    expect(entity.named).toBe(false);
+    expect(entity.category).toBe('Resources');
+    expect(entity.family).toBe('RefinedResources');
+    expect(entity.type).toBe('Resource');
+    expect(entity.tier).toBe(2);
+  });
+
+  it('should get a housing item entity', () => {
+    const item = service.data.housing.get('House_HousingItem_Lighting_CandleHolder_A')!;
+    const entity = new Entity(service, item);
+    expect(entity.id).toBe('House_HousingItem_Lighting_CandleHolder_A');
+    expect(entity.name).toBe('@House_HousingItem_Lighting_CandleHolder_A_MasterName');
+    expect(entity.icon).toBe(getIconPath('HousingItem', 'House_HousingItem_Lighting_CandleHolder_A'));
+    expect(entity.rarity).toBe('uncommon');
+    expect(entity.named).toBe(false);
+    expect(entity.category).toBe('Furnishings');
+    expect(entity.family).toBe('HousingTrdF_Decorations');
+    expect(entity.type).toBe('HousingItem');
+    expect(entity.tier).toBe(2);
+  });
+
+  it('should throw on unknown item type', () => {
+    const item = {} as MasterItemDefinitions;
+    expect(() => new Entity(service, item)).toThrowError('Invalid item type for entity.');
   });
 
   it('should request a purchase', () => {
@@ -65,7 +99,7 @@ describe('Entity', () => {
       const entity = new Entity(service, item);
       const inputs = getIconInputs(entity);
       expect(inputs).toEqual({
-        path: getIconPath('OreT1'),
+        path: getIconPath('Resource', 'OreT1'),
         name: '@OreT1_MasterName',
         rarity: 'common',
         named: false,

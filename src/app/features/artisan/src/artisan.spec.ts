@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { getDatasheetsIds as getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { CraftingTradeskill } from '@app/nw-data';
+import { CraftingTradeskill, DATASHEETS } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
@@ -21,6 +21,7 @@ describe('Artisan', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+    TestBed.flushEffects();
   });
 
   it('should be created', () => {
@@ -35,7 +36,7 @@ describe('Artisan', () => {
     expect(entity?.id).toBe(itemId);
   });
 
-  it('should get a craftable entity', () => {
+  it('should get a master data entity', () => {
     const itemId = 'IngotT2';
     const craftable = service.getEntity(itemId);
     expect(craftable).toBeTruthy();
@@ -43,10 +44,43 @@ describe('Artisan', () => {
     expect(craftable?.id).toBe(itemId);
   });
 
-  it('should get null for non-existing item', () => {
-    const itemId = 'NonExistingItem';
+  it('should get a housing item entity', () => {
+    const itemId = 'House_HousingItem_Lighting_CandleHolder_A';
     const craftable = service.getEntity(itemId);
-    expect(craftable).toBeNull();
+    expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
+    expect(craftable?.id).toBe(itemId);
+  });
+
+  it('should throw error for non-existing entity', () => {
+    const itemId = 'NonExistingItem';
+    expect(() => service.getEntity(itemId)).toThrowError(`Master item is not found: ${itemId}.`);
+  });
+
+  it('should get craftable entity', () => {
+    const itemId = 'IngotT2';
+    const craftable = service.getCraftable(itemId);
+    expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
+    expect(craftable?.id).toBe(itemId);
+  });
+
+  xit('should get a housing item craftable entity', () => {
+    const itemId = 'House_HousingItem_Lighting_CandleHolder_A';
+    const craftable = service.getCraftable(itemId);
+    expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
+    expect(craftable?.id).toBe(itemId);
+  });
+
+  it('should throw error for non-existing craftable entity', () => {
+    const itemId = 'NonExistingItem';
+    expect(() => service.getCraftable(itemId)).toThrowError(`Master item is not found: ${itemId}.`);
+  });
+
+  it('should throw error for non-craftable entity', () => {
+    const itemId = 'OreT1';
+    expect(() => service.getCraftable(itemId)).toThrowError(`Recipes are not found: ${itemId}.`);
   });
 
   it('should get category', () => {
@@ -56,10 +90,14 @@ describe('Artisan', () => {
     expect(category?.id).toBe(categoryId);
   });
 
-  it('should get null for non-existing category', () => {
+  it('should throw error for non-existing category', () => {
     const categoryId = 'NonExistingCategory';
-    const category = service.getCategory(categoryId);
-    expect(category).toBeNull();
+    expect(() => service.getCategory(categoryId)).toThrowError(`Crafting category is not found: ${categoryId}.`);
+  });
+
+  it('should throw error for missing category items', () => {
+    const categoryId = 'Utilities';
+    expect(() => service.getCategory(categoryId)).toThrowError(`Category items are not found: ${categoryId}.`);
   });
 
   it('should get craftable ingredient', () => {
@@ -69,23 +107,11 @@ describe('Artisan', () => {
     expect(ingredient?.id).toBe(ingredientId);
   });
 
-  it('should get null for non-existing craftable ingredient', () => {
-    const ingredientId = 'NonExistingIngredient';
-    const ingredient = service.getIngredient(ingredientId, 'Item');
-    expect(ingredient).toBeNull();
-  });
-
   it('should get category ingredient', () => {
     const categoryId = 'FluxReagentsT5';
     const ingredient = service.getIngredient(categoryId, 'Category_Only');
     expect(ingredient).toBeTruthy();
     expect(ingredient?.id).toBe(categoryId);
-  });
-
-  it('should get null for non-existing category ingredient', () => {
-    const categoryId = 'NonExistingCategory';
-    const ingredient = service.getIngredient(categoryId, 'Category_Only');
-    expect(ingredient).toBeNull();
   });
 
   it('should throw error for unsupported ingredient type', () => {
@@ -103,5 +129,64 @@ describe('Artisan', () => {
     const tradeskill = 'Unknown';
     const equipment = service.getContext(tradeskill as CraftingTradeskill);
     expect(equipment).toBeNull();
+  });
+});
+
+describe('Artisan: no data', () => {
+  let service: Artisan;
+  let apiMock: NwBuddyApiMock;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: NwBuddyApi, useClass: NwBuddyApiMock },
+        { provide: GamingToolsApi, useClass: GamingToolsApiMock }
+      ]
+    });
+    const api = TestBed.inject(NwBuddyApi);
+    if (api instanceof NwBuddyApiMock) {
+      apiMock = api;
+      apiMock.defer(true);
+    }
+    service = TestBed.inject(Artisan);
+  });
+
+  it('should throw when getting entity with unloaded data', () => {
+    expect(() => service.getEntity('OreT1')).toThrowError(/items data are not loaded yet/i);
+  });
+
+  it('should throw when getting entity with unloaded housing data', () => {
+    apiMock.complete(...getDatasheetIds(DATASHEETS.MasterItemDefinitions));
+    expect(() => service.getEntity('OreT1')).toThrowError(/housing data are not loaded yet/i);
+  });
+
+  it('should throw when getting entity with unloaded recipe data', () => {
+    apiMock.complete(...getDatasheetIds(DATASHEETS.MasterItemDefinitions));
+    apiMock.complete(...getDatasheetIds(DATASHEETS.HouseItems));
+    expect(() => service.getEntity('IngotT2')).toThrowError(/recipes data are not loaded yet/i);
+  });
+
+  it('should throw when getting craftable entity with unloaded data', () => {
+    expect(() => service.getCraftable('IngotT2')).toThrowError(/items data are not loaded yet/i);
+  });
+
+  it('should throw when getting craftable entity with unloaded housing data', () => {
+    apiMock.complete(...getDatasheetIds(DATASHEETS.MasterItemDefinitions));
+    expect(() => service.getCraftable('IngotT2')).toThrowError(/housing data are not loaded yet/i);
+  });
+
+  it('should throw when getting craftable entity with unloaded recipe data', () => {
+    apiMock.complete(...getDatasheetIds(DATASHEETS.MasterItemDefinitions));
+    apiMock.complete(...getDatasheetIds(DATASHEETS.HouseItems));
+    expect(() => service.getCraftable('IngotT2')).toThrowError(/recipes data are not loaded yet/i);
+  });
+
+  it('should throw when getting category with unloaded data', () => {
+    expect(() => service.getCategory('FluxReagentsT5')).toThrowError(/categories data are not loaded yet/i);
+  });
+
+  it('should throw when getting category with unloaded ingredient data', () => {
+    apiMock.complete(...getDatasheetIds(DATASHEETS.CraftingCategoryData));
+    expect(() => service.getCategory('FluxReagentsT5')).toThrowError(/ingredients data are not loaded yet/i);
   });
 });

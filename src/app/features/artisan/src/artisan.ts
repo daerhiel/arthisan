@@ -33,7 +33,7 @@ export class Artisan {
    */
   getEntity(id: string): Entity | null {
     let entity = this.#entities.get(id) ?? null;
-    if (!entity && (this.data.items.has(id) || this.data.housing.has(id))) {
+    if (!entity) {
       if (!this.data.items.version()) {
         throw new Error('Items data are not loaded yet.');
       }
@@ -46,7 +46,7 @@ export class Artisan {
 
       const item = this.data.items.get(id) ?? this.data.housing.get(id);
       if (!item) {
-        throw new Error(`Master item is not found: ${id}`);
+        throw new Error(`Master item is not found: ${id}.`);
       }
       const recipes = this.data.recipes.get(id);
       entity = recipes ? new Craftable(this, item, recipes) : new Entity(this, item);
@@ -62,7 +62,7 @@ export class Artisan {
    */
   getCraftable(id: string): Craftable | null {
     let entity = this.#entities.get(id) ?? null;
-    if (!entity || !(entity instanceof Craftable)) {
+    if (!entity) {
       if (!this.data.items.version()) {
         throw new Error('Items data are not loaded yet.');
       }
@@ -75,11 +75,11 @@ export class Artisan {
 
       const item = this.data.items.get(id) ?? this.data.housing.get(id);
       if (!item) {
-        throw new Error(`Master item is not found: ${id}`);
+        throw new Error(`Master item is not found: ${id}.`);
       }
       const recipes = this.data.recipes.get(id);
       if (!recipes) {
-        throw new Error(`Recipes are not found: ${id}`);
+        throw new Error(`Recipes are not found: ${id}.`);
       }
       entity = new Craftable(this, item, recipes);
       entity && this.#entities.set(id, entity);
@@ -94,8 +94,24 @@ export class Artisan {
    */
   getCategory(id: string): Category | null {
     let category = this.#categories.get(id) ?? null;
-    if (!category && this.data.categories.has(id)) {
-      category = new Category(this, id);
+    if (!category) {
+      if (!this.data.categories.version()) {
+        throw new Error('Categories data are not loaded yet.');
+      }
+      if (!this.data.ingredients.version()) {
+        throw new Error('Ingredients data are not loaded yet.');
+      }
+
+      const data = this.data.categories.get(id);
+      if (!data) {
+        throw new Error(`Crafting category is not found: ${id}.`);
+      }
+      const items = this.data.ingredients.get(id);
+      if (!items) {
+        throw new Error(`Category items are not found: ${id}.`);
+      }
+
+      category = new Category(this, data, items);
       category && this.#categories.set(id, category);
     }
     return category;

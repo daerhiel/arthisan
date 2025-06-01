@@ -10,8 +10,9 @@ import { Purchase } from './purchase';
  */
 export class Entity implements Materials<Purchase> {
   readonly #item: MasterItemDefinitions | HouseItems;
+  readonly #id: string;
 
-  readonly id: string;;
+  get id() { return this.#id; }
   get name() { return this.#item.Name; }
   get icon() { return this.#item.IconPath; }
   get rarity() { return getItemRarity(this.#item); }
@@ -37,11 +38,12 @@ export class Entity implements Materials<Purchase> {
     if (!item) {
       throw new Error('Invalid item data.');
     }
+
     this.#item = item;
     if (isMasterItem(item)) {
-      this.id = item.ItemID;
+      this.#id = item.ItemID;
     } else if (isHousingItem(item)) {
-      this.id = item.HouseItemID;
+      this.#id = item.HouseItemID;
     } else {
       throw new Error('Invalid item type for entity.');
     }

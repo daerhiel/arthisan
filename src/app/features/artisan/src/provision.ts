@@ -17,17 +17,15 @@ export class Provision {
     if (entity instanceof Category) {
       const entities = entity.entities;
       if (this.automatic()) {
-        entity = entities?.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
+        entity = entities.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
       } else {
         const selected = this.selected();
-        entity = entities?.find(item => item.id === selected) ?? null;
+        entity = entities.find(item => item.id === selected) ?? null;
       }
     }
     return entity?.request() ?? null;
   });
-  get purchase(): Purchase | null {
-    return this.#purchase();
-  }
+  get purchase(): Purchase | null { return this.#purchase(); }
 
   /**
    * The crafting cost.

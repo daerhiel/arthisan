@@ -34,14 +34,6 @@ describe('Ingredient', () => {
     expect(() => new Ingredient(null!, null!, null!, 0)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should create a non-existing item ingredient', () => {
-    const ingredient = new Ingredient(service, 'UnknownId', 'Item', 1);
-    expect(ingredient.id).toBe('UnknownId');
-    expect(ingredient.type).toBe('Item');
-    expect(ingredient.quantity).toBe(1);
-    expect(ingredient.entity).toBeNull();
-  });
-
   it('should create a regular entity ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
     expect(ingredient.id).toBe('OreT1');
@@ -56,14 +48,6 @@ describe('Ingredient', () => {
     expect(ingredient.type).toBe('Item');
     expect(ingredient.quantity).toBe(1);
     expect(ingredient.entity).toBeInstanceOf(Craftable);
-  });
-
-  it('should create a non-existing category ingredient', () => {
-    const ingredient = new Ingredient(service, 'UnknownId', 'Category_Only', 1);
-    expect(ingredient.id).toBe('UnknownId');
-    expect(ingredient.type).toBe('Category_Only');
-    expect(ingredient.quantity).toBe(1);
-    expect(ingredient.entity).toBeNull();
   });
 
   it('should create a regular category ingredient', () => {

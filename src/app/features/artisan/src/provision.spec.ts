@@ -39,22 +39,10 @@ describe('Provision', () => {
     expect(() => new Provision(null!)).toThrowError(/invalid ingredient instance/i);
   });
 
-  it('should create a non-existing item ingredient', () => {
-    const ingredient = new Ingredient(service, 'UnknownId', 'Item', 1);
-    const provision = new Provision(ingredient);
-    expect(provision.purchase?.entity).toBeFalsy();
-  });
-
   it('should create a regular item ingredient', () => {
     const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
     const provision = new Provision(ingredient);
     expect(provision.purchase?.entity.id).toBe('OreT1');
-  });
-
-  it('should create a non-existing category ingredient', () => {
-    const ingredient = new Ingredient(service, 'UnknownId', 'Category_Only', 1);
-    const provision = new Provision(ingredient);
-    expect(provision.purchase?.entity).toBeFalsy();
   });
 
   it('should create a regular category ingredient', () => {

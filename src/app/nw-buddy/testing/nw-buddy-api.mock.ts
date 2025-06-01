@@ -1,7 +1,8 @@
-import { Observable, of } from 'rxjs';
+import { from, mergeMap, Observable, of, reduce } from 'rxjs';
 
-import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData } from '@app/nw-data';
+import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData, ItemType } from '@app/nw-data';
 import { Localization } from '@app/nw-buddy';
+import { AsyncManager } from './async-manager';
 
 function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): Record<string, T[]> {
   return { ...store, ...value };
@@ -51,8 +52,8 @@ const translationsEnData = {
   'Wood_CategoryName': 'Wood'
 };
 
-export function getIconPath(id: string): string {
-  return `lyshineui/images/icons/items/resource/${id.toLowerCase()}.webp`;
+export function getIconPath(type: ItemType, id: string): string {
+  return `lyshineui/images/icons/items/${type.toLowerCase()}/${id.toLowerCase()}.webp`;
 }
 
 export const translationsEn = Object.keys(translationsEnData).reduce<Localization>((o, k) => {
@@ -60,7 +61,13 @@ export const translationsEn = Object.keys(translationsEnData).reduce<Localizatio
   return o;
 }, {});
 
+export function getDatasheetsIds<T>(set: Record<string, DataSheetUri<T>>): string[] {
+  return Object.keys(set).map(key => key);
+}
+
 export class NwBuddyApiMock {
+  readonly #async = new AsyncManager();
+
   readonly data = {
     [DATASHEETS.MasterItemDefinitions.MasterItemDefinitions_Common.uri]: [
       {
@@ -1319,6 +1326,31 @@ export class NwBuddyApiMock {
         "BonusItemChance": 0,
         "BonusItemChanceIncrease": "0.5,1,1.5,2,3",
         "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "House_HousingItem_Lighting_CandleHolder_A",
+        "CraftingCategory": "Furniture",
+        "CraftingGroup": "Decorations",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 300,
+        "UseCraftingTax": 1,
+        "Tradeskill": "Furnishing",
+        "RecipeLevel": 152,
+        "StationType1": "engineering2",
+        "OutputQty": 1,
+        "ItemID": "House_HousingItem_Lighting_CandleHolder_A",
+        "SkipGrantItems": false,
+        "Ingredient1": "IngotT5",
+        "Type1": "Item",
+        "Ingredient2": "BeeswaxT1",
+        "Type2": "Item",
+        "Ingredient3": "AlchemyFireT1",
+        "Type3": "Item",
+        "Qty1": 15,
+        "Qty2": 5,
+        "Qty3": 1,
+        "BonusItemChance": 0
       }
     ] satisfies Partial<CraftingRecipeData>[],
     [DATASHEETS.CraftingCategoryData.CraftingCategories.uri]: [
@@ -1331,19 +1363,36 @@ export class NwBuddyApiMock {
         "CategoryID": "Wood",
         "ImagePath": "lyshineui/images/icons/items/drawing/wood.webp",
         "DisplayText": "@Wood_CategoryName"
+      },
+      {
+        "CategoryID": "Utilities",
+        "ImagePath": "lyshineui/images/icons/crafting/icon_crafting_category_utilities.webp",
+        "DisplayText": "@CategoryData_Utilities"
       }
     ] satisfies Partial<CraftingCategoryData>[]
   };
 
-  private readonly _getDataSheet = <T>([key, value]: [string, DataSheetUri<T>]): Record<string, T[]> => {
-    return { [key]: this.data[value.uri] as T[] };
+  private readonly _getDataSheet = <T>([key, value]: [string, DataSheetUri<T>]): Observable<Record<string, T[]>> => {
+    return this.#async.invoke(key, of({ [key]: this.data[value.uri] as T[] }));
   }
 
   getTranslations(locale: string): Observable<Localization> {
-    return of(locale === 'en-us' ? translationsEn : {});
+    return this.#async.invoke(locale, of(locale === 'en-us' ? translationsEn : {}));
   }
 
   getDataSheets<T>(set: Record<string, DataSheetUri<T>>): Observable<Record<string, T[]>> {
-    return of(Object.entries(set).map(this._getDataSheet).reduce(mergeData, {}));
+    return from(Object.entries(set)).pipe(mergeMap(this._getDataSheet), reduce(mergeData, {}));
+  }
+
+  defer(mode: boolean): void {
+    return this.#async.defer(mode);
+  }
+
+  complete(...ids: string[]): void {
+    return this.#async.complete(...ids);
+  }
+
+  completeAll(): void {
+    return this.#async.completeAll();
   }
 }
