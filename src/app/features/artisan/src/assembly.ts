@@ -17,7 +17,7 @@ export class Assembly extends Purchase {
    * The list of projections for this assembly associated with source ingredients.
    */
   readonly #projections = computed(() =>
-    this.entity.blueprints()?.map(blueprint => new Projection(blueprint)) ?? null
+    this.entity.blueprints()?.map(blueprint => blueprint.request()) ?? null
   );
   get projections(): Projection[] | null {
     return this.#projections();

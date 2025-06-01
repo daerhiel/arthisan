@@ -58,6 +58,6 @@ export class Projection {
     if (!blueprint) {
       throw new Error('Invalid blueprint instance.');
     }
-    this.provisions = blueprint.ingredients.map(ingredient => new Provision(ingredient));
+    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request());
   }
 }

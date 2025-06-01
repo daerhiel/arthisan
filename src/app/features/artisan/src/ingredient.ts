@@ -2,13 +2,15 @@ import { computed } from '@angular/core';
 
 import { CraftingIngredientType } from '@app/nw-data';
 import { Artisan } from './artisan';
+import { Materials } from './contracts';
 import { Entity } from './entity';
 import { Category } from './category';
+import { Provision } from './provision';
 
 /**
  * Represents an ingredient used in crafting recipes.
  */
-export class Ingredient {
+export class Ingredient implements Materials<Provision> {
   /**
    * The entity or category referred by the current ingredient.
    */
@@ -31,5 +33,10 @@ export class Ingredient {
     if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
+  }
+
+  /** @inheritdoc */
+  request(): Provision {
+    return new Provision(this);
   }
 }

@@ -1,14 +1,16 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
+import { Materials } from './contracts';
 import { Craftable } from './craftable';
 import { Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Projection } from './projection';
 
 /**
  * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
  */
-export class Blueprint {
+export class Blueprint implements Materials<Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
@@ -74,5 +76,10 @@ export class Blueprint {
    */
   getContext(): Equipment | null {
     return this.artisan.getContext(this.recipe?.Tradeskill);
+  }
+
+  /** @inheritdoc */
+  request(): Projection {
+    return new Projection(this);
   }
 }
