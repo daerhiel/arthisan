@@ -37,7 +37,7 @@ describe('Assembly', () => {
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
     expect(assembly.entity).toBe(craftable);
-    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
+    expect(assembly.projections.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints);
   });
 
   it('should throw for non-existing craftable', () => {

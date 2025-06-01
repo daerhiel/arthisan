@@ -16,9 +16,7 @@ export class Blueprint implements Materials<Projection> {
   /**
    * Gets the bonus items chance for the current item.
    */
-  get bonus(): number {
-    return this.recipe.BonusItemChance;
-  }
+  get bonus(): number { return this.recipe.BonusItemChance; }
 
   /**
    * Gets the crafting equipment context for the current blueprint.

@@ -23,8 +23,7 @@ export const entityName = defineColumn<Entity>({
   width: '48%',
   value: {
     fit: (x, i18n) => {
-      const name = x.name();
-      return name ? i18n.get(name) : x.id;
+      return i18n.get(x.name);
     }
   }
 });
@@ -35,8 +34,7 @@ export const entityCategory = defineColumn<Entity>({
   width: '7%',
   value: {
     fit: (x, i18n) => {
-      const category = x.category();
-      return category ? i18n.get(category, 'CategoryData') : null;
+      return i18n.get(x.category, 'CategoryData');
     }
   }
 });
@@ -47,8 +45,7 @@ export const entityFamily = defineColumn<Entity>({
   width: '13%',
   value: {
     fit: (x, i18n) => {
-      const family = x.family();
-      return family ? i18n.get(family, 'CategoryData') : null;
+      return i18n.get(x.family, 'CategoryData');
     }
   }
 });
@@ -59,8 +56,7 @@ export const entityType = defineColumn<Entity>({
   width: '10%',
   value: {
     fit: (x, i18n) => {
-      const type = x.type();
-      return type ? i18n.get(type, 'UI', 'UI_ItemTypeDescription') : null;
+      return i18n.get(x.type, 'UI', 'UI_ItemTypeDescription');
     }
   }
 });
@@ -70,7 +66,7 @@ export const entityTier = defineColumn<Entity>({
   displayName: 'Tier',
   width: '5%',
   align: 'right',
-  value: { fit: x => x.tier() }
+  value: { fit: x => x.tier }
 });
 
 export const entityPrice = defineColumn<Entity>({
@@ -85,7 +81,7 @@ export const craftableBlueprints = defineColumn<Craftable>({
   id: 'blueprints',
   displayName: 'Recipes',
   width: '2%',
-  value: { fit: x => x.blueprints()?.length.toString() }
+  value: { fit: x => x.blueprints.length.toString() }
 });
 
 export const projectionCost = defineColumn<Projection>({

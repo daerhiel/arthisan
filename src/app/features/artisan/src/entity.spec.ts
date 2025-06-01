@@ -32,36 +32,28 @@ describe('Entity', () => {
     expect(() => new Entity(null!, null!)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should create a non-existing item', () => {
-    const entity = new Entity(service, 'UnknownId');
-    expect(entity.id).toBe('UnknownId');
-    expect(entity.name()).toBe(null);
-    expect(entity.icon()).toBe(null);
-    expect(entity.rarity()).toBe('common');
-    expect(entity.named()).toBe(false);
-    expect(entity.category()).toBe(null);
-    expect(entity.family()).toBe(null);
-    expect(entity.type()).toBe(null);
-    expect(entity.tier()).toBe(null);
-    expect(entity.price()).toBe(null);
+  it('should throw on null item', () => {
+    expect(() => new Entity(service, null!)).toThrowError('Invalid item data.');
   });
 
   it('should create an entity', () => {
-    const entity = new Entity(service, 'OreT1');
+    const item = service.data.items.get('OreT1')!;
+    const entity = new Entity(service, item);
     expect(entity.id).toBe('OreT1');
-    expect(entity.name()).toBe('@OreT1_MasterName');
-    expect(entity.icon()).toBe(getIconPath('OreT1'));
-    expect(entity.rarity()).toBe('common');
-    expect(entity.named()).toBe(false);
-    expect(entity.category()).toBe('Resources');
-    expect(entity.family()).toBe('RawResources');
-    expect(entity.type()).toBe('Resource');
-    expect(entity.tier()).toBe(1);
+    expect(entity.name).toBe('@OreT1_MasterName');
+    expect(entity.icon).toBe(getIconPath('OreT1'));
+    expect(entity.rarity).toBe('common');
+    expect(entity.named).toBe(false);
+    expect(entity.category).toBe('Resources');
+    expect(entity.family).toBe('RawResources');
+    expect(entity.type).toBe('Resource');
+    expect(entity.tier).toBe(1);
     expect(entity.price()).toBe(0.5);
   });
 
   it('should request a purchase', () => {
-    const entity = new Entity(service, 'OreT1');
+    const item = service.data.items.get('OreT1')!;
+    const entity = new Entity(service, item);
     const purchase = entity.request();
     expect(purchase).toBeInstanceOf(Purchase);
     expect(purchase.entity).toBe(entity);
@@ -69,8 +61,9 @@ describe('Entity', () => {
 
   describe('getIconInputs', () => {
     it('should return icon inputs', () => {
-      const craftable = new Entity(service, 'OreT1');
-      const inputs = getIconInputs(craftable);
+      const item = service.data.items.get('OreT1')!;
+      const entity = new Entity(service, item);
+      const inputs = getIconInputs(entity);
       expect(inputs).toEqual({
         path: getIconPath('OreT1'),
         name: '@OreT1_MasterName',

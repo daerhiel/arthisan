@@ -12,6 +12,9 @@ const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
  * Projections estimate crafting cost based on the preferences and equipment of an artisan.
  */
 export class Projection {
+  /**
+   * The list of provisioned ingredients in a current projection foa blueprint.
+   */
   readonly provisions: Provision[];
 
   /**
@@ -38,16 +41,14 @@ export class Projection {
    * The chance to craft additional items.
    */
   readonly #chance = computed(() => {
-    const type = this.blueprint.item.type();
+    const type = this.blueprint.item.type;
     if (!type || !unsupported.includes(type)) {
       const chance = this.provisions.reduce((s, x) => sum(s, x.chance), this.blueprint.chance);
       return Math.max(chance, 0);
     }
     return null;
   });
-  get chance(): number | null {
-    return this.#chance();
-  }
+  get chance(): number | null { return this.#chance(); }
 
   /**
    * Creates a new Projection instance.

@@ -49,7 +49,7 @@ export class Artisan {
         throw new Error(`Master item is not found: ${id}`);
       }
       const recipes = this.data.recipes.get(id);
-      entity = recipes ? new Craftable(this, id) : new Entity(this, id);
+      entity = recipes ? new Craftable(this, item, recipes) : new Entity(this, item);
       entity && this.#entities.set(id, entity);
     }
     return entity;
@@ -81,7 +81,7 @@ export class Artisan {
       if (!recipes) {
         throw new Error(`Recipes are not found: ${id}`);
       }
-      entity = new Craftable(this, id);
+      entity = new Craftable(this, item, recipes);
       entity && this.#entities.set(id, entity);
     }
     return entity as Craftable;

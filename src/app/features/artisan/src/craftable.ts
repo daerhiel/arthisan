@@ -1,16 +1,20 @@
-import { computed } from '@angular/core';
-
+import { CraftingRecipeData, HouseItems, MasterItemDefinitions } from '@app/nw-data';
+import { Artisan } from './artisan';
+import { Materials } from './contracts';
 import { Entity } from './entity';
 import { Blueprint } from './blueprint';
-import { Materials } from './contracts';
 import { Assembly } from './assembly';
 
 export class Craftable extends Entity implements Materials<Assembly> {
-  readonly #recipes = computed(() => this.artisan.data.recipes.get(this.id));
+  readonly blueprints: Blueprint[];
 
-  readonly blueprints = computed(() => this.#recipes()?.map(recipe =>
-    new Blueprint(this.artisan, this, recipe)) ?? null
-  );
+  constructor(artisan: Artisan, item: MasterItemDefinitions | HouseItems, recipes: CraftingRecipeData[]) {
+    super(artisan, item);
+    if (!recipes) {
+      throw new Error('Invalid recipes data.');
+    }
+    this.blueprints = recipes.map(recipe => new Blueprint(artisan, this, recipe));
+  }
 
   /** @inheritdoc */
   override request(): Assembly {

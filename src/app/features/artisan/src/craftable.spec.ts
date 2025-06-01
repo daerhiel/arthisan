@@ -29,26 +29,29 @@ describe('Craftable', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Craftable(null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Craftable(null!, null!, null!)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should create a non-existing item', () => {
-    const craftable = new Craftable(service, 'UnknownId');
-    expect(craftable.blueprints()).toBe(null);
+  it('should throw on null item', () => {
+    expect(() => new Craftable(service, null!, null!)).toThrowError('Invalid item data.');
   });
 
-  it('should create an entity', () => {
-    const craftable = new Craftable(service, 'OreT1');
-    expect(craftable.blueprints()).toBe(null);
+  it('should throw on null recipes', () => {
+    const item = service.data.items.get('OreT1')!;
+    expect(() => new Craftable(service, item, null!)).toThrowError('Invalid recipes data.');
   });
 
   it('should create a craftable entity', () => {
-    const craftable = new Craftable(service, 'IngotT2');
-    expect(craftable.blueprints()?.map(x => x.item.id)).toEqual(['IngotT2']);
+    const item = service.data.items.get('IngotT2')!;
+    const recipes = service.data.recipes.get('IngotT2')!;
+    const craftable = new Craftable(service, item, recipes);
+    expect(craftable.blueprints.map(x => x.item.id)).toEqual(['IngotT2']);
   });
 
   it('should request an assembly', () => {
-    const craftable = new Craftable(service, 'IngotT2');
+    const item = service.data.items.get('IngotT2')!;
+    const recipes = service.data.recipes.get('IngotT2')!;
+    const craftable = new Craftable(service, item, recipes);
     const assembly = craftable.request();
     expect(assembly).toBeInstanceOf(Assembly);
     expect(assembly.entity).toBe(craftable);
