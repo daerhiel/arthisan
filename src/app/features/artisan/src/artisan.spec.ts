@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { getDatasheetsIds as getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { CraftingTradeskill, DATASHEETS } from '@app/nw-data';

@@ -61,7 +61,7 @@ export const translationsEn = Object.keys(translationsEnData).reduce<Localizatio
   return o;
 }, {});
 
-export function getDatasheetsIds<T>(set: Record<string, DataSheetUri<T>>): string[] {
+export function getDatasheetIds<T>(set: Record<string, DataSheetUri<T>>): string[] {
   return Object.keys(set).map(key => key);
 }
 

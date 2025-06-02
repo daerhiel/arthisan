@@ -64,7 +64,8 @@ export class Blueprint implements Materials<Projection> {
       items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
     }
     for (const item of items) {
-      this.ingredients.push(new Ingredient(this.artisan, item.id, item.type, item.qty));
+      const entity = this.artisan.getIngredient(item.id, item.type);
+      this.ingredients.push(new Ingredient(entity, item.qty));
     }
   }
 

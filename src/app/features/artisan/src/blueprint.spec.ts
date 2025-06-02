@@ -7,14 +7,15 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Equipment } from './equipment';
+import { Entity } from './entity';
 import { Craftable } from './craftable';
 import { Blueprint } from './blueprint';
 import { Ingredient } from './ingredient';
 
 function extractData(ingredient: Ingredient) {
   return {
-    id: ingredient.id,
-    type: ingredient.type,
+    id: ingredient.entity.id,
+    type: ingredient.entity.constructor,
     quantity: ingredient.quantity,
   };
 }
@@ -30,6 +31,7 @@ describe('Blueprint', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+    TestBed.flushEffects();
   });
 
   it('should throw on missing artisan instance', () => {
@@ -48,7 +50,7 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 4 }
+      { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
     expect(blueprint.bonus).toBe(0);
     expect(blueprint.chance).toBe(0.3);
@@ -62,9 +64,9 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'IngotT2', type: 'Item', quantity: 3 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'IngotT2', type: Craftable, quantity: 3 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.02);
     expect(blueprint.chance).toBeCloseTo(0.28);
@@ -78,10 +80,10 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT4', type: 'Item', quantity: 6 },
-      { id: 'IngotT3', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT4', type: Entity, quantity: 6 },
+      { id: 'IngotT3', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.05);
     expect(blueprint.chance).toBe(0.25);
@@ -95,10 +97,10 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT5', type: 'Item', quantity: 8 },
-      { id: 'IngotT4', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT5', type: Entity, quantity: 8 },
+      { id: 'IngotT4', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.07);
     expect(blueprint.chance).toBeCloseTo(0.23);
@@ -112,13 +114,16 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT52', type: 'Item', quantity: 12 },
-      { id: 'IngotT5', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT52', type: Entity, quantity: 12 },
+      { id: 'IngotT5', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.2);
     expect(blueprint.chance).toBeCloseTo(0.1);
+  });
+
+  xit('should create a blueprint with category item', () => {
   });
 
   it('should create empty blueprint', () => {
@@ -144,7 +149,7 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 }
+      { id: 'OreT1', type: Entity, quantity: 1 }
     ]);
   });
 
@@ -163,8 +168,8 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 }
     ]);
   });
 
@@ -186,9 +191,9 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 }
     ]);
   });
 
@@ -213,10 +218,10 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
   });
 
@@ -244,11 +249,11 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 }
     ]);
   });
 
@@ -279,12 +284,12 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 },
-      { id: 'OreT1', type: 'Item', quantity: 6 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 },
+      { id: 'OreT1', type: Entity, quantity: 6 }
     ]);
   });
 
@@ -318,13 +323,13 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 },
-      { id: 'OreT1', type: 'Item', quantity: 6 },
-      { id: 'OreT1', type: 'Item', quantity: 7 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 },
+      { id: 'OreT1', type: Entity, quantity: 6 },
+      { id: 'OreT1', type: Entity, quantity: 7 }
     ]);
   });
 

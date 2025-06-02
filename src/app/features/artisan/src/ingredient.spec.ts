@@ -8,9 +8,6 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Ingredient } from './ingredient';
-import { Craftable } from './craftable';
-import { Category } from './category';
-import { Entity } from './entity';
 
 describe('Ingredient', () => {
   let service: Artisan;
@@ -30,31 +27,33 @@ describe('Ingredient', () => {
     }
   });
 
-  it('should throw on missing artisan instance', () => {
-    expect(() => new Ingredient(null!, null!, null!, 0)).toThrowError('Invalid artisan instance.');
+  it('should throw on missing entity instance', () => {
+    expect(() => new Ingredient(null!, 0)).toThrowError(/invalid entity or category/i);
+  });
+
+  it('should throw on invalid quantity', () => {
+    const entity = service.getEntity('OreT1');
+    expect(() => new Ingredient(entity, 0)).toThrowError(/quantity must be greater than zero/i);
   });
 
   it('should create a regular entity ingredient', () => {
-    const ingredient = new Ingredient(service, 'OreT1', 'Item', 1);
-    expect(ingredient.id).toBe('OreT1');
-    expect(ingredient.type).toBe('Item');
+    const entity = service.getEntity('OreT1');
+    const ingredient = new Ingredient(entity, 1);
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.entity).toBeInstanceOf(Entity);
+    expect(ingredient.entity).toBe(entity);
   });
 
   it('should create a regular craftable ingredient', () => {
-    const ingredient = new Ingredient(service, 'IngotT2', 'Item', 1);
-    expect(ingredient.id).toBe('IngotT2');
-    expect(ingredient.type).toBe('Item');
+    const entity = service.getCraftable('IngotT2');
+    const ingredient = new Ingredient(entity, 1);
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.entity).toBeInstanceOf(Craftable);
+    expect(ingredient.entity).toBe(entity);
   });
 
   it('should create a regular category ingredient', () => {
-    const ingredient = new Ingredient(service, 'FluxReagentsT5', 'Category_Only', 1);
-    expect(ingredient.id).toBe('FluxReagentsT5');
-    expect(ingredient.type).toBe('Category_Only');
+    const category = service.getCategory('FluxReagentsT5');
+    const ingredient = new Ingredient(category, 1);
     expect(ingredient.quantity).toBe(1);
-    expect(ingredient.entity).toBeInstanceOf(Category);
+    expect(ingredient.entity).toBe(category);
   });
 });

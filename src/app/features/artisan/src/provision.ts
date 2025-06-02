@@ -20,7 +20,7 @@ export class Provision {
         entity = entities.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
       } else {
         const selected = this.selected();
-        entity = entities.find(item => item.id === selected) ?? entities[0];
+        entity = entities.find(item => item.id === selected) ?? entities[0]!;
       }
     }
     return entity.request() ?? null;
