@@ -17,7 +17,7 @@ export class Ingredient implements Materials<Provision> {
   readonly #entity = computed(() =>
     this.artisan.getIngredient(this.id, this.type)
   );
-  get entity(): Entity | Category | null {
+  get entity(): Entity | Category {
     return this.#entity();
   }
 

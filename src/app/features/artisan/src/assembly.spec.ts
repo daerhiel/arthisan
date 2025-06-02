@@ -33,7 +33,7 @@ describe('Assembly', () => {
   // });
 
   it('should create for existing craftable', () => {
-    const craftable = service.getCraftable('IngotT2')!;
+    const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
     expect(assembly.entity).toBe(craftable);

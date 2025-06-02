@@ -28,7 +28,7 @@ describe('Projection', () => {
   });
 
   it('should create for existing blueprint', () => {
-    const craftable = service.getCraftable('IngotT2')!;
+    const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
     const projection = new Projection(blueprint);
     expect(projection).toBeTruthy();

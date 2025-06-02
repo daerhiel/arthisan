@@ -34,12 +34,6 @@ export class Category {
     }
 
     this.#category = category;
-    this.entities = items.map(item => {
-      const entity = this.artisan.getEntity(item.ItemID);
-      if (!entity) {
-        throw new Error(`Entity not found for item: ${item.ItemID}`);
-      }
-      return entity;
-    });
+    this.entities = items.map(item => this.artisan.getEntity(item.ItemID));
   }
 }

@@ -31,7 +31,7 @@ export class Artisan {
    * @param id The ID of an item to retrieve.
    * @returns The item if found or created; otherwise, null.
    */
-  getEntity(id: string): Entity | null {
+  getEntity(id: string): Entity {
     let entity = this.#entities.get(id) ?? null;
     if (!entity) {
       if (!this.data.items.version()) {
@@ -50,7 +50,7 @@ export class Artisan {
       }
       const recipes = this.data.recipes.get(id);
       entity = recipes ? new Craftable(this, item, recipes) : new Entity(this, item);
-      entity && this.#entities.set(id, entity);
+      this.#entities.set(id, entity);
     }
     return entity;
   }
@@ -60,7 +60,7 @@ export class Artisan {
    * @param id The ID of an item to retrieve.
    * @returns The item if found or created; otherwise, null.
    */
-  getCraftable(id: string): Craftable | null {
+  getCraftable(id: string): Craftable {
     let entity = this.#entities.get(id) ?? null;
     if (!entity) {
       if (!this.data.items.version()) {
@@ -82,7 +82,7 @@ export class Artisan {
         throw new Error(`Recipes are not found: ${id}.`);
       }
       entity = new Craftable(this, item, recipes);
-      entity && this.#entities.set(id, entity);
+      this.#entities.set(id, entity);
     }
     return entity as Craftable;
   }
@@ -92,7 +92,7 @@ export class Artisan {
    * @param id The ID of a category to retrieve.
    * @returns The category if found or created; otherwise, null.
    */
-  getCategory(id: string): Category | null {
+  getCategory(id: string): Category {
     let category = this.#categories.get(id) ?? null;
     if (!category) {
       if (!this.data.categories.version()) {
@@ -112,7 +112,7 @@ export class Artisan {
       }
 
       category = new Category(this, data, items);
-      category && this.#categories.set(id, category);
+      this.#categories.set(id, category);
     }
     return category;
   }
@@ -123,7 +123,7 @@ export class Artisan {
    * @param type The type of an ingredient to get.
    * @returns The ingredient if found; otherwise, null.
    */
-  getIngredient(id: string, type: CraftingIngredientType): Entity | Category | null {
+  getIngredient(id: string, type: CraftingIngredientType): Entity | Category {
     switch (type) {
       case 'Item':
         return this.getEntity(id);

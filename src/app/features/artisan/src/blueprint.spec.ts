@@ -42,7 +42,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint for T2 ingot', () => {
     const id = 'IngotT2';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
@@ -56,7 +56,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint for T3 ingot', () => {
     const id = 'IngotT3';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
@@ -72,7 +72,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T4 ingot', () => {
     const id = 'IngotT4';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
@@ -89,7 +89,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T5 ingot', () => {
     const id = 'IngotT5';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
@@ -106,7 +106,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T52 ingot', () => {
     const id = 'IngotT52';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
@@ -339,7 +339,7 @@ describe('Blueprint', () => {
 
   it('should get context for refined resource', () => {
     const id = 'IngotT2';
-    const item = service.getCraftable(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     const context = blueprint.getContext();
