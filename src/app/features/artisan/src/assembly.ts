@@ -1,38 +1,30 @@
 import { computed } from '@angular/core';
 
-import { defineTable, greater, referColumns } from '@app/core';
-import {
-  craftableIcon, craftableName, craftableCategory, craftableFamily,
-  craftableType, craftableTier, craftablePrice, craftableBlueprints,
-  Craftable
-} from './craftable';
-import {
-  projectionCost, projectionProfit, projectionChance,
-  Projection
-} from './projection';
+import { greater } from '@app/core';
+import { Purchase } from './purchase';
+import { Craftable } from './craftable';
+import { Projection } from './projection';
 
 /**
  * Represents an assembly of craftable items, which includes projections based on blueprints.
  */
-export class Assembly {
+export class Assembly extends Purchase {
   /**
    * The list of projections for this assembly associated with source ingredients.
    */
-  readonly #projections = computed(() =>
-    this.entity.blueprints()?.map(blueprint => new Projection(blueprint)) ?? null
-  );
-  get projections(): Projection[] | null {
-    return this.#projections();
-  }
+  readonly projections: Projection[];
 
   /**
    * The selected projection for this assembly.
    */
   readonly #projection = computed(() =>
-    this.projections?.reduce((p, c) => greater(p.cost, c.cost) ? p : c) ?? null
+    this.projections.reduce((p, c) => greater(p.cost, c.cost) ? p : c) ?? null
   );
-  get projection(): Projection | null {
-    return this.#projection();
+  get projection(): Projection | null { return this.#projection(); }
+
+  /** @inheritdoc */
+  override get bonus(): number | null {
+    return this.projection?.blueprint.bonus ?? null;
   }
 
   /**
@@ -40,22 +32,8 @@ export class Assembly {
    * @param entity The craftable entity associated with this assembly.
    * @throws Will throw an error if the entity is invalid.
    */
-  constructor(readonly entity: Craftable) {
-    if (!entity) {
-      throw new Error('Invalid craftable instance.');
-    }
+  constructor(override readonly entity: Craftable) {
+    super(entity);
+    this.projections = entity.blueprints.map(blueprint => blueprint.request());
   }
 }
-
-export const assemblyTable = defineTable<Assembly>({
-  name: 'assemblies',
-  columns: [
-    ...referColumns<Assembly, Craftable>('entity',
-      craftableIcon, craftableName, craftableCategory, craftableFamily,
-      craftableType, craftableTier, craftablePrice, craftableBlueprints
-    ),
-    ...referColumns<Assembly, Projection>('projection',
-      projectionCost, projectionProfit, projectionChance
-    )
-  ]
-});

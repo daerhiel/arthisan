@@ -29,8 +29,8 @@ export class ExplorerComponent {
     for (const key of this.#artisan.data.recipes.keys() ?? []) {
       const item = this.#artisan.data.items.get(key);
       if (item && this.#classes.every(name => item.ItemClass.includes(name))) {
-        const craftable = this.#artisan.getItem(key);
-        craftable && objects.push(new Assembly(craftable));
+        const craftable = this.#artisan.getCraftable(key);
+        craftable && objects.push(craftable.request());
       }
     }
     return objects;

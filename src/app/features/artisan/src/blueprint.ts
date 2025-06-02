@@ -1,22 +1,22 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
+import { Materials } from './contracts';
 import { Craftable } from './craftable';
 import { Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Projection } from './projection';
 
 /**
  * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
  */
-export class Blueprint {
+export class Blueprint implements Materials<Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
    * Gets the bonus items chance for the current item.
    */
-  get bonus(): number {
-    return this.recipe.BonusItemChance;
-  }
+  get bonus(): number { return this.recipe.BonusItemChance; }
 
   /**
    * Gets the crafting equipment context for the current blueprint.
@@ -28,7 +28,7 @@ export class Blueprint {
   /**
    * Creates a new Blueprint instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param item The craftable item associated with this blueprint.
+   * @param item The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
    * @throws Will throw an error if the artisan or item is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
@@ -64,7 +64,8 @@ export class Blueprint {
       items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
     }
     for (const item of items) {
-      this.ingredients.push(new Ingredient(this.artisan, item.id, item.type, item.qty));
+      const entity = this.artisan.getIngredient(item.id, item.type);
+      this.ingredients.push(new Ingredient(entity, item.qty));
     }
   }
 
@@ -74,5 +75,10 @@ export class Blueprint {
    */
   getContext(): Equipment | null {
     return this.artisan.getContext(this.recipe?.Tradeskill);
+  }
+
+  /** @inheritdoc */
+  request(): Projection {
+    return new Projection(this);
   }
 }

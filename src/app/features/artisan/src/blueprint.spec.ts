@@ -6,14 +6,16 @@ import { CraftingRecipeData } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Equipment } from './equipment';
+import { Entity } from './entity';
+import { Craftable } from './craftable';
 import { Blueprint } from './blueprint';
 import { Ingredient } from './ingredient';
-import { Equipment } from './equipment';
 
 function extractData(ingredient: Ingredient) {
   return {
-    id: ingredient.id,
-    type: ingredient.type,
+    id: ingredient.entity.id,
+    type: ingredient.entity.constructor,
     quantity: ingredient.quantity,
   };
 }
@@ -29,6 +31,7 @@ describe('Blueprint', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+    TestBed.flushEffects();
   });
 
   it('should throw on missing artisan instance', () => {
@@ -41,13 +44,13 @@ describe('Blueprint', () => {
 
   it('should create a blueprint for T2 ingot', () => {
     const id = 'IngotT2';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 4 }
+      { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
     expect(blueprint.bonus).toBe(0);
     expect(blueprint.chance).toBe(0.3);
@@ -55,15 +58,15 @@ describe('Blueprint', () => {
 
   it('should create a blueprint for T3 ingot', () => {
     const id = 'IngotT3';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'IngotT2', type: 'Item', quantity: 3 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'IngotT2', type: Craftable, quantity: 3 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.02);
     expect(blueprint.chance).toBeCloseTo(0.28);
@@ -71,16 +74,16 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T4 ingot', () => {
     const id = 'IngotT4';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT4', type: 'Item', quantity: 6 },
-      { id: 'IngotT3', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT4', type: Entity, quantity: 6 },
+      { id: 'IngotT3', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.05);
     expect(blueprint.chance).toBe(0.25);
@@ -88,16 +91,16 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T5 ingot', () => {
     const id = 'IngotT5';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT5', type: 'Item', quantity: 8 },
-      { id: 'IngotT4', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT5', type: Entity, quantity: 8 },
+      { id: 'IngotT4', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.07);
     expect(blueprint.chance).toBeCloseTo(0.23);
@@ -105,24 +108,27 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with T52 ingot', () => {
     const id = 'IngotT52';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT52', type: 'Item', quantity: 12 },
-      { id: 'IngotT5', type: 'Item', quantity: 2 },
-      { id: 'FluxT5', type: 'Item', quantity: 1 },
-      { id: 'CharcoalT1', type: 'Item', quantity: 2 }
+      { id: 'OreT52', type: Entity, quantity: 12 },
+      { id: 'IngotT5', type: Craftable, quantity: 2 },
+      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.2);
     expect(blueprint.chance).toBeCloseTo(0.1);
   });
 
+  xit('should create a blueprint with category item', () => {
+  });
+
   it('should create empty blueprint', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
     };
     const blueprint = new Blueprint(service, item, recipe0 as CraftingRecipeData);
@@ -133,7 +139,7 @@ describe('Blueprint', () => {
 
   it('should create a blueprint with 1 ingredient', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -143,13 +149,13 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 }
+      { id: 'OreT1', type: Entity, quantity: 1 }
     ]);
   });
 
   it('should create a blueprint with 2 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -162,14 +168,14 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 }
     ]);
   });
 
   it('should create a blueprint with 3 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -185,15 +191,15 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 }
     ]);
   });
 
   it('should create a blueprint with 4 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -212,16 +218,16 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
   });
 
   it('should create a blueprint with 5 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -243,17 +249,17 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 }
     ]);
   });
 
   it('should create a blueprint with 6 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -278,18 +284,18 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 },
-      { id: 'OreT1', type: 'Item', quantity: 6 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 },
+      { id: 'OreT1', type: Entity, quantity: 6 }
     ]);
   });
 
   it('should create a blueprint with 7 ingredients', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const recipe0: Partial<CraftingRecipeData> = {
       Ingredient1: 'OreT1',
       Type1: 'Item',
@@ -317,19 +323,19 @@ describe('Blueprint', () => {
     expect(blueprint).toBeTruthy();
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
-      { id: 'OreT1', type: 'Item', quantity: 1 },
-      { id: 'OreT1', type: 'Item', quantity: 2 },
-      { id: 'OreT1', type: 'Item', quantity: 3 },
-      { id: 'OreT1', type: 'Item', quantity: 4 },
-      { id: 'OreT1', type: 'Item', quantity: 5 },
-      { id: 'OreT1', type: 'Item', quantity: 6 },
-      { id: 'OreT1', type: 'Item', quantity: 7 }
+      { id: 'OreT1', type: Entity, quantity: 1 },
+      { id: 'OreT1', type: Entity, quantity: 2 },
+      { id: 'OreT1', type: Entity, quantity: 3 },
+      { id: 'OreT1', type: Entity, quantity: 4 },
+      { id: 'OreT1', type: Entity, quantity: 5 },
+      { id: 'OreT1', type: Entity, quantity: 6 },
+      { id: 'OreT1', type: Entity, quantity: 7 }
     ]);
   });
 
   it('should not get context for raw resource', () => {
     const id = 'OreT1';
-    const item = service.getItem(id)!;
+    const item = service.getEntity(id) as Craftable;
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     const context = blueprint.getContext();
@@ -338,7 +344,7 @@ describe('Blueprint', () => {
 
   it('should get context for refined resource', () => {
     const id = 'IngotT2';
-    const item = service.getItem(id)!;
+    const item = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, item, recipe);
     const context = blueprint.getContext();
