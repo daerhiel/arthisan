@@ -36,8 +36,16 @@ describe('Artisan', () => {
     expect(entity?.id).toBe(itemId);
   });
 
-  it('should get a master data entity', () => {
+  it('should get a entity', () => {
     const itemId = 'IngotT2';
+    const craftable = service.getEntity(itemId);
+    expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
+    expect(craftable?.id).toBe(itemId);
+  });
+
+  it('should get recursive entity', () => {
+    const itemId = 'RubyT2';
     const craftable = service.getEntity(itemId);
     expect(craftable).toBeTruthy();
     expect(craftable).toBeInstanceOf(Craftable);
@@ -59,6 +67,14 @@ describe('Artisan', () => {
 
   it('should get craftable entity', () => {
     const itemId = 'IngotT2';
+    const craftable = service.getCraftable(itemId);
+    expect(craftable).toBeTruthy();
+    expect(craftable).toBeInstanceOf(Craftable);
+    expect(craftable?.id).toBe(itemId);
+  });
+
+  fit('should get recursive craftable entity', () => {
+    const itemId = 'RubyT2';
     const craftable = service.getCraftable(itemId);
     expect(craftable).toBeTruthy();
     expect(craftable).toBeInstanceOf(Craftable);

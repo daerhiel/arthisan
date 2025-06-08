@@ -37,7 +37,7 @@ describe('Entity', () => {
     expect(() => new Entity(service, null!)).toThrowError('Invalid item data.');
   });
 
-  it('should create a master data entity', () => {
+  it('should create an entity', () => {
     const item = service.data.items.get('OreT1')!;
     const entity = new Entity(service, item);
     expect(entity.id).toBe('OreT1');
@@ -52,7 +52,7 @@ describe('Entity', () => {
     expect(entity.price()).toBe(0.5);
   });
 
-  it('should get a master data entity', () => {
+  it('should get an entity', () => {
     const item = service.data.items.get('IngotT2')!;
     const entity = new Entity(service, item);
     expect(entity.id).toBe('IngotT2');
