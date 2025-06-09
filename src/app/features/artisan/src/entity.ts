@@ -2,13 +2,13 @@ import { computed } from '@angular/core';
 
 import { getItemRarity, HouseItems, isHousingItem, isItemNamed, isMasterItem, MasterItemDefinitions } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Materials } from './contracts';
+import { Deferrable, Materials } from './contracts';
 import { Purchase } from './purchase';
 
 /**
- * Represents an entity in the artisan system, which can be an item or housing.
+ * Represents an entity in the artisan system, which can be a master item or housing.
  */
-export class Entity implements Materials<Purchase> {
+export class Entity implements Deferrable, Materials<Purchase> {
   readonly #item: MasterItemDefinitions | HouseItems;
   readonly #id: string;
 
@@ -28,8 +28,9 @@ export class Entity implements Materials<Purchase> {
   /**
    * Creates a new Entity instance.
    * @param artisan The artisan instance that provides access to data.
-   * @param item The master definition or housing item for the entity.
+   * @param item The master item or housing item for the entity.
    * @throws Will throw an error if the artisan instance is invalid.
+   * @throws Will throw an error if the item data is invalid.
    */
   constructor(protected readonly artisan: Artisan, item: MasterItemDefinitions | HouseItems) {
     if (!artisan) {
@@ -47,6 +48,11 @@ export class Entity implements Materials<Purchase> {
     } else {
       throw new Error('Invalid item type for entity.');
     }
+  }
+
+  /** @inheritdoc */
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  initialize(): void {
   }
 
   /** @inheritdoc */

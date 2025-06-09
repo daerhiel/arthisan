@@ -185,6 +185,33 @@ export class NwBuddyApiMock {
   readonly data = {
     [DATASHEETS.MasterItemDefinitions.MasterItemDefinitions_Common.uri]: [
       {
+        "ItemID": "AzureT1",
+        "Name": "@AzureT1_MasterName",
+        "ItemType": "Resource",
+        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "Description": "@AzureT1_Description",
+        "ItemClass": ["Resource"],
+        "BindOnPickup": 0,
+        "NoBindOnPickupChance": 0,
+        "BindOnEquip": 0,
+        "GearScoreOverride": 0,
+        "MinGearScore": 0,
+        "MaxGearScore": 0,
+        "Tier": 0,
+        "ForceRarity": 0,
+        "RequiredLevel": 0,
+        "UseMaterialAffix": 0,
+        "UiItemClass": "UI_Material",
+        "IconPath": "lyshineui/images/icons/items/resource/azuret1.webp",
+        "MaxStackSize": 10000,
+        "IngredientBonusPrimary": 0,
+        "IngredientBonusSecondary": 0,
+        "IngredientGearScoreBaseBonus": 0,
+        "IngredientGearScoreMaxBonus": 0,
+        "Weight": 1,
+        "NotDroppable": false
+      },
+      {
         "ItemID": "WoodT1",
         "Name": "@WoodT1_MasterName",
         "ItemType": "Resource",

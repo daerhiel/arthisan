@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { CraftingTradeskill, DATASHEETS } from '@app/nw-data';
+import { CraftingIngredientType, CraftingTradeskill, DATASHEETS } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
@@ -14,6 +14,7 @@ describe('Artisan', () => {
   let service: Artisan;
 
   beforeEach(() => {
+    spyOn(console, 'warn');
     TestBed.configureTestingModule({
       providers: [
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
@@ -73,7 +74,7 @@ describe('Artisan', () => {
     expect(craftable?.id).toBe(itemId);
   });
 
-  fit('should get recursive craftable entity', () => {
+  it('should get recursive craftable entity', () => {
     const itemId = 'RubyT2';
     const craftable = service.getCraftable(itemId);
     expect(craftable).toBeTruthy();
@@ -130,8 +131,23 @@ describe('Artisan', () => {
     expect(ingredient?.id).toBe(categoryId);
   });
 
+  it('should get known currency ingredient', () => {
+    const currencyId = 'Azoth_Currency';
+    const ingredient = service.getIngredient(currencyId, 'Currency');
+    expect(ingredient).toBeTruthy();
+    expect(ingredient?.id).toBe('AzureT1');
+  });
+
+  it('should get unknown currency ingredient', () => {
+    const currencyId = 'Unknown_Currency';
+    const ingredient = service.getIngredient(currencyId, 'Currency');
+    expect(ingredient).toBeTruthy();
+    expect(ingredient?.id).toBe('AzureT1');
+    expect(console.warn).toHaveBeenCalledWith(`Currency: ${currencyId}.`);
+  });
+
   it('should throw error for unsupported ingredient type', () => {
-    const type = 'Currency';
+    const type = 'Unsupported' as CraftingIngredientType;
     expect(() => service.getIngredient('OreT1', type)).toThrowError(/ingredient type is not supported/i);
   });
 

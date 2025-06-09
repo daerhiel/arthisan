@@ -51,6 +51,7 @@ export class Artisan {
       const recipes = this.data.recipes.get(id);
       entity = recipes ? new Craftable(this, item, recipes) : new Entity(this, item);
       this.#entities.set(id, entity);
+      entity.initialize();
     }
     return entity;
   }
@@ -83,6 +84,7 @@ export class Artisan {
       }
       entity = new Craftable(this, item, recipes);
       this.#entities.set(id, entity);
+      entity.initialize();
     }
     return entity as Craftable;
   }
@@ -127,6 +129,14 @@ export class Artisan {
     switch (type) {
       case 'Item':
         return this.getEntity(id);
+      case 'Currency':
+        switch (id) {
+          case 'Azoth_Currency':
+            return this.getEntity('AzureT1');
+          default:
+            console.warn(`Currency: ${id}.`)
+            return this.getEntity('AzureT1');
+        }
       case 'Category_Only':
         return this.getCategory(id);
       default:

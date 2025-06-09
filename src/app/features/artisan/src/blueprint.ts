@@ -1,16 +1,40 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Materials } from './contracts';
+import { Deferrable, Materials } from './contracts';
 import { Craftable } from './craftable';
-import { Ingredient } from './ingredient';
+import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
 import { Projection } from './projection';
 
 /**
+ * Extracts ingredients from a crafting recipe.
+ * @param recipe The crafting recipe data to extract ingredients from.
+ * @returns An array of crafting ingredient data.
+ */
+export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientData[] {
+  return Object.keys(recipe || {})
+    .filter(key => key.match(/^Ingredient\d+$/))
+    .map(key => {
+      const match = /^Ingredient(\d+)$/.exec(key);
+      if (match) {
+        const index = parseInt(match[1], 10);
+        const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
+        const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
+        const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
+        if (id && quantity) {
+          return { id, type: type ?? 'Item', quantity };
+        }
+      }
+      return null;
+    })
+    .filter(x => !!x);
+}
+
+/**
  * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
  */
-export class Blueprint implements Materials<Projection> {
+export class Blueprint implements Deferrable, Materials<Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
@@ -41,31 +65,15 @@ export class Blueprint implements Materials<Projection> {
       throw new Error('Invalid item data.');
     }
 
-    const items: { id: string, type: CraftingIngredientType, qty: number }[] = [];
-    if (recipe?.Ingredient1) {
-      items.push({ id: recipe.Ingredient1, type: recipe.Type1, qty: recipe.Qty1 });
+    for (const ingredient of getIngredients(recipe)) {
+      this.ingredients.push(new Ingredient(artisan, ingredient));
     }
-    if (recipe?.Ingredient2) {
-      items.push({ id: recipe.Ingredient2, type: recipe.Type2, qty: recipe.Qty2 });
-    }
-    if (recipe?.Ingredient3) {
-      items.push({ id: recipe.Ingredient3, type: recipe.Type3, qty: recipe.Qty3 });
-    }
-    if (recipe?.Ingredient4) {
-      items.push({ id: recipe.Ingredient4, type: recipe.Type4, qty: recipe.Qty4 });
-    }
-    if (recipe?.Ingredient5) {
-      items.push({ id: recipe.Ingredient5, type: recipe.Type5, qty: recipe.Qty5 });
-    }
-    if (recipe?.Ingredient6) {
-      items.push({ id: recipe.Ingredient6, type: recipe.Type6, qty: recipe.Qty6 });
-    }
-    if (recipe?.Ingredient7) {
-      items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
-    }
-    for (const item of items) {
-      const entity = this.artisan.getIngredient(item.id, item.type);
-      this.ingredients.push(new Ingredient(entity, item.qty));
+  }
+
+  /** @inheritdoc */
+  initialize(): void {
+    for (const ingredient of this.ingredients) {
+      ingredient.initialize();
     }
   }
 

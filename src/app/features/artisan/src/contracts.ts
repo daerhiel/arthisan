@@ -1,4 +1,14 @@
 /**
+ * Represents an object that can be deferred for initialization.
+ */
+export interface Deferrable {
+  /**
+   * Initializes the instance of an object.
+   */
+  initialize(): void;
+}
+
+/**
  * Represents an object that can be requested for assembly planning.
  * @template T The type of the object that can be provided.
  */
