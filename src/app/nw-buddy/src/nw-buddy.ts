@@ -55,6 +55,10 @@ export class NwBuddy implements OnDestroy {
   readonly ingredients = new ObjectIndex(this.items, item => item.IngredientCategories);
 
   // test = effect(() => {
+  //   this.dump('House_HousingItem_Lighting_CandleHolder_A')
+  // });
+
+  // dump(id: string): void {
   //   const get = (id: string) => {
   //     return {
   //       item: this.items.get(id) ?? this.housing.get(id),
@@ -97,14 +101,14 @@ export class NwBuddy implements OnDestroy {
   //       }
   //     }
 
-  //     handle('House_HousingItem_Lighting_CandleHolder_A');
+  //     handle(id);
 
   //     console.log('items', items);
   //     console.log('housing', housing);
   //     console.log('recipes', recipes);
   //     console.log('categories', categories);
   //   }
-  // });
+  // }
 
   /** @inheritdoc */
   ngOnDestroy(): void {

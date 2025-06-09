@@ -21,6 +21,18 @@ describe('greater', () => {
 });
 
 describe('max', () => {
+  it('should return null if no arguments', () => {
+    expect(max()).toBeNull();
+  });
+
+  it('should return null if an argument is null', () => {
+    expect(max(null)).toBeNull();
+  });
+
+  it('should return an argument', () => {
+    expect(max(5)).toEqual(5);
+  });
+
   it('should return null if both arguments are null', () => {
     expect(max(null, null)).toBeNull();
   });

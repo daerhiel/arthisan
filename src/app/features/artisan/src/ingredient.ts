@@ -1,35 +1,58 @@
-import { computed } from '@angular/core';
-
 import { CraftingIngredientType } from '@app/nw-data';
+import { Deferrable, Materials } from './contracts';
 import { Artisan } from './artisan';
-import { Craftable } from './craftable';
+import { Entity } from './entity';
 import { Category } from './category';
+import { Provision } from './provision';
+
+/**
+ * Represents the crafting ingredient data to cache in ingredient for initialization.
+ */
+export interface CraftingIngredientData {
+  id: string;
+  type: CraftingIngredientType;
+  quantity: number;
+}
 
 /**
  * Represents an ingredient used in crafting recipes.
  */
-export class Ingredient {
-  /**
-   * The entity or category referred by the current ingredient.
-   */
-  readonly #entity = computed(() =>
-    this.artisan.getIngredient(this.id, this.type)
-  );
-  get entity(): Craftable | Category | null {
-    return this.#entity();
-  }
+export class Ingredient implements Deferrable, Materials<Provision> {
+  readonly #source: CraftingIngredientData;
+  #entity!: Entity | Category;
+
+  get id() { return this.#source.id; }
+  get quantity() { return this.#source.quantity; }
+  get entity() { return this.#entity; }
 
   /**
    * Creates a new Ingredient instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param id The ID of an ingredient.
-   * @param type The type of an ingredient (e.g., Item).
-   * @param quantity The quantity of the ingredient required.
+   * @param source The crafting ingredient data to use.
    * @throws Will throw an error if the artisan is invalid.
+   * @throws Will throw an error if the source data is invalid or quantity is less than or equal to zero.
    */
-  constructor(private readonly artisan: Artisan, readonly id: string, readonly type: CraftingIngredientType, readonly quantity: number) {
+  constructor(private readonly artisan: Artisan, readonly source: CraftingIngredientData) {
     if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
+    if (!source) {
+      throw new Error('Invalid ingredient data.');
+    }
+    if (source.quantity <= 0) {
+      throw new Error('Quantity must be greater than zero.');
+    }
+
+    this.#source = source;
+  }
+
+  /** @inheritdoc */
+  initialize(): void {
+    this.#entity = this.artisan.getIngredient(this.#source.id, this.#source.type);
+  }
+
+  /** @inheritdoc */
+  request(): Provision {
+    return new Provision(this);
   }
 }

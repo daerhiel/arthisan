@@ -7,9 +7,9 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Projection } from './projection';
+import { Purchase } from './purchase';
 
-describe('Projection', () => {
+describe('Purchase', () => {
   let service: Artisan;
 
   beforeEach(async () => {
@@ -27,16 +27,19 @@ describe('Projection', () => {
     }
   });
 
-  it('should create for existing blueprint', () => {
-    const craftable = service.getCraftable('IngotT2');
-    const [blueprint] = craftable.blueprints;
-    const projection = new Projection(blueprint);
-    expect(projection).toBeTruthy();
-    expect(projection.blueprint).toBe(blueprint);
-    expect(projection.provisions.map(x => x.ingredient)).toEqual(blueprint.ingredients);
+  it('should create for existing entity', () => {
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity);
+    expect(purchase).toBeTruthy();
+    expect(purchase.entity).toBe(entity);
+    expect(purchase.bonus).toBeNull();
   });
 
-  it('should throw on missing blueprint', () => {
-    expect(() => new Projection(null!)).toThrowError(/invalid blueprint instance/i);
+  it('should create for existing craftable', () => {
+    const entity = service.getEntity('IngotT2')!;
+    const purchase = new Purchase(entity);
+    expect(purchase).toBeTruthy();
+    expect(purchase.entity).toBe(entity);
+    expect(purchase.bonus).toBeNull();
   });
 });

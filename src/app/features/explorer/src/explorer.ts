@@ -4,10 +4,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { TableDefinition } from '@app/core';
-import { ItemClass } from '@app/nw-data';
+import { CraftingCategory, ItemClass } from '@app/nw-data';
 import { NwI18n } from '@app/nw-buddy';
 import { Artisan, Assembly, assemblyTable, ColumnPipe, ColumnsPipe } from '@features/artisan';
 
+export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
 export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITEM_CLASSES');
 
 @Component({
@@ -21,6 +22,7 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
 })
 export class ExplorerComponent {
   readonly #artisan = inject(Artisan);
+  readonly #categories = inject(EXPLORE_ITEM_CATEGORIES, { optional: true }) ?? [];
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
   protected readonly _i18n = inject(NwI18n);
 
@@ -28,9 +30,10 @@ export class ExplorerComponent {
     const objects: Assembly[] = [];
     for (const key of this.#artisan.data.recipes.keys() ?? []) {
       const item = this.#artisan.data.items.get(key);
-      if (item && this.#classes.every(name => item.ItemClass.includes(name))) {
-        const craftable = this.#artisan.getItem(key);
-        craftable && objects.push(new Assembly(craftable));
+      const recipes = this.#artisan.data.recipes.get(key);
+      if (item && recipes && !recipes.every(x => this.#categories.includes(x.CraftingCategory)) && this.#classes.every(name => item.ItemClass.includes(name))) {
+        const craftable = this.#artisan.getCraftable(key);
+        craftable && objects.push(craftable.request());
       }
     }
     return objects;

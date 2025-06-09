@@ -27,23 +27,20 @@ describe('Assembly', () => {
     }
   });
 
-  it('should create for existing resource', () => {
-    const craftable = service.getItem('OreT1')!;
-    const assembly = new Assembly(craftable);
-    expect(assembly).toBeTruthy();
-    expect(assembly.entity).toBe(craftable);
-    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
-  });
+  // it('should throw for existing entity', () => {
+  //   const craftable = service.getEntity('OreT1') as Craftable;
+  //   expect(() => new Assembly(craftable)).toThrowError(/invalid craftable instance/i);
+  // });
 
   it('should create for existing craftable', () => {
-    const craftable = service.getItem('IngotT2')!;
+    const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
     expect(assembly.entity).toBe(craftable);
-    expect(assembly.projections?.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints());
+    expect(assembly.projections.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints);
   });
 
   it('should throw for non-existing craftable', () => {
-    expect(() => new Assembly(null!)).toThrowError(/invalid craftable instance/i);
+    expect(() => new Assembly(null!)).toThrowError(/invalid entity instance/i);
   });
 });

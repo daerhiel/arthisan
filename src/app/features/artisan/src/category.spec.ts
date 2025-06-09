@@ -28,22 +28,26 @@ describe('Category', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Category(null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Category(null!, null!, null!)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should create a non-existing category', () => {
-    const category = new Category(service, 'UnknownId');
-    expect(category).toBeTruthy();
-    expect(category.id).toBe('UnknownId');
-    expect(category.name).toBe(null);
-    expect(category.entities).toBe(null);
+  it('should throw on missing category data', () => {
+    expect(() => new Category(service, null!, null!)).toThrowError('Invalid category data.');
+  });
+
+  it('should throw on missing items data', () => {
+    const data = service.data.categories.get('FluxReagentsT5')!;
+    expect(() => new Category(service, data, null!)).toThrowError('Invalid items data.');
   });
 
   it('should create a regular category', () => {
-    const category = new Category(service, 'FluxReagentsT5');
+    const id = 'FluxReagentsT5';
+    const data = service.data.categories.get(id)!;
+    const items = service.data.ingredients.get(id)!;
+    const category = new Category(service, data, items);
     expect(category).toBeTruthy();
 
-    expect(category.id).toBe('FluxReagentsT5');
+    expect(category.id).toBe(id);
     expect(category.name).toBe('@RefiningReagentsT5_GroupName');
     expect(category.entities?.map(x => x.id)).toEqual([
       'SandpaperT5', 'TanninT5', 'SolventT5', 'ClothWeaveT5'

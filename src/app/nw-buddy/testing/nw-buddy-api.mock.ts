@@ -1,7 +1,8 @@
-import { Observable, of } from 'rxjs';
+import { from, mergeMap, Observable, of, reduce } from 'rxjs';
 
-import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData } from '@app/nw-data';
+import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData, ItemType } from '@app/nw-data';
 import { Localization } from '@app/nw-buddy';
+import { AsyncManager } from './async-manager';
 
 function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): Record<string, T[]> {
   return { ...store, ...value };
@@ -51,8 +52,8 @@ const translationsEnData = {
   'Wood_CategoryName': 'Wood'
 };
 
-export function getIconPath(id: string): string {
-  return `lyshineui/images/icons/items/resource/${id.toLowerCase()}.webp`;
+export function getIconPath(type: ItemType, id: string): string {
+  return `lyshineui/images/icons/items/${type.toLowerCase()}/${id.toLowerCase()}.webp`;
 }
 
 export const translationsEn = Object.keys(translationsEnData).reduce<Localization>((o, k) => {
@@ -60,9 +61,156 @@ export const translationsEn = Object.keys(translationsEnData).reduce<Localizatio
   return o;
 }, {});
 
+export function getDatasheetIds<T>(set: Record<string, DataSheetUri<T>>): string[] {
+  return Object.keys(set).map(key => key);
+}
+
+type MasterItemDefinitionsProps =
+  | "ItemID"
+  | "Name"
+  | "ItemType"
+  | "ItemTypeDisplayName"
+  | "Description"
+  | "ItemClass"
+  | "TradingCategory"
+  | "TradingFamily"
+  | "TradingGroup"
+  | "BindOnPickup"
+  | "NoBindOnPickupChance"
+  | "BindOnEquip"
+  | "GearScoreOverride"
+  | "MinGearScore"
+  | "MaxGearScore"
+  | "Tier"
+  | "ForceRarity"
+  | "RequiredLevel"
+  | "UseMaterialAffix"
+  | "UiItemClass"
+  | "IconPath"
+  | "MaxStackSize"
+  | "IngredientCategories"
+  | "IngredientBonusPrimary"
+  | "IngredientBonusSecondary"
+  | "IngredientGearScoreBaseBonus"
+  | "IngredientGearScoreMaxBonus"
+  | "Weight"
+  | "NotDroppable";
+
+type MasterItemDefinitionsTestData = Pick<MasterItemDefinitions, MasterItemDefinitionsProps>;
+
+type HouseItemsProps =
+  | "HouseItemID"
+  | "UIHousingCategory"
+  | "HousingTag1 Placed"
+  | "HousingTag2 Points"
+  | "HousingTag3 Limiter"
+  | "HousingTags"
+  | "ItemRarity"
+  | "ForceRarity"
+  | "StorageBonus"
+  | "Name"
+  | "Description"
+  | "IconPath"
+  | "Weight"
+  | "TradingCategory"
+  | "TradingFamily"
+  | "TradingGroup"
+  | "ItemType"
+  | "UiItemClass"
+  | "Tier"
+  | "BindOnPickup"
+  | "MaxStackSize"
+  | "ItemTypeDisplayName";
+
+type HouseItemsTestData = Pick<HouseItems, HouseItemsProps>;
+
+type CraftingRecipeDataProps =
+  | "RecipeID"
+  | "CraftingCategory"
+  | "CraftingGroup"
+  | "DisplayIngredients"
+  | "AdditionalFilterText"
+  | "CraftAll"
+  | "IsRefining"
+  | "CraftingFee"
+  | "UseCraftingTax"
+  | "Tradeskill"
+  | "RecipeLevel"
+  | "StationType1"
+  | "OutputQty"
+  | "ItemID"
+  | "SkipGrantItems"
+  | "BaseGearScore"
+  | "BaseTier"
+  | "Ingredient1"
+  | "Ingredient2"
+  | "Ingredient3"
+  | "Ingredient4"
+  | "Ingredient5"
+  | "Ingredient6"
+  | "Ingredient7"
+  | "Qty1"
+  | "Qty2"
+  | "Qty3"
+  | "Qty4"
+  | "Qty5"
+  | "Qty6"
+  | "Qty7"
+  | "Type1"
+  | "Type2"
+  | "Type3"
+  | "Type4"
+  | "Type5"
+  | "Type6"
+  | "Type7"
+  | "CooldownSeconds"
+  | "CooldownQuantity"
+  | "BonusItemChance"
+  | "BonusItemChanceIncrease"
+  | "BonusItemChanceDecrease"
+  | "PerkCost";
+
+type CraftingRecipeTestData = Pick<CraftingRecipeData, CraftingRecipeDataProps>;
+
+type CraftingCategoryDataProps =
+  | "CategoryID"
+  | "ImagePath"
+  | "DisplayText";
+
+type CraftingCategoryTestData = Pick<CraftingCategoryData, CraftingCategoryDataProps>;
+
 export class NwBuddyApiMock {
+  readonly #async = new AsyncManager();
+
   readonly data = {
     [DATASHEETS.MasterItemDefinitions.MasterItemDefinitions_Common.uri]: [
+      {
+        "ItemID": "AzureT1",
+        "Name": "@AzureT1_MasterName",
+        "ItemType": "Resource",
+        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "Description": "@AzureT1_Description",
+        "ItemClass": ["Resource"],
+        "BindOnPickup": 0,
+        "NoBindOnPickupChance": 0,
+        "BindOnEquip": 0,
+        "GearScoreOverride": 0,
+        "MinGearScore": 0,
+        "MaxGearScore": 0,
+        "Tier": 0,
+        "ForceRarity": 0,
+        "RequiredLevel": 0,
+        "UseMaterialAffix": 0,
+        "UiItemClass": "UI_Material",
+        "IconPath": "lyshineui/images/icons/items/resource/azuret1.webp",
+        "MaxStackSize": 10000,
+        "IngredientBonusPrimary": 0,
+        "IngredientBonusSecondary": 0,
+        "IngredientGearScoreBaseBonus": 0,
+        "IngredientGearScoreMaxBonus": 0,
+        "Weight": 1,
+        "NotDroppable": false
+      },
       {
         "ItemID": "WoodT1",
         "Name": "@WoodT1_MasterName",
@@ -571,6 +719,80 @@ export class NwBuddyApiMock {
         "NotDroppable": false
       },
       {
+        "ItemID": "RubyT2",
+        "Name": "@RubyT2_MasterName",
+        "ItemType": "Resource",
+        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "Description": "@RubyT2_Description",
+        "ItemClass": [
+          "Resource",
+          "Gem"
+        ],
+        "TradingCategory": "Resources",
+        "TradingFamily": "RawResources",
+        "TradingGroup": "RawGem",
+        "BindOnPickup": 0,
+        "NoBindOnPickupChance": 0,
+        "BindOnEquip": 0,
+        "GearScoreOverride": 0,
+        "MinGearScore": 0,
+        "MaxGearScore": 0,
+        "Tier": 3,
+        "ForceRarity": 1,
+        "RequiredLevel": 0,
+        "UseMaterialAffix": 0,
+        "UiItemClass": "UI_Jewelcrafting",
+        "IconPath": "lyshineui/images/icons/items/resource/rubyt2.webp",
+        "MaxStackSize": 10000,
+        "IngredientCategories": [
+          "Gemstone",
+          "GemstoneT2"
+        ],
+        "IngredientBonusPrimary": 0,
+        "IngredientBonusSecondary": 0,
+        "IngredientGearScoreBaseBonus": 0,
+        "IngredientGearScoreMaxBonus": 0,
+        "Weight": 1,
+        "NotDroppable": false
+      },
+      {
+        "ItemID": "RubyT1",
+        "Name": "@RubyT1_MasterName",
+        "ItemType": "Resource",
+        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "Description": "@RubyT1_Description",
+        "ItemClass": [
+          "Resource",
+          "Gem"
+        ],
+        "TradingCategory": "Resources",
+        "TradingFamily": "RawResources",
+        "TradingGroup": "RawGem",
+        "BindOnPickup": 0,
+        "NoBindOnPickupChance": 0,
+        "BindOnEquip": 0,
+        "GearScoreOverride": 0,
+        "MinGearScore": 0,
+        "MaxGearScore": 0,
+        "Tier": 2,
+        "ForceRarity": 0,
+        "RequiredLevel": 0,
+        "UseMaterialAffix": 0,
+        "UiItemClass": "UI_Jewelcrafting",
+        "IconPath": "lyshineui/images/icons/items/resource/rubyt1.webp",
+        "MaxStackSize": 10000,
+        "IngredientCategories": [
+          "Gemstone",
+          "GemstoneT1"
+        ],
+        "IngredientBonusPrimary": 0,
+        "IngredientBonusSecondary": 0,
+        "IngredientGearScoreBaseBonus": 0,
+        "IngredientGearScoreMaxBonus": 0,
+        "Weight": 1,
+        "NotDroppable": false
+      },
+      {
         "ItemID": "FluxT5",
         "Name": "@FluxT5_MasterName",
         "ItemType": "Resource",
@@ -894,6 +1116,45 @@ export class NwBuddyApiMock {
         "NotDroppable": false
       },
       {
+        "ItemID": "AlchemyFireT2",
+        "Name": "@AlchemyFireT2_MasterName",
+        "ItemType": "Resource",
+        "ItemTypeDisplayName": "@ui_itemtypedescription_resource",
+        "Description": "@AlchemyFireT2_Description",
+        "ItemClass": [
+          "Resource",
+          "Alchemy"
+        ],
+        "TradingCategory": "Resources",
+        "TradingFamily": "ArcanaResources",
+        "TradingGroup": "ArcanaFire",
+        "BindOnPickup": 0,
+        "NoBindOnPickupChance": 0,
+        "BindOnEquip": 0,
+        "GearScoreOverride": 0,
+        "MinGearScore": 0,
+        "MaxGearScore": 0,
+        "Tier": 3,
+        "ForceRarity": 1,
+        "RequiredLevel": 0,
+        "UseMaterialAffix": 0,
+        "UiItemClass": "UI_Alchemy",
+        "IconPath": "lyshineui/images/icons/items/resource/alchemyfiret2.webp",
+        "MaxStackSize": 10000,
+        "IngredientCategories": [
+          "AlchemyFire",
+          "ArcanaFire",
+          "AlchemyFireT3",
+          "ArcanaFireT3"
+        ],
+        "IngredientBonusPrimary": 0,
+        "IngredientBonusSecondary": 0,
+        "IngredientGearScoreBaseBonus": 0,
+        "IngredientGearScoreMaxBonus": 0,
+        "Weight": 1,
+        "NotDroppable": false
+      },
+      {
         "ItemID": "AlchemyFireT1",
         "Name": "@AlchemyFireT1_MasterName",
         "ItemType": "Resource",
@@ -933,7 +1194,7 @@ export class NwBuddyApiMock {
         "Weight": 1,
         "NotDroppable": false
       }
-    ] satisfies Partial<MasterItemDefinitions>[],
+    ] satisfies Partial<MasterItemDefinitionsTestData>[],
     [DATASHEETS.HouseItems.HouseItems.uri]: [
       {
         "HouseItemID": "House_HousingItem_Lighting_CandleHolder_A",
@@ -969,7 +1230,7 @@ export class NwBuddyApiMock {
         "MaxStackSize": 4,
         "ItemTypeDisplayName": "@UI_ItemTypeDescription_HousingItem"
       }
-    ] satisfies Partial<HouseItems>[],
+    ] satisfies Partial<HouseItemsTestData>[],
     [DATASHEETS.CraftingRecipeData.CraftingRecipes.uri]: [
       {
         "RecipeID": "IngotT52",
@@ -1133,6 +1394,100 @@ export class NwBuddyApiMock {
         "BonusItemChanceDecrease": "-0.05,-0.1,-0.15,-0.2,-0.25"
       },
       {
+        "RecipeID": "RubyT2Fuse",
+        "CraftingCategory": "FuseGems",
+        "CraftingGroup": "CutGemsFuseT2",
+        "AdditionalFilterText": "@ui_gemsocket",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 12,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Jewelcrafting",
+        "RecipeLevel": 50,
+        "StationType1": "outfitting2",
+        "OutputQty": 1,
+        "ItemID": "RubyT2",
+        "SkipGrantItems": false,
+        "BaseGearScore": 0,
+        "BaseTier": 0,
+        "Ingredient1": "RubyT1",
+        "Type1": "Item",
+        "Ingredient2": "AlchemyFireT2",
+        "Type2": "Item",
+        "Ingredient3": "Solvent",
+        "Type3": "Category_Only",
+        "Qty1": 3,
+        "Qty2": 1,
+        "Qty3": 2,
+        "Qty4": 0,
+        "Qty5": 0,
+        "Qty6": 0,
+        "Qty7": 0,
+        "BonusItemChance": 0,
+        "PerkCost": 0
+      },
+      {
+        "RecipeID": "AlchemyFireT2",
+        "CraftingCategory": "ArcanaRefining",
+        "CraftingGroup": "ElementalWisp",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 15,
+        "UseCraftingTax": 1,
+        "Tradeskill": "Arcana",
+        "RecipeLevel": 25,
+        "StationType1": "alchemy2",
+        "OutputQty": 1,
+        "ItemID": "AlchemyFireT2",
+        "SkipGrantItems": false,
+        "BaseGearScore": 0,
+        "BaseTier": 0,
+        "Ingredient1": "AlchemyFireT1",
+        "Type1": "Item",
+        "Qty1": 5,
+        "Qty2": 0,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "Qty6": 0,
+        "Qty7": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": 0,
+        "PerkCost": 0
+      },
+      {
+        "RecipeID": "Smelter_SandpaperT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Smelting",
+        "RecipeLevel": 0,
+        "StationType1": "smelting2",
+        "OutputQty": 15,
+        "ItemID": "SandpaperT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SandpaperReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
         "RecipeID": "Smelter_FluxT5",
         "CraftingCategory": "MaterialConversion",
         "CraftingGroup": "Conversion3",
@@ -1154,6 +1509,133 @@ export class NwBuddyApiMock {
         "Type2": "Category_Only",
         "Qty1": 1,
         "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Smelter_ClothWeaveT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Smelting",
+        "RecipeLevel": 0,
+        "StationType1": "smelting2",
+        "OutputQty": 15,
+        "ItemID": "ClothWeaveT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "ClothWeaveReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Smelter_SolventT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Smelting",
+        "RecipeLevel": 0,
+        "StationType1": "smelting2",
+        "OutputQty": 15,
+        "ItemID": "SolventT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SolventReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Smelter_TanninT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Smelting",
+        "RecipeLevel": 0,
+        "StationType1": "smelting2",
+        "OutputQty": 15,
+        "ItemID": "TanninT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "TanninReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Stonecutter_SandpaperT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Stonecutting",
+        "RecipeLevel": 0,
+        "StationType1": "masonry2",
+        "OutputQty": 15,
+        "ItemID": "SandpaperT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SandpaperReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
         "CooldownSeconds": 0,
         "CooldownQuantity": 0,
         "BonusItemChance": -0.3,
@@ -1182,6 +1664,133 @@ export class NwBuddyApiMock {
         "Type2": "Category_Only",
         "Qty1": 1,
         "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Stonecutter_ClothWeaveT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Stonecutting",
+        "RecipeLevel": 0,
+        "StationType1": "masonry2",
+        "OutputQty": 15,
+        "ItemID": "ClothWeaveT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "ClothWeaveReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Stonecutter_SolventT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Stonecutting",
+        "RecipeLevel": 0,
+        "StationType1": "masonry2",
+        "OutputQty": 15,
+        "ItemID": "SolventT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SolventReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Stonecutter_TanninT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Stonecutting",
+        "RecipeLevel": 0,
+        "StationType1": "masonry2",
+        "OutputQty": 15,
+        "ItemID": "TanninT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "TanninReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Loom_SandpaperT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Weaving",
+        "RecipeLevel": 0,
+        "StationType1": "weaving2",
+        "OutputQty": 15,
+        "ItemID": "SandpaperT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SandpaperReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
         "CooldownSeconds": 0,
         "CooldownQuantity": 0,
         "BonusItemChance": -0.3,
@@ -1210,6 +1819,133 @@ export class NwBuddyApiMock {
         "Type2": "Category_Only",
         "Qty1": 1,
         "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Loom_ClothWeaveT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Weaving",
+        "RecipeLevel": 0,
+        "StationType1": "weaving2",
+        "OutputQty": 15,
+        "ItemID": "ClothWeaveT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "ClothWeaveReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Loom_SolventT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Weaving",
+        "RecipeLevel": 0,
+        "StationType1": "weaving2",
+        "OutputQty": 15,
+        "ItemID": "SolventT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SolventReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Loom_TanninT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Weaving",
+        "RecipeLevel": 0,
+        "StationType1": "weaving2",
+        "OutputQty": 15,
+        "ItemID": "TanninT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "TanninReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Tannery_SandpaperT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Leatherworking",
+        "RecipeLevel": 0,
+        "StationType1": "tanning2",
+        "OutputQty": 15,
+        "ItemID": "SandpaperT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SandpaperReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
         "CooldownSeconds": 0,
         "CooldownQuantity": 0,
         "BonusItemChance": -0.3,
@@ -1238,6 +1974,133 @@ export class NwBuddyApiMock {
         "Type2": "Category_Only",
         "Qty1": 1,
         "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Tannery_ClothWeaveT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Leatherworking",
+        "RecipeLevel": 0,
+        "StationType1": "tanning2",
+        "OutputQty": 15,
+        "ItemID": "ClothWeaveT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "ClothWeaveReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Tannery_SolventT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Leatherworking",
+        "RecipeLevel": 0,
+        "StationType1": "tanning2",
+        "OutputQty": 15,
+        "ItemID": "SolventT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SolventReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Tannery_TanninT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Leatherworking",
+        "RecipeLevel": 0,
+        "StationType1": "tanning2",
+        "OutputQty": 15,
+        "ItemID": "TanninT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "TanninReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Woodworker_SandpaperT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Woodworking",
+        "RecipeLevel": 0,
+        "StationType1": "carpentry2",
+        "OutputQty": 15,
+        "ItemID": "SandpaperT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SandpaperReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
         "CooldownSeconds": 0,
         "CooldownQuantity": 0,
         "BonusItemChance": -0.3,
@@ -1266,6 +2129,102 @@ export class NwBuddyApiMock {
         "Type2": "Category_Only",
         "Qty1": 1,
         "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Woodworker_ClothWeaveT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Woodworking",
+        "RecipeLevel": 0,
+        "StationType1": "carpentry2",
+        "OutputQty": 15,
+        "ItemID": "ClothWeaveT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "ClothWeaveReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Woodworker_SolventT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Woodworking",
+        "RecipeLevel": 0,
+        "StationType1": "carpentry2",
+        "OutputQty": 15,
+        "ItemID": "SolventT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "SolventReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
+        "CooldownSeconds": 0,
+        "CooldownQuantity": 0,
+        "BonusItemChance": -0.3,
+        "BonusItemChanceIncrease": "0,0,0,0,0",
+        "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "Woodworker_TanninT5",
+        "CraftingCategory": "MaterialConversion",
+        "CraftingGroup": "Conversion3",
+        "DisplayIngredients": "ReagentConverterT5",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 100,
+        "UseCraftingTax": 0,
+        "Tradeskill": "Woodworking",
+        "RecipeLevel": 0,
+        "StationType1": "carpentry2",
+        "OutputQty": 15,
+        "ItemID": "TanninT5",
+        "SkipGrantItems": false,
+        "BaseTier": 0,
+        "Ingredient1": "ReagentConverterT5",
+        "Type1": "Item",
+        "Ingredient2": "TanninReagentsT5",
+        "Type2": "Category_Only",
+        "Qty1": 1,
+        "Qty2": 20,
+        "Qty3": 0,
+        "Qty4": 0,
+        "Qty5": 0,
         "CooldownSeconds": 0,
         "CooldownQuantity": 0,
         "BonusItemChance": -0.3,
@@ -1319,11 +2278,64 @@ export class NwBuddyApiMock {
         "BonusItemChance": 0,
         "BonusItemChanceIncrease": "0.5,1,1.5,2,3",
         "BonusItemChanceDecrease": "0,0,0,0,0"
+      },
+      {
+        "RecipeID": "House_HousingItem_Lighting_CandleHolder_A",
+        "CraftingCategory": "Furniture",
+        "CraftingGroup": "Decorations",
+        "CraftAll": true,
+        "IsRefining": true,
+        "CraftingFee": 300,
+        "UseCraftingTax": 1,
+        "Tradeskill": "Furnishing",
+        "RecipeLevel": 152,
+        "StationType1": "engineering2",
+        "OutputQty": 1,
+        "ItemID": "House_HousingItem_Lighting_CandleHolder_A",
+        "SkipGrantItems": false,
+        "Ingredient1": "IngotT5",
+        "Type1": "Item",
+        "Ingredient2": "BeeswaxT1",
+        "Type2": "Item",
+        "Ingredient3": "AlchemyFireT1",
+        "Type3": "Item",
+        "Qty1": 15,
+        "Qty2": 5,
+        "Qty3": 1,
+        "BonusItemChance": 0
       }
-    ] satisfies Partial<CraftingRecipeData>[],
+    ] satisfies Partial<CraftingRecipeTestData>[],
     [DATASHEETS.CraftingCategoryData.CraftingCategories.uri]: [
       {
+        "CategoryID": "Solvent",
+        "ImagePath": "lyshineui/images/icons/items/drawing/solvent.webp",
+        "DisplayText": "@Solvent_GroupName"
+      },
+      {
+        "CategoryID": "RefiningReagentsT5",
+        "DisplayText": "@RefiningReagentsT5_GroupName"
+      },
+      {
         "CategoryID": "FluxReagentsT5",
+        "ImagePath": "lyshineui/images/icons/items/drawing/refiningreagents.webp",
+        "DisplayText": "@RefiningReagentsT5_GroupName"
+      },
+      {
+        "CategoryID": "SolventReagentsT5",
+        "ImagePath": "lyshineui/images/icons/items/drawing/refiningreagents.webp",
+        "DisplayText": "@RefiningReagentsT5_GroupName"
+      },
+      {
+        "CategoryID": "TanninReagentsT5",
+        "ImagePath": "lyshineui/images/icons/items/drawing/refiningreagents.webp",
+        "DisplayText": "@RefiningReagentsT5_GroupName"
+      },
+      {
+        "CategoryID": "ClothWeaveReagentsT5",
+        "DisplayText": "@RefiningReagentsT5_GroupName"
+      },
+      {
+        "CategoryID": "SandpaperReagentsT5",
         "ImagePath": "lyshineui/images/icons/items/drawing/refiningreagents.webp",
         "DisplayText": "@RefiningReagentsT5_GroupName"
       },
@@ -1331,19 +2343,36 @@ export class NwBuddyApiMock {
         "CategoryID": "Wood",
         "ImagePath": "lyshineui/images/icons/items/drawing/wood.webp",
         "DisplayText": "@Wood_CategoryName"
+      },
+      {
+        "CategoryID": "Utilities",
+        "ImagePath": "lyshineui/images/icons/crafting/icon_crafting_category_utilities.webp",
+        "DisplayText": "@CategoryData_Utilities"
       }
-    ] satisfies Partial<CraftingCategoryData>[]
+    ] satisfies Partial<CraftingCategoryTestData>[]
   };
 
-  private readonly _getDataSheet = <T>([key, value]: [string, DataSheetUri<T>]): Record<string, T[]> => {
-    return { [key]: this.data[value.uri] as T[] };
+  private readonly _getDataSheet = <T>([key, value]: [string, DataSheetUri<T>]): Observable<Record<string, T[]>> => {
+    return this.#async.invoke(key, of({ [key]: this.data[value.uri] as T[] }));
   }
 
   getTranslations(locale: string): Observable<Localization> {
-    return of(locale === 'en-us' ? translationsEn : {});
+    return this.#async.invoke(locale, of(locale === 'en-us' ? translationsEn : {}));
   }
 
   getDataSheets<T>(set: Record<string, DataSheetUri<T>>): Observable<Record<string, T[]>> {
-    return of(Object.entries(set).map(this._getDataSheet).reduce(mergeData, {}));
+    return from(Object.entries(set)).pipe(mergeMap(this._getDataSheet), reduce(mergeData, {}));
+  }
+
+  defer(mode: boolean): void {
+    return this.#async.defer(mode);
+  }
+
+  complete(...ids: string[]): void {
+    return this.#async.complete(...ids);
+  }
+
+  completeAll(): void {
+    return this.#async.completeAll();
   }
 }

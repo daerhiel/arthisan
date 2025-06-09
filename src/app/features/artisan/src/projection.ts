@@ -1,8 +1,7 @@
 import { computed } from '@angular/core';
 
-import { defineColumn, subtract, sum } from '@app/core';
+import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
-import { getPriceInputs, NwPrice } from '@app/nw-buddy';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
@@ -13,6 +12,9 @@ const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
  * Projections estimate crafting cost based on the preferences and equipment of an artisan.
  */
 export class Projection {
+  /**
+   * The list of provisioned ingredients in a current projection foa blueprint.
+   */
   readonly provisions: Provision[];
 
   /**
@@ -39,16 +41,14 @@ export class Projection {
    * The chance to craft additional items.
    */
   readonly #chance = computed(() => {
-    const type = this.blueprint.item.type();
+    const type = this.blueprint.item.type;
     if (!type || !unsupported.includes(type)) {
       const chance = this.provisions.reduce((s, x) => sum(s, x.chance), this.blueprint.chance);
       return Math.max(chance, 0);
     }
     return null;
   });
-  get chance(): number | null {
-    return this.#chance();
-  }
+  get chance(): number | null { return this.#chance(); }
 
   /**
    * Creates a new Projection instance.
@@ -59,35 +59,6 @@ export class Projection {
     if (!blueprint) {
       throw new Error('Invalid blueprint instance.');
     }
-    this.provisions = blueprint.ingredients.map(ingredient => new Provision(ingredient));
+    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request());
   }
 }
-
-function getPriceState(projection: Projection): boolean | null {
-  const profit = projection.profit;
-  return profit ? profit > 0 : null;
-}
-
-export const projectionCost = defineColumn<Projection>({
-  id: 'cost',
-  displayName: 'Cost',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.cost) }
-});
-
-export const projectionProfit = defineColumn<Projection>({
-  id: 'profit',
-  displayName: 'Profit',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.profit, getPriceState) }
-});
-
-export const projectionChance = defineColumn<Projection>({
-  id: 'chance',
-  displayName: 'Chance',
-  width: '5%',
-  align: 'right',
-  value: { fit: x => x.chance }
-});

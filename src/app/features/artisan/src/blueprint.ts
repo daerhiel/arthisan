@@ -1,22 +1,46 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
+import { Deferrable, Materials } from './contracts';
 import { Craftable } from './craftable';
-import { Ingredient } from './ingredient';
+import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Projection } from './projection';
+
+/**
+ * Extracts ingredients from a crafting recipe.
+ * @param recipe The crafting recipe data to extract ingredients from.
+ * @returns An array of crafting ingredient data.
+ */
+export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientData[] {
+  return Object.keys(recipe || {})
+    .filter(key => key.match(/^Ingredient\d+$/))
+    .map(key => {
+      const match = /^Ingredient(\d+)$/.exec(key);
+      if (match) {
+        const index = parseInt(match[1], 10);
+        const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
+        const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
+        const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
+        if (id && quantity) {
+          return { id, type: type ?? 'Item', quantity };
+        }
+      }
+      return null;
+    })
+    .filter(x => !!x);
+}
 
 /**
  * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
  */
-export class Blueprint {
+export class Blueprint implements Deferrable, Materials<Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
    * Gets the bonus items chance for the current item.
    */
-  get bonus(): number {
-    return this.recipe.BonusItemChance;
-  }
+  get bonus(): number { return this.recipe.BonusItemChance; }
 
   /**
    * Gets the crafting equipment context for the current blueprint.
@@ -28,7 +52,7 @@ export class Blueprint {
   /**
    * Creates a new Blueprint instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param item The craftable item associated with this blueprint.
+   * @param item The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
    * @throws Will throw an error if the artisan or item is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
@@ -41,30 +65,15 @@ export class Blueprint {
       throw new Error('Invalid item data.');
     }
 
-    const items: { id: string, type: CraftingIngredientType, qty: number }[] = [];
-    if (recipe?.Ingredient1) {
-      items.push({ id: recipe.Ingredient1, type: recipe.Type1, qty: recipe.Qty1 });
+    for (const ingredient of getIngredients(recipe)) {
+      this.ingredients.push(new Ingredient(artisan, ingredient));
     }
-    if (recipe?.Ingredient2) {
-      items.push({ id: recipe.Ingredient2, type: recipe.Type2, qty: recipe.Qty2 });
-    }
-    if (recipe?.Ingredient3) {
-      items.push({ id: recipe.Ingredient3, type: recipe.Type3, qty: recipe.Qty3 });
-    }
-    if (recipe?.Ingredient4) {
-      items.push({ id: recipe.Ingredient4, type: recipe.Type4, qty: recipe.Qty4 });
-    }
-    if (recipe?.Ingredient5) {
-      items.push({ id: recipe.Ingredient5, type: recipe.Type5, qty: recipe.Qty5 });
-    }
-    if (recipe?.Ingredient6) {
-      items.push({ id: recipe.Ingredient6, type: recipe.Type6, qty: recipe.Qty6 });
-    }
-    if (recipe?.Ingredient7) {
-      items.push({ id: recipe.Ingredient7, type: recipe.Type7, qty: recipe.Qty7 });
-    }
-    for (const item of items) {
-      this.ingredients.push(new Ingredient(this.artisan, item.id, item.type, item.qty));
+  }
+
+  /** @inheritdoc */
+  initialize(): void {
+    for (const ingredient of this.ingredients) {
+      ingredient.initialize();
     }
   }
 
@@ -74,5 +83,10 @@ export class Blueprint {
    */
   getContext(): Equipment | null {
     return this.artisan.getContext(this.recipe?.Tradeskill);
+  }
+
+  /** @inheritdoc */
+  request(): Projection {
+    return new Projection(this);
   }
 }

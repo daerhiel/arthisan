@@ -1,13 +1,14 @@
 import { firstValueFrom, timer } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
-import { getIconPath, NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Craftable, getIconInputs } from './craftable';
+import { Craftable } from './craftable';
+import { Assembly } from './assembly';
 
 describe('Craftable', () => {
   let service: Artisan;
@@ -28,70 +29,31 @@ describe('Craftable', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Craftable(null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Craftable(null!, null!, null!)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should create a non-existing item', () => {
-    const craftable = new Craftable(service, 'UnknownId');
-    expect(craftable).toBeTruthy();
-    expect(craftable.id).toBe('UnknownId');
-    expect(craftable.name()).toBe(null);
-    expect(craftable.icon()).toBe(null);
-    expect(craftable.rarity()).toBe('common');
-    expect(craftable.named()).toBe(false);
-    expect(craftable.category()).toBe(null);
-    expect(craftable.family()).toBe(null);
-    expect(craftable.type()).toBe(null);
-    expect(craftable.tier()).toBe(null);
-    expect(craftable.price()).toBe(null);
-    expect(craftable.blueprints()).toBe(null);
+  it('should throw on null item', () => {
+    expect(() => new Craftable(service, null!, null!)).toThrowError('Invalid item data.');
   });
 
-  it('should create a regular item', () => {
-    const craftable = new Craftable(service, 'OreT1');
-    expect(craftable).toBeTruthy();
-
-    expect(craftable.id).toBe('OreT1');
-    expect(craftable.name()).toBe('@OreT1_MasterName');
-    expect(craftable.icon()).toBe(getIconPath('OreT1'));
-    expect(craftable.rarity()).toBe('common');
-    expect(craftable.named()).toBe(false);
-    expect(craftable.category()).toBe('Resources');
-    expect(craftable.family()).toBe('RawResources');
-    expect(craftable.type()).toBe('Resource');
-    expect(craftable.tier()).toBe(1);
-    expect(craftable.price()).toBe(0.5);
-    expect(craftable.blueprints()).toBe(null);
+  it('should throw on null recipes', () => {
+    const item = service.data.items.get('OreT1')!;
+    expect(() => new Craftable(service, item, null!)).toThrowError('Invalid recipes data.');
   });
 
-  it('should create a craftable item', () => {
-    const craftable = new Craftable(service, 'IngotT2');
-    expect(craftable).toBeTruthy();
-
-    expect(craftable.id).toBe('IngotT2');
-    expect(craftable.name()).toBe('@IngotT2_MasterName');
-    expect(craftable.icon()).toBe(getIconPath('IngotT2'));
-    expect(craftable.rarity()).toBe('common');
-    expect(craftable.named()).toBe(false);
-    expect(craftable.category()).toBe('Resources');
-    expect(craftable.family()).toBe('RefinedResources');
-    expect(craftable.type()).toBe('Resource');
-    expect(craftable.tier()).toBe(2);
-    expect(craftable.price()).toBe(4);
-    expect(craftable.blueprints()?.map(x => x.item.id)).toEqual(['IngotT2']);
+  it('should create a craftable entity', () => {
+    const item = service.data.items.get('IngotT2')!;
+    const recipes = service.data.recipes.get('IngotT2')!;
+    const craftable = new Craftable(service, item, recipes);
+    expect(craftable.blueprints.map(x => x.item.id)).toEqual(['IngotT2']);
   });
 
-  describe('getIconInputs', () => {
-    it('should return icon inputs', () => {
-      const craftable = new Craftable(service, 'OreT1');
-      const inputs = getIconInputs(craftable);
-      expect(inputs).toEqual({
-        path: getIconPath('OreT1'),
-        name: '@OreT1_MasterName',
-        rarity: 'common',
-        named: false,
-        size: 12
-      });
-    });
+  it('should request an assembly', () => {
+    const item = service.data.items.get('IngotT2')!;
+    const recipes = service.data.recipes.get('IngotT2')!;
+    const craftable = new Craftable(service, item, recipes);
+    const assembly = craftable.request();
+    expect(assembly).toBeInstanceOf(Assembly);
+    expect(assembly.entity).toBe(craftable);
   });
 });
