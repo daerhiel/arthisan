@@ -82,7 +82,7 @@ describe('Artisan', () => {
     expect(craftable?.id).toBe(itemId);
   });
 
-  xit('should get a housing item craftable entity', () => {
+  it('should get a housing item craftable entity', () => {
     const itemId = 'House_HousingItem_Lighting_CandleHolder_A';
     const craftable = service.getCraftable(itemId);
     expect(craftable).toBeTruthy();
