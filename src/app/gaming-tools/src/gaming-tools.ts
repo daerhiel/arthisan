@@ -31,8 +31,8 @@ export class GamingTools {
    * The index of commodities for the selected server.
    */
   readonly #commodities = rxResource({
-    request: this.#server,
-    loader: ({ request }) => request ? this.#api.getServerPrices(request.name).pipe(
+    params: this.#server,
+    stream: ({ params }) => params ? this.#api.getServerPrices(params.name).pipe(
       map(x => indexCommodities(x)),
       retry(retryStrategy({ delay: 3000, count: 3, span: 5000 })),
       catchError(handleError<CommodityIndex>(this.#broadcast, {}))
