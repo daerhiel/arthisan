@@ -20,8 +20,8 @@ export class NwI18n {
    * The translation strings for the NW Buddy data.
    */
   readonly #strings = rxResource({
-    request: this.locale,
-    loader: ({ request }) => this.#api.getTranslations(request),
+    params: this.locale,
+    stream: ({ params }) => this.#api.getTranslations(params),
     defaultValue: {}
   });
 
