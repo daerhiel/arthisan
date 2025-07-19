@@ -52,7 +52,6 @@ export class AppOpener<C, T> implements OnDestroy {
    * Opens the dialog with the specified component and configuration.
    */
   open(): void {
-    const component = this.component();
-    component && this.#refs.push(this.#dialog.open(component, this.config()));
+    this.#refs.push(this.#dialog.open(this.component(), this.config()));
   }
 }

@@ -26,8 +26,8 @@ describe('getOpenerInputs', () => {
     const object = { name: 'Test', value: 42 };
     const i18n = { translate: (key: string) => key } as unknown as I18n;
 
-    const inputs = getOpenerInputs<typeof object, string, MatDialog>(x => x.name, MatDialog, {})(object, i18n);
-    expect(inputs).toEqual({ value: 'Test', component: MatDialog, config: { data: object } });
+    const inputs = getOpenerInputs<typeof object, string, TestDialog>(x => x.name, TestDialog, {})(object, i18n);
+    expect(inputs).toEqual({ value: 'Test', component: TestDialog, config: { data: object } });
   });
 });
 
