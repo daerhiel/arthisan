@@ -35,7 +35,7 @@ describe('AppOpener', () => {
   let component: AppOpener<unknown, unknown>;
   let fixture: ComponentFixture<AppOpener<unknown, unknown>>;
   let harness: AppOpenerHarness;
-  let loader: HarnessLoader
+  let loader: HarnessLoader;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
