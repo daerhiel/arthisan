@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, InjectionToken, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, ViewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -18,7 +18,8 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
     ColumnsPipe, ColumnPipe
   ],
   templateUrl: './explorer.html',
-  styleUrl: './explorer.scss'
+  styleUrl: './explorer.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerComponent {
   readonly #artisan = inject(Artisan);

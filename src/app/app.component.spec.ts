@@ -46,10 +46,12 @@ describe('AppComponent', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     }).compileComponents();
+
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
-    harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppComponentHarness);
     fixture.detectChanges();
+
+    harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppComponentHarness);
   });
 
   it(`should have the 'arthisan' title`, () => {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -16,7 +16,8 @@ import { GamingTools } from '@app/gaming-tools';
     MatButtonModule, MatIconModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   protected readonly _themes = inject(ThemeManager);

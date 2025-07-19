@@ -76,7 +76,7 @@ describe('NwIcon', () => {
 
 @Component({
   imports: [NwIcon],
-  template: `<picture nw-icon [path]="path" [name]="name" [rarity]="rarity" [named]="named" [size]="size"></picture>`,
+  template: `<picture nw-icon [path]="path" [name]="name" [rarity]="rarity" [named]="named" [size]="size"></picture>`
 })
 export class TestComponent {
   path?: string | null;

@@ -13,9 +13,9 @@ describe('NwPriceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [DecimalPipe],
-      teardown: { destroyAfterEach: false }
+      providers: [DecimalPipe]
     }).compileComponents();
+
     fixture = TestBed.createComponent(TestComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -130,7 +130,7 @@ describe('getPriceInputs', () => {
 
 @Component({
   imports: [NwPrice],
-  template: `<span nw-price [value]="value!" [state]="state!"></span>`,
+  template: `<span nw-price [value]="value!" [state]="state!"></span>`
 })
 export class TestComponent {
   value?: number | null;
