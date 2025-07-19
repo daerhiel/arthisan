@@ -1,3 +1,5 @@
+import { provideZonelessChangeDetection } from '@angular/core';
+
 import { TestBed } from '@angular/core/testing';
 import { getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
@@ -17,6 +19,7 @@ describe('Artisan', () => {
     spyOn(console, 'warn');
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
@@ -171,6 +174,7 @@ describe('Artisan: no data', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]

@@ -1,87 +1,67 @@
-import { Component } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItemRarity } from '@app/nw-data';
 import { NwIcon } from './nw-icon';
+import { By } from '@angular/platform-browser';
 
 describe('NwIcon', () => {
-  let component: TestComponent;
-  let fixture: ComponentFixture<TestComponent>;
+  let component: NwIcon;
+  let fixture: ComponentFixture<NwIcon>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [NwIcon],
+      providers: [provideZonelessChangeDetection()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestComponent);
+    fixture = TestBed.createComponent(NwIcon);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('name', 'Test Icon');
+    fixture.componentRef.setInput('path', 'icon/path.png');
+    fixture.componentRef.setInput('rarity', 'common');
     fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
   it('should render icon structure', () => {
-    component.path = 'icon/path.png';
-    component.name = 'Test Icon';
-    component.rarity = 'common';
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.query(By.css('picture[nw-icon]'));
-    expect(icon).toBeTruthy();
-    expect(icon.nativeElement).toHaveClass('nw-icon');
-    expect(icon.nativeElement).toHaveClass('nw-item-icon-frame');
-    expect(icon.nativeElement).toHaveClass('nw-item-icon-bg');
+    expect(fixture.nativeElement).toHaveClass('nw-icon');
+    expect(fixture.nativeElement).toHaveClass('nw-item-icon-frame');
+    expect(fixture.nativeElement).toHaveClass('nw-item-icon-bg');
 
-    const border = icon.nativeElement.querySelector('.nw-item-icon-border');
+    const border = fixture.debugElement.query(By.css('.nw-item-icon-border'));
     expect(border).toBeTruthy();
-    expect(border).toHaveClass('nw-item-icon-border');
+    expect(border.nativeElement).toHaveClass('nw-item-icon-border');
 
-    const image = icon.nativeElement.querySelector('img');
+    const image = fixture.debugElement.query(By.css('img'));
     expect(image).toBeTruthy();
-    expect(image.src).toContain('icon/path.png');
-    expect(image.alt).toBe('Test Icon');
+    expect(image.nativeElement.src).toContain('icon/path.png');
+    expect(image.nativeElement.alt).toBe('Test Icon');
   });
 
   it('should apply rarity class', () => {
-    component.path = 'icon/path.png';
-    component.name = 'Test Icon';
-    component.rarity = 'rare';
+    fixture.componentRef.setInput('rarity', 'rare');
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.query(By.css('picture[nw-icon]'));
-    expect(icon.nativeElement).toHaveClass('nw-item-rarity-rare');
+    expect(fixture.nativeElement).toHaveClass('nw-item-rarity-rare');
   });
 
   it('should apply named class', () => {
-    component.path = 'icon/path.png';
-    component.name = 'Test Icon';
-    component.rarity = 'common';
-    component.named = true;
+    fixture.componentRef.setInput('named', true);
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.query(By.css('picture[nw-icon]'));
-    expect(icon.nativeElement).toHaveClass('named');
+    expect(fixture.nativeElement).toHaveClass('named');
   });
 
   it('should apply size class', () => {
-    component.path = 'icon/path.png';
-    component.name = 'Test Icon';
-    component.rarity = 'common';
-    component.size = 15;
+    fixture.componentRef.setInput('size', 15);
     fixture.detectChanges();
 
-    const icon = fixture.debugElement.query(By.css('picture[nw-icon]'));
-    expect(icon.nativeElement).toHaveClass('app-w-15');
+    expect(fixture.nativeElement).toHaveClass('app-w-15');
   });
 });
-
-@Component({
-  imports: [NwIcon],
-  template: `<picture nw-icon [path]="path" [name]="name" [rarity]="rarity" [named]="named" [size]="size"></picture>`
-})
-export class TestComponent {
-  path?: string | null;
-  name?: string | null;
-  rarity?: ItemRarity | null;
-  named = false;
-  size?: number | null;
-}

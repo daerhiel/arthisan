@@ -1,25 +1,23 @@
-import { Component } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { By } from '@angular/platform-browser';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { getPriceInputs, NwPrice } from './nw-price';
 
-describe('NwPriceComponent', () => {
-  let component: TestComponent;
-  let fixture: ComponentFixture<TestComponent>;
-  let pipe: DecimalPipe
+describe('NwPrice', () => {
+  let component: NwPrice;
+  let fixture: ComponentFixture<NwPrice>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [DecimalPipe]
+      imports: [NwPrice],
+      providers: [provideZonelessChangeDetection()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TestComponent);
+    fixture = TestBed.createComponent(NwPrice);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    pipe = TestBed.inject(DecimalPipe);
   });
 
   it('should create', () => {
@@ -27,15 +25,11 @@ describe('NwPriceComponent', () => {
   });
 
   it('should render default structure', () => {
-    const price = fixture.debugElement.query(By.css('span[nw-price]'));
-    expect(price).toBeTruthy();
-    expect(price.nativeElement).not.toHaveClass('nw-price');
+    expect(fixture.nativeElement).not.toHaveClass('nw-price');
   });
 
   it('should not render value by default', () => {
-    const price = fixture.debugElement.query(By.css('span[nw-price]'));
-    expect(price).toBeTruthy();
-    expect(price.nativeElement.innerText).toBe('');
+    expect(fixture.nativeElement.innerText).toBe('');
   });
 
   const values = [
@@ -66,40 +60,34 @@ describe('NwPriceComponent', () => {
 
   values.forEach(value => {
     it(`should render value: ${value}`, () => {
-      component.value = value;
+      const pipe = new DecimalPipe('en-US');
+
+      fixture.componentRef.setInput('value', value);
       fixture.detectChanges();
 
-      const price = fixture.debugElement.query(By.css('span[nw-price]'));
-      expect(price).toBeTruthy();
-      expect(price.nativeElement.innerText).toBe(pipe.transform(value, '1.2-2') ?? '');
+      expect(fixture.nativeElement.innerText).toBe(pipe.transform(value, '1.2-2') ?? '');
     });
   });
 
   it('should not render state by default', () => {
-    const price = fixture.debugElement.query(By.css('span[nw-price]'));
-    expect(price).toBeTruthy();
-    expect(price.nativeElement).not.toHaveClass('nw-positive');
-    expect(price.nativeElement).not.toHaveClass('nw-negative');
+    expect(fixture.nativeElement).not.toHaveClass('nw-positive');
+    expect(fixture.nativeElement).not.toHaveClass('nw-negative');
   });
 
   it('should render positive state', () => {
-    component.state = true;
+    fixture.componentRef.setInput('state', true);
     fixture.detectChanges();
 
-    const price = fixture.debugElement.query(By.css('span[nw-price]'));
-    expect(price).toBeTruthy();
-    expect(price.nativeElement).toHaveClass('nw-positive');
-    expect(price.nativeElement).not.toHaveClass('nw-negative');
+    expect(fixture.nativeElement).toHaveClass('nw-positive');
+    expect(fixture.nativeElement).not.toHaveClass('nw-negative');
   });
 
   it('should render negative state', () => {
-    component.state = false;
+    fixture.componentRef.setInput('state', false);
     fixture.detectChanges();
 
-    const price = fixture.debugElement.query(By.css('span[nw-price]'));
-    expect(price).toBeTruthy();
-    expect(price.nativeElement).not.toHaveClass('nw-positive');
-    expect(price.nativeElement).toHaveClass('nw-negative');
+    expect(fixture.nativeElement).not.toHaveClass('nw-positive');
+    expect(fixture.nativeElement).toHaveClass('nw-negative');
   });
 });
 
@@ -127,12 +115,3 @@ describe('getPriceInputs', () => {
     expect(inputs).toEqual({ value: 42, state: false });
   });
 });
-
-@Component({
-  imports: [NwPrice],
-  template: `<span nw-price [value]="value!" [state]="state!"></span>`
-})
-export class TestComponent {
-  value?: number | null;
-  state?: boolean | null;
-}

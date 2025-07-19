@@ -1,5 +1,5 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ComponentHarness, parallel } from '@angular/cdk/testing';
@@ -14,22 +14,23 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
-import { AppComponent } from './app.component';
+import { App } from './app';
 import { provideThemes } from './theme';
 import { themes } from './app.config';
 
-class AppComponentHarness extends ComponentHarness {
+class AppHarness extends ComponentHarness {
   static hostSelector = 'app-root';
 
+  getTitle = this.locatorFor('#title');
   getToolbar = this.locatorFor(MatToolbarHarness);
   getThemeButton = this.locatorFor(MatButtonHarness.with({ ancestor: '[app-theme]', selector: '#theme' }));
   getThemeMenu = this.locatorFor(MatMenuHarness.with({ ancestor: '[app-theme]' }));
 }
 
-describe('AppComponent', () => {
-  let fixture: ComponentFixture<AppComponent>;
-  let component: AppComponent;
-  let harness: AppComponentHarness;
+describe('App', () => {
+  let fixture: ComponentFixture<App>;
+  let component: App;
+  let harness: AppHarness;
 
   beforeAll(withStyleSheet(MAT_ICONS));
 
@@ -39,23 +40,27 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, AppComponent],
+      imports: [App],
       providers: [
+        provideZonelessChangeDetection(),
         provideRouter([]), provideThemes(themes),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(App);
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppComponentHarness);
+    harness = await TestbedHarnessEnvironment.harnessForFixture(fixture, AppHarness);
   });
 
-  it(`should have the 'arthisan' title`, () => {
-    expect(component.title).toEqual('arthisan');
+  it('should render title', async () => {
+    expect(component.title()).toEqual('arthisan');
+
+    const title = await harness.getTitle();
+    expect(await title.text()).toBe('arthisan');
   });
 
   it('should render header', async () => {

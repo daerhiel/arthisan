@@ -24,7 +24,7 @@ export function getOpenerInputs<T, R, C>(fitter: FitterFn<T, R>, component: Type
  * @template C The type of the component to open.
  */
 @Component({
-  selector: 'button[app-opener]',
+  selector: '[app-opener]',
   imports: [],
   templateUrl: './opener.html',
   styleUrl: './opener.scss',
@@ -33,7 +33,7 @@ export function getOpenerInputs<T, R, C>(fitter: FitterFn<T, R>, component: Type
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppOpener<C, T> implements OnDestroy {
+export class Opener<C, T> implements OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #refs: MatDialogRef<C>[] = [];
 

@@ -1,5 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
 
+import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 
 import { NwBuddy } from './nw-buddy';
@@ -11,6 +12,7 @@ describe('NwBuddy', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });

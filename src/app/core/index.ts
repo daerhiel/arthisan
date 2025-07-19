@@ -1,3 +1,4 @@
+export * from './src/message';
 export * from './src/broadcast';
 export * from './src/api-handlers';
 export * from './src/object-map';

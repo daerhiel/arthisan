@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { firstValueFrom, timer } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -6,16 +7,17 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
-import { EXPLORE_ITEM_CLASSES, ExplorerComponent } from './explorer';
+import { EXPLORE_ITEM_CLASSES, Explorer } from './explorer';
 
-describe('ExplorerComponent', () => {
-  let component: ExplorerComponent;
-  let fixture: ComponentFixture<ExplorerComponent>;
+describe('Explorer', () => {
+  let component: Explorer;
+  let fixture: ComponentFixture<Explorer>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ExplorerComponent],
+      imports: [Explorer],
       providers: [
+        provideZonelessChangeDetection(),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock },
         { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource'] }
@@ -32,7 +34,7 @@ describe('ExplorerComponent', () => {
       await firstValueFrom(timer(100));
     }
 
-    fixture = TestBed.createComponent(ExplorerComponent);
+    fixture = TestBed.createComponent(Explorer);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

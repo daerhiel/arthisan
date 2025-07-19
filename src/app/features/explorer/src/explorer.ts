@@ -12,6 +12,7 @@ export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('E
 export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITEM_CLASSES');
 
 @Component({
+  selector: 'app-explorer',
   imports: [
     NgComponentOutlet,
     MatTableModule, MatSortModule,
@@ -21,7 +22,7 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
   styleUrl: './explorer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ExplorerComponent {
+export class Explorer {
   readonly #artisan = inject(Artisan);
   readonly #categories = inject(EXPLORE_ITEM_CATEGORIES, { optional: true }) ?? [];
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];

@@ -1,7 +1,10 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { of } from 'rxjs';
+
+import { TestBed } from '@angular/core/testing';
+
 import { ObjectCache } from './object-cache';
 import { ObjectIndex } from './object-index'
-import { TestBed } from '@angular/core/testing';
 
 interface Item {
   id: string;
@@ -21,6 +24,9 @@ describe('ObjectIndex', () => {
   }
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()]
+    });
     TestBed.runInInjectionContext(() => {
       cache = new ObjectCache(of(data), item => item.id);
       index = new ObjectIndex(cache, item => item.categories);

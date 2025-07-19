@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, provideZonelessChangeDetection } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -6,8 +6,8 @@ import { ComponentHarness, HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatDialogHarness } from '@angular/material/dialog/testing';
 
-import { AppOpener, getOpenerInputs } from './opener';
 import { I18n } from '@app/core';
+import { Opener, getOpenerInputs } from './opener';
 
 export class AppOpenerHarness extends ComponentHarness {
   static hostSelector = 'button[app-opener]';
@@ -31,18 +31,19 @@ describe('getOpenerInputs', () => {
   });
 });
 
-describe('AppOpener', () => {
-  let component: AppOpener<unknown, unknown>;
-  let fixture: ComponentFixture<AppOpener<unknown, unknown>>;
+describe('Opener', () => {
+  let component: Opener<unknown, unknown>;
+  let fixture: ComponentFixture<Opener<unknown, unknown>>;
   let harness: AppOpenerHarness;
   let loader: HarnessLoader;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppOpener]
+      imports: [Opener],
+      providers: [provideZonelessChangeDetection()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppOpener);
+    fixture = TestBed.createComponent(Opener);
     fixture.componentRef.setInput('component', TestDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -53,6 +54,10 @@ describe('AppOpener', () => {
 
   afterEach(() => {
     TestBed.inject(MatDialog).closeAll();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
   it('should have no text by default', async () => {

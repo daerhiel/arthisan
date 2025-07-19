@@ -1,7 +1,9 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners, provideZonelessChangeDetection
+} from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 import { provideThemes } from '@app/theme';
 import { EXPLORE_ITEM_CATEGORIES, EXPLORE_ITEM_CLASSES } from '@features/explorer';
@@ -20,10 +22,10 @@ export const themes = [
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideBrowserGlobalErrorListeners(),
+    provideZonelessChangeDetection(),
     provideHttpClient(withInterceptors([])),
     provideRouter(routes),
-    provideAnimationsAsync(),
     provideThemes(themes),
     { provide: EXPLORE_ITEM_CATEGORIES, useValue: ['Faction'] },
     { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource', 'Gem'] }
