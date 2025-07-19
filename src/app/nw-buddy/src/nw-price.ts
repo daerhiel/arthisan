@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { GetterFn } from '@app/core';
@@ -36,7 +36,8 @@ export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, getter?: GetterFn<T
   },
   providers: [DecimalPipe],
   templateUrl: './nw-price.html',
-  styleUrl: './nw-price.scss'
+  styleUrl: './nw-price.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NwPrice {
   readonly #formatter = inject(DecimalPipe);

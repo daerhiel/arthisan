@@ -1,9 +1,11 @@
 import { defineColumn, defineTable, referColumns } from '@app/core';
 import { getPriceInputs, NwIcon, NwPrice } from '@app/nw-buddy';
+import { AppSchematic } from '@features/schematic';
 import { Entity, getIconInputs } from './entity';
 import { Craftable } from './craftable';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
+import { AppOpener, getOpenerInputs } from './opener';
 
 function getPriceState(projection: Projection): boolean | null {
   const profit = projection.profit;
@@ -21,22 +23,14 @@ export const entityName = defineColumn<Entity>({
   id: 'name',
   displayName: 'Name',
   width: '48%',
-  value: {
-    fit: (x, i18n) => {
-      return i18n.get(x.name);
-    }
-  }
+  value: { component: AppOpener, map: getOpenerInputs((x, i18n) => i18n.get(x.name), AppSchematic, {}) }
 });
 
 export const entityCategory = defineColumn<Entity>({
   id: 'category',
   displayName: 'Category',
   width: '7%',
-  value: {
-    fit: (x, i18n) => {
-      return i18n.get(x.category, 'CategoryData');
-    }
-  }
+  value: { fit: (x, i18n) => i18n.get(x.category, 'CategoryData') }
 });
 
 export const entityFamily = defineColumn<Entity>({
@@ -44,9 +38,7 @@ export const entityFamily = defineColumn<Entity>({
   displayName: 'Family',
   width: '13%',
   value: {
-    fit: (x, i18n) => {
-      return i18n.get(x.family, 'CategoryData');
-    }
+    fit: (x, i18n) => i18n.get(x.family, 'CategoryData')
   }
 });
 
@@ -54,11 +46,7 @@ export const entityType = defineColumn<Entity>({
   id: 'type',
   displayName: 'Type',
   width: '10%',
-  value: {
-    fit: (x, i18n) => {
-      return i18n.get(x.type, 'UI', 'UI_ItemTypeDescription');
-    }
-  }
+  value: { fit: (x, i18n) => i18n.get(x.type, 'UI', 'UI_ItemTypeDescription') }
 });
 
 export const entityTier = defineColumn<Entity>({

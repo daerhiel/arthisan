@@ -1,0 +1,12 @@
+:host {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

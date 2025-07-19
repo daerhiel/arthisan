@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { environment } from '@environments/environment';
 import { ItemRarity } from '@app/nw-data';
@@ -11,7 +11,8 @@ import { ItemRarity } from '@app/nw-data';
     '[class]': '_classes()',
   },
   templateUrl: './nw-icon.html',
-  styleUrl: './nw-icon.scss'
+  styleUrl: './nw-icon.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NwIcon {
   protected readonly _baseUrl = environment.apiNwBuddyContentUrl;
