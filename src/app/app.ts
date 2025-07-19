@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,15 +15,15 @@ import { GamingTools } from '@app/gaming-tools';
     MatToolbarModule, MatMenuModule,
     MatButtonModule, MatIconModule
   ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class App {
   protected readonly _themes = inject(ThemeManager);
   protected readonly _gaming = inject(GamingTools);
 
-  title = 'arthisan';
+  readonly title = signal('arthisan');
 
   /**
    * Gets an active icon for the menu option.

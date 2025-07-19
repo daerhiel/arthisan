@@ -1,3 +1,5 @@
+import { provideZonelessChangeDetection } from '@angular/core';
+
 import { TestBed } from '@angular/core/testing';
 
 import { TableDefinition } from '@app/core';
@@ -7,6 +9,9 @@ describe('ColumnsPipe', () => {
   let pipe: ColumnsPipe;
 
   beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()]
+    });
     TestBed.runInInjectionContext(() => {
       pipe = new ColumnsPipe();
     });

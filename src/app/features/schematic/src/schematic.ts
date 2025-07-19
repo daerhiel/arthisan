@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './schematic.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppSchematic {
+export class Schematic {
 }

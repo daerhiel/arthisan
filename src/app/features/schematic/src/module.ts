@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 
-import { AppSchematic } from './schematic';
+import { Schematic } from './schematic';
 
 const declarations = [
-  AppSchematic
+  Schematic
 ];
 
 @NgModule({

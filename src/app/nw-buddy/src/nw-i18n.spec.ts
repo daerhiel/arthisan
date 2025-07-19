@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { firstValueFrom, timer } from 'rxjs';
 
 import { TestBed } from '@angular/core/testing';
@@ -12,6 +13,7 @@ describe('NwI18n', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });

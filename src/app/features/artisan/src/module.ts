@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 
-import { AppOpener } from './opener';
+import { Opener } from './opener';
 import { ColumnsPipe } from './columns';
 import { ColumnPipe } from './column';
 
 const declarations = [
-  AppOpener,
+  Opener,
   ColumnsPipe,
   ColumnPipe
 ];

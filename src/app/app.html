@@ -1,9 +1,9 @@
-<mat-toolbar color="primary" role="banner">
+<mat-toolbar role="banner">
   <button mat-icon-button id="main-menu" aria-label="Application menu">
     <mat-icon>menu</mat-icon>
   </button>
 
-  <a id="title" mat-button [routerLink]="['']">{{title}}</a>
+  <a id="title" mat-button [routerLink]="['']">{{title()}}</a>
   <span class="app-spacer"></span>
 
   <div app-server>
@@ -19,16 +19,15 @@
     </mat-menu>
   </div>
 
-
   <div app-theme>
-    <button id="theme" mat-icon-button color="primary" [matMenuTriggerFor]="theme">
+    <button id="theme" mat-icon-button [matMenuTriggerFor]="theme">
       <mat-icon fontIcon="format_color_fill"></mat-icon>
     </button>
 
     <mat-menu #theme="matMenu">
       @for (theme of _themes.registry(); track theme.id) {
       <button mat-menu-item (click)="_themes.set(theme.id)">
-        <mat-icon color="accent" [fontIcon]="_getThemeIcon(theme)"></mat-icon>
+        <mat-icon [fontIcon]="_getThemeIcon(theme)"></mat-icon>
         <span>{{theme.name}}</span>
       </button>
       }

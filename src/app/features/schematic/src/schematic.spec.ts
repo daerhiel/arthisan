@@ -1,17 +1,20 @@
+import { provideZonelessChangeDetection } from '@angular/core';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppSchematic } from './schematic';
+import { Schematic } from './schematic';
 
-describe('AppSchematic', () => {
-  let component: AppSchematic;
-  let fixture: ComponentFixture<AppSchematic>;
+describe('Schematic', () => {
+  let component: Schematic;
+  let fixture: ComponentFixture<Schematic>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppSchematic]
+      imports: [Schematic],
+      providers: [provideZonelessChangeDetection()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AppSchematic);
+    fixture = TestBed.createComponent(Schematic);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

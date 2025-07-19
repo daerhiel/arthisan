@@ -1,6 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { firstValueFrom, timer } from 'rxjs';
 
+import { TestBed } from '@angular/core/testing';
 import { commodities, GamingToolsApiMock } from '@app/gaming-tools/testing';
 
 import { GamingToolsApi } from './gaming-tools-api';
@@ -14,6 +15,7 @@ describe('GamingTools', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });

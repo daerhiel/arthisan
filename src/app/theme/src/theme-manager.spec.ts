@@ -1,3 +1,5 @@
+import { provideZonelessChangeDetection } from '@angular/core';
+
 import { TestBed } from '@angular/core/testing';
 
 import { APP_THEMES, provideThemes, Theme, ThemeManager } from './theme-manager';
@@ -16,7 +18,9 @@ describe('ThemeManager', () => {
   let service: ThemeManager;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()]
+    });
     service = TestBed.inject(ThemeManager);
   });
 

@@ -33,7 +33,7 @@ export function getOpenerInputs<T, R, C>(fitter: FitterFn<T, R>, component: Type
   },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppOpener<C, T> implements OnDestroy {
+export class Opener<C, T> implements OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #refs: MatDialogRef<C>[] = [];
 
