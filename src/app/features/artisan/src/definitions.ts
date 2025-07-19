@@ -1,9 +1,11 @@
 import { defineColumn, defineTable, referColumns } from '@app/core';
 import { getPriceInputs, NwIcon, NwPrice } from '@app/nw-buddy';
+import { SchematicComponent } from '@features/schematic';
 import { Entity, getIconInputs } from './entity';
 import { Craftable } from './craftable';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
+import { AppOpener, getOpenerInputs } from './opener';
 
 function getPriceState(projection: Projection): boolean | null {
   const profit = projection.profit;
@@ -21,7 +23,7 @@ export const entityName = defineColumn<Entity>({
   id: 'name',
   displayName: 'Name',
   width: '48%',
-  value: { fit: (x, i18n) => i18n.get(x.name) }
+  value: { component: AppOpener, map: getOpenerInputs((x, i18n) => i18n.get(x.name), SchematicComponent, {}) }
 });
 
 export const entityCategory = defineColumn<Entity>({
