@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SchematicComponent } from './schematic';
+import { AppSchematic } from './schematic';
 
-describe('SchematicComponent', () => {
-  let component: SchematicComponent;
-  let fixture: ComponentFixture<SchematicComponent>;
+describe('AppSchematic', () => {
+  let component: AppSchematic;
+  let fixture: ComponentFixture<AppSchematic>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SchematicComponent]
+      imports: [AppSchematic]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SchematicComponent);
+    fixture = TestBed.createComponent(AppSchematic);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

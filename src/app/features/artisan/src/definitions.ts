@@ -1,6 +1,6 @@
 import { defineColumn, defineTable, referColumns } from '@app/core';
 import { getPriceInputs, NwIcon, NwPrice } from '@app/nw-buddy';
-import { SchematicComponent } from '@features/schematic';
+import { AppSchematic } from '@features/schematic';
 import { Entity, getIconInputs } from './entity';
 import { Craftable } from './craftable';
 import { Assembly } from './assembly';
@@ -23,7 +23,7 @@ export const entityName = defineColumn<Entity>({
   id: 'name',
   displayName: 'Name',
   width: '48%',
-  value: { component: AppOpener, map: getOpenerInputs((x, i18n) => i18n.get(x.name), SchematicComponent, {}) }
+  value: { component: AppOpener, map: getOpenerInputs((x, i18n) => i18n.get(x.name), AppSchematic, {}) }
 });
 
 export const entityCategory = defineColumn<Entity>({
