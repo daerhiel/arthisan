@@ -18,7 +18,7 @@ describe('ContentPipe', () => {
   });
 
   it('should extract content component', () => {
-    const column: TableColumn<{ id: number }> = {
+    const column: TableColumn<{ id: number }, number> = {
       id: 'id',
       displayName: 'Id',
       value: { component: TestComponent, map: x => ({ test: x.id }) }
@@ -28,7 +28,7 @@ describe('ContentPipe', () => {
   });
 
   it('should extract value getter', () => {
-    const column: TableColumn<{ id: number }> = {
+    const column: TableColumn<{ id: number }, number> = {
       id: 'id',
       displayName: 'Id',
       value: { fit: x => x.id }
@@ -38,7 +38,7 @@ describe('ContentPipe', () => {
   });
 
   it('should return null for invalid source', () => {
-    const column: TableColumn<{ id: number }> = {
+    const column: TableColumn<{ id: number }, number> = {
       id: 'id',
       displayName: 'Test',
       value: { fit: x => x.id }

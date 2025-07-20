@@ -15,7 +15,7 @@ class Dummy { }
 
 describe('isTableCellValue', () => {
   it('should return true for cell value', () => {
-    const value: TableCellValue<Entity> = { fit: item => item.value };
+    const value: TableCellValue<Entity, string> = { fit: item => item.value };
     expect(isTableCellValue(value)).toBe(true);
   });
 
@@ -36,7 +36,7 @@ describe('isTableCellContent', () => {
   });
 
   it('should return false for cell value', () => {
-    const value: TableCellValue<Entity> = { fit: item => item.value };
+    const value: TableCellValue<Entity, string> = { fit: item => item.value };
     expect(isTableCellContent(value)).toBe(false);
   });
 
@@ -54,8 +54,12 @@ describe('defineTable', () => {
 
 describe('defineColumn', () => {
   it('should define column', () => {
-    const column: TableColumn<Entity> = { id: 'value', displayName: 'Value', value: { fit: item => item.value } };
-    expect(defineColumn<Entity>(column)).toBe(column);
+    const column: TableColumn<Entity, string> = {
+      id: 'value',
+      displayName: 'Value',
+      value: { fit: item => item.value }
+    };
+    expect(defineColumn<Entity, string>(column)).toBe(column);
   });
 });
 
@@ -63,7 +67,7 @@ describe('referValue', () => {
   const i18n = { get: (key: string) => key };
 
   it('should wrap cell value for nested property', () => {
-    const value = referValue<Container, Entity>('entity', { fit: item => item.value });
+    const value = referValue<Container, Entity, string>('entity', { fit: item => item.value });
     expect(isTableCellValue(value)).toBeTrue();
     if (isTableCellValue(value)) {
       expect(value.fit({ entity: { value: 'test' } }, i18n)).toEqual('test');
@@ -71,7 +75,7 @@ describe('referValue', () => {
   });
 
   it('should wrap cell content for nested signal property', () => {
-    const value = referValue<Dynamic, Entity>('entity', { fit: item => item.value });
+    const value = referValue<Dynamic, Entity, string>('entity', { fit: item => item.value });
     expect(isTableCellValue(value)).toBeTrue();
     if (isTableCellValue(value)) {
       expect(value.fit({ entity: signal({ value: 'test' }) }, i18n)).toEqual('test');
@@ -79,7 +83,7 @@ describe('referValue', () => {
   });
 
   it('should wrap cell content for nested property', () => {
-    const value = referValue<Container, Entity>('entity', { component: Dummy, map: item => ({ value: item.value }) });
+    const value = referValue<Container, Entity, string>('entity', { component: Dummy, map: item => ({ value: item.value }) });
     expect(isTableCellContent(value)).toBeTrue();
     if (isTableCellContent(value)) {
       expect(value.component).toBe(Dummy);
@@ -88,7 +92,7 @@ describe('referValue', () => {
   });
 
   it('should wrap cell content for nested signal property', () => {
-    const value = referValue<Dynamic, Entity>('entity', { component: Dummy, map: item => ({ value: item.value }) });
+    const value = referValue<Dynamic, Entity, string>('entity', { component: Dummy, map: item => ({ value: item.value }) });
     expect(isTableCellContent(value)).toBeTrue();
     if (isTableCellContent(value)) {
       expect(value.component).toBe(Dummy);
@@ -97,7 +101,7 @@ describe('referValue', () => {
   });
 
   it('should throw for invalid value', () => {
-    expect(() => referValue<Container, object>('entity', null!)).toThrowError(/invalid value type/i);
+    expect(() => referValue<Container, object, unknown>('entity', null!)).toThrowError(/invalid value type/i);
   });
 });
 
