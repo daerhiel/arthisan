@@ -1,13 +1,7 @@
-import { signal, Signal } from '@angular/core';
-
 import {
-  isTableCellValue, isTableCellContent,
-  defineTable, defineColumn, referValue, referColumn, referColumns,
+  isTableCellValue, isTableCellContent, defineTable, defineColumn,
   TableColumn, TableDefinition, TableCellValue, TableCellContent
 } from './tables';
-
-interface Container { entity: Entity; }
-interface Dynamic { entity: Signal<Entity>; }
 
 interface Entity { value: string; }
 
@@ -60,74 +54,5 @@ describe('defineColumn', () => {
       value: { fit: item => item.value }
     };
     expect(defineColumn<Entity, string>(column)).toBe(column);
-  });
-});
-
-describe('referValue', () => {
-  const i18n = { get: (key: string) => key };
-
-  it('should wrap cell value for nested property', () => {
-    const value = referValue<Container, Entity, string>('entity', { fit: item => item.value });
-    expect(isTableCellValue(value)).toBeTrue();
-    if (isTableCellValue(value)) {
-      expect(value.fit({ entity: { value: 'test' } }, i18n)).toEqual('test');
-    }
-  });
-
-  it('should wrap cell content for nested signal property', () => {
-    const value = referValue<Dynamic, Entity, string>('entity', { fit: item => item.value });
-    expect(isTableCellValue(value)).toBeTrue();
-    if (isTableCellValue(value)) {
-      expect(value.fit({ entity: signal({ value: 'test' }) }, i18n)).toEqual('test');
-    }
-  });
-
-  it('should wrap cell content for nested property', () => {
-    const value = referValue<Container, Entity, string>('entity', { component: Dummy, map: item => ({ value: item.value }) });
-    expect(isTableCellContent(value)).toBeTrue();
-    if (isTableCellContent(value)) {
-      expect(value.component).toBe(Dummy);
-      expect(value.map({ entity: { value: 'test' } }, i18n)).toEqual({ value: 'test' });
-    }
-  });
-
-  it('should wrap cell content for nested signal property', () => {
-    const value = referValue<Dynamic, Entity, string>('entity', { component: Dummy, map: item => ({ value: item.value }) });
-    expect(isTableCellContent(value)).toBeTrue();
-    if (isTableCellContent(value)) {
-      expect(value.component).toBe(Dummy);
-      expect(value.map({ entity: signal({ value: 'test' }) }, i18n)).toEqual({ value: 'test' });
-    }
-  });
-
-  it('should throw for invalid value', () => {
-    expect(() => referValue<Container, object, unknown>('entity', null!)).toThrowError(/invalid value type/i);
-  });
-});
-
-describe('referColumn', () => {
-  it('should map column and wrap value', () => {
-    const column = referColumn<Container, Entity>('entity', {
-      id: 'value',
-      displayName: 'Value',
-      width: '100%',
-      align: 'center',
-      value: { fit: item => item.value }
-    });
-    expect(column.id).toBe('entity.value');
-    expect(column.displayName).toBe('Value');
-  });
-});
-
-describe('referColumns', () => {
-  it('should map columns and wrap values', () => {
-    const columns = referColumns<Container, Entity>('entity',
-      { id: 'value', displayName: 'Value', width: '100%', align: 'center', value: { fit: item => item.value } }
-    );
-    expect(columns.map(x => x.id)).toEqual(['entity.value' as keyof Container]);
-    expect(columns.map(x => x.displayName)).toEqual(['Value']);
-    expect(columns.map(x => x.width)).toEqual(['100%']);
-    expect(columns.map(x => x.align)).toEqual(['center']);
-    expect(columns.map(x => isTableCellValue(x.value))).toEqual([true]);
   });
 });

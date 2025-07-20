@@ -66,6 +66,6 @@ export class Entity implements Deferrable, Materials<Purchase> {
  * @param item The entity for which to get icon inputs.
  * @returns An object containing the path, name, rarity, named status, and size for the icon.
  */
-export function getIconInputs(item: Entity) {
+export function getIconInputs<T extends Entity>(item: T) {
   return { path: item.icon, name: item.name, rarity: item.rarity, named: item.named, size: 12 };
 }

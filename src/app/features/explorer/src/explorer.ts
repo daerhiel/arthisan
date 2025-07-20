@@ -6,7 +6,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { TableDefinition } from '@app/core';
 import { CraftingCategory, ItemClass } from '@app/nw-data';
 import { NwI18n } from '@app/nw-buddy';
-import { Artisan, Assembly, assemblyTable, ColumnPipe, ColumnsPipe } from '@features/artisan';
+import { Artisan, Assembly, ColumnPipe, ColumnsPipe } from '@features/artisan';
+import { assemblyTable } from './assembly';
 
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
 export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITEM_CLASSES');

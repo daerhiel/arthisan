@@ -1,4 +1,4 @@
-import { Signal, Type } from '@angular/core';
+import { Type } from '@angular/core';
 
 export interface I18n {
   get(key: string, ...prefixes: string[]): string;
@@ -26,15 +26,21 @@ export interface TableCellContent<T> {
 }
 
 /**
+ * Represents additional options for a table column.
+ */
+export interface TableColumnOptions {
+  width?: string;
+  align?: 'left' | 'center' | 'right';
+}
+
+/**
  * Represents a column in a table.
  * @template T The type of an object mapped to the table.
  * @template V The type of the value in the column.
  */
-export interface TableColumn<T extends object, V = unknown> {
-  id: keyof T;
+export interface TableColumn<T extends object, V = unknown> extends TableColumnOptions {
+  id: string;
   displayName: string;
-  width?: string;
-  align?: 'left' | 'center' | 'right';
   value: TableCellValue<T, V> | TableCellContent<T>;
 }
 
@@ -88,64 +94,4 @@ export function defineTable<T extends object>(definition: TableDefinition<T>): T
  */
 export function defineColumn<T extends object, V = unknown>(column: TableColumn<T, V>): TableColumn<T, V> {
   return column;
-}
-
-/**
- * Wraps a cell value or content to refer to a nested property.
- * @param id The id of the property to refer to.
- * @param value The value or content to wrap.
- * @returns The wrapped value or content.
- * @template T The type of an object mapped to the table.
- * @template R The type of the nested property.
- * @template V The type of the value in the column.
- * @throws Will throw an error if the value is not supported.
- */
-export function referValue<T extends object, R extends object, V = unknown>(id: keyof T, value: TableCellValue<R, V> | TableCellContent<R>): TableCellValue<T, V> | TableCellContent<T> {
-  if (isTableCellValue(value)) {
-    return {
-      fit: (item: T, i18n: I18n) => {
-        const prop = item[id] as R | Signal<R>;
-        return value.fit(prop instanceof Function ? prop() : prop, i18n);
-      }
-    };
-  }
-  if (isTableCellContent(value)) {
-    return {
-      component: value.component,
-      map: (item: T, i18n: I18n) => {
-        const prop = item[id] as R | Signal<R>;
-        return value.map(prop instanceof Function ? prop() : prop, i18n);
-      }
-    };
-  }
-  throw new Error('Invalid value type');
-}
-
-/**
- * Wraps a column as a property of a parent object.
- * @param id The id of the property to refer to.
- * @param column The column to wrap.
- * @returns The wrapped column.
- * @template T The type of an object mapped to the table.
- * @template R The type of the nested property.
- * @template V The type of the value in the column.
- */
-export function referColumn<T extends object, R extends object, V = unknown>(id: keyof T, column: TableColumn<R, V>): TableColumn<T, V> {
-  return {
-    ...column,
-    id: `${String(id)}.${String(column.id)}` as keyof T,
-    value: referValue(id, column.value)
-  };
-}
-
-/**
- * Wraps a set of columns as a property of a parent object.
- * @param id The id of the property to refer to.
- * @param columns The columns to wrap.
- * @returns The wrapped columns.
- * @template T The type of an object mapped to the table.
- * @template R The type of the nested property.
- */
-export function referColumns<T extends object, R extends object>(id: keyof T, ...columns: TableColumn<R>[]): TableColumn<T>[] {
-  return columns.map(column => referColumn(id, column));
 }
