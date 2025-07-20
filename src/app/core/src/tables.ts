@@ -77,21 +77,28 @@ export function isTableCellContent<T extends object, V = unknown>(value: TableCe
 
 /**
  * Defines a table with its properties.
- * @param definition The table options to be defined.
+ * @param name The name of the table.
+ * @param columns The columns to be included in the table.
  * @returns The table options created.
  * @template T The type of an object mapped to the table.
  */
-export function defineTable<T extends object>(definition: TableDefinition<T>): TableDefinition<T> {
-  return definition;
+export function defineTable<T extends object>(name: string, ...columns: TableColumn<T>[]): TableDefinition<T> {
+  return { name, columns };
 }
 
 /**
  * Defines a table column with its properties.
- * @param column The column to be defined.
+ * @param id The unique identifier for the column.
+ * @param displayName The display name of the column.
+ * @param value The value of the column, which can be a cell value or content.
+ * @param options Additional options for the column, such as width and alignment.
  * @returns The defined options created.
  * @template T The type of an object mapped to the table.
  * @template V The type of the value in the column.
  */
-export function defineColumn<T extends object, V = unknown>(column: TableColumn<T, V>): TableColumn<T, V> {
-  return column;
+export function defineColumn<T extends object, V = unknown>(
+  id: string, displayName: string,
+  value: TableCellValue<T, V> | TableCellContent<T>,
+  options?: TableColumnOptions): TableColumn<T, V> {
+  return { id, displayName, value, ...options ?? {} };
 }

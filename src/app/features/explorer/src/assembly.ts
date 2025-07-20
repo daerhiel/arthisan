@@ -11,95 +11,77 @@ function getPriceState(assembly: Assembly): boolean | null {
   return profit ? profit > 0 : null;
 }
 
-export const assemblyIcon = defineColumn<Assembly>({
-  id: 'entity.icon',
-  displayName: 'Icon',
-  width: '0',
-  value: { component: NwIcon, map: assembly => getIconInputs(assembly.entity) }
-});
+export const assemblyIcon = defineColumn<Assembly>('entity.icon',
+  'Icon',
+  { component: NwIcon, map: assembly => getIconInputs(assembly.entity) },
+  { width: '0' }
+);
 
-export const assemblyName = defineColumn<Assembly, string>({
-  id: 'entity.name',
-  displayName: 'Name',
-  width: '48%',
-  value: { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, {}) }
-});
+export const assemblyName = defineColumn<Assembly, string>('entity.name',
+  'Name',
+  { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, {}) },
+  { width: '48%' }
+);
 
-export const assemblyCategory = defineColumn<Assembly, string>({
-  id: 'entity.category',
-  displayName: 'Category',
-  width: '7%',
-  value: { fit: (x, i18n) => i18n.get(x.entity.category, 'CategoryData') }
-});
+export const assemblyCategory = defineColumn<Assembly, string>('entity.category',
+  'Category',
+  { fit: (x, i18n) => i18n.get(x.entity.category, 'CategoryData') },
+  { width: '7%' }
+);
 
-export const assemblyFamily = defineColumn<Assembly, string>({
-  id: 'entity.family',
-  displayName: 'Family',
-  width: '13%',
-  value: { fit: (x, i18n) => i18n.get(x.entity.family, 'CategoryData') }
-});
+export const assemblyFamily = defineColumn<Assembly, string>('entity.family',
+  'Family',
+  { fit: (x, i18n) => i18n.get(x.entity.family, 'CategoryData') },
+  { width: '13%' }
+);
 
-export const assemblyType = defineColumn<Assembly, string>({
-  id: 'entity.type',
-  displayName: 'Type',
-  width: '10%',
-  value: { fit: (x, i18n) => i18n.get(x.entity.type, 'UI', 'UI_ItemTypeDescription') }
-});
+export const assemblyType = defineColumn<Assembly, string>('entity.type',
+  'Type',
+  { fit: (x, i18n) => i18n.get(x.entity.type, 'UI', 'UI_ItemTypeDescription') },
+  { width: '10%' }
+);
 
-export const assemblyTier = defineColumn<Assembly, number>({
-  id: 'entity.tier',
-  displayName: 'Tier',
-  width: '5%',
-  align: 'right',
-  value: { fit: x => x.entity.tier }
-});
+export const assemblyTier = defineColumn<Assembly, number>('entity.tier',
+  'Tier',
+  { fit: x => x.entity.tier },
+  { width: '5%', align: 'right', }
+);
 
-export const assemblyPrice = defineColumn<Assembly, number>({
-  id: 'entity.price',
-  displayName: 'Price',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.entity.price()) }
-});
 
-export const assemblyBlueprints = defineColumn<Assembly, number>({
-  id: 'entity.blueprints',
-  displayName: 'Recipes',
-  width: '2%',
-  value: { fit: x => x.entity.blueprints.length }
-});
+export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
+  'Price',
+  { component: NwPrice, map: getPriceInputs(x => x.entity.price()) },
+  { width: '5%', align: 'right' }
+);
 
-export const assemblyCost = defineColumn<Assembly, number>({
-  id: 'projection.cost',
-  displayName: 'Cost',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.projection?.cost ?? null) }
-});
+export const assemblyBlueprints = defineColumn<Assembly, number>('entity.blueprints',
+  'Recipes',
+  { fit: x => x.entity.blueprints.length },
+  { width: '2%' }
+);
 
-export const assemblyProfit = defineColumn<Assembly, number>({
-  id: 'projection.profit',
-  displayName: 'Profit',
-  width: '5%',
-  align: 'right',
-  value: { component: NwPrice, map: getPriceInputs(x => x.projection?.profit, getPriceState) }
-});
+export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
+  'Cost',
+  { component: NwPrice, map: getPriceInputs(x => x.projection?.cost ?? null) },
+  { width: '5%', align: 'right' }
+);
 
-export const assemblyChance = defineColumn<Assembly, number | null>({
-  id: 'projection.chance',
-  displayName: 'Chance',
-  width: '5%',
-  align: 'right',
-  value: { fit: x => x.projection?.chance ?? null }
-});
+export const assemblyProfit = defineColumn<Assembly, number>('projection.profit',
+  'Profit',
+  { component: NwPrice, map: getPriceInputs(x => x.projection?.profit, getPriceState) },
+  { width: '5%', align: 'right' }
+);
 
-export const assemblyTable = defineTable<Assembly>({
-  name: 'assemblies',
-  columns: [
-    assemblyIcon, assemblyName,
-    assemblyCategory, assemblyFamily,
-    assemblyType, assemblyTier,
-    assemblyPrice, assemblyBlueprints,
-    assemblyCost, assemblyProfit, assemblyChance
-  ]
-});
+export const assemblyChance = defineColumn<Assembly, number | null>('projection.chance',
+  'Chance',
+  { fit: x => x.projection?.chance ?? null },
+  { width: '5%', align: 'right' }
+);
+
+export const assemblyTable = defineTable<Assembly>('assemblies',
+  assemblyIcon, assemblyName,
+  assemblyCategory, assemblyFamily,
+  assemblyType, assemblyTier,
+  assemblyPrice, assemblyBlueprints,
+  assemblyCost, assemblyProfit, assemblyChance
+);

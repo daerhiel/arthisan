@@ -1,6 +1,6 @@
 import {
   isTableCellValue, isTableCellContent, defineTable, defineColumn,
-  TableColumn, TableDefinition, TableCellValue, TableCellContent
+  TableCellValue, TableCellContent
 } from './tables';
 
 interface Entity { value: string; }
@@ -41,18 +41,15 @@ describe('isTableCellContent', () => {
 
 describe('defineTable', () => {
   it('should define table', () => {
-    const table: TableDefinition<Entity> = { name: 'Test', columns: [] };
-    expect(defineTable(table)).toBe(table);
+    expect(defineTable('test')).toEqual({ name: 'test', columns: [] });
   });
 });
 
 describe('defineColumn', () => {
   it('should define column', () => {
-    const column: TableColumn<Entity, string> = {
-      id: 'value',
-      displayName: 'Value',
-      value: { fit: item => item.value }
-    };
-    expect(defineColumn<Entity, string>(column)).toBe(column);
+    const value: TableCellValue<Entity, string> = { fit: item => item.value };
+    expect(defineColumn<Entity, string>('value', 'Value', value)).toEqual({
+      id: 'value', displayName: 'Value', value
+    });
   });
 });
