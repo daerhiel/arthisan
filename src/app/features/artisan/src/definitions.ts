@@ -37,9 +37,7 @@ export const entityFamily = defineColumn<Entity>({
   id: 'family',
   displayName: 'Family',
   width: '13%',
-  value: {
-    fit: (x, i18n) => i18n.get(x.family, 'CategoryData')
-  }
+  value: { fit: (x, i18n) => i18n.get(x.family, 'CategoryData') }
 });
 
 export const entityType = defineColumn<Entity>({

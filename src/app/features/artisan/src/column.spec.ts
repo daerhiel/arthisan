@@ -1,4 +1,4 @@
-import { provideZonelessChangeDetection } from '@angular/core';
+import { Component, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 
@@ -21,10 +21,7 @@ describe('ContentPipe', () => {
     const column: TableColumn<{ id: number }> = {
       id: 'id',
       displayName: 'Id',
-      value: {
-        component: class TestComponent {},
-        map: x => ({ test: x.id }),
-      }
+      value: { component: TestComponent, map: x => ({ test: x.id }) }
     };
     const result = pipe.transform(column, 'content');
     expect(result.component).toBeInstanceOf(Function);
@@ -34,9 +31,7 @@ describe('ContentPipe', () => {
     const column: TableColumn<{ id: number }> = {
       id: 'id',
       displayName: 'Id',
-      value: {
-        fit: x => x.id,
-      }
+      value: { fit: x => x.id }
     };
     const result = pipe.transform(column, 'value');
     expect(result.fit).toBeInstanceOf(Function);
@@ -46,11 +41,13 @@ describe('ContentPipe', () => {
     const column: TableColumn<{ id: number }> = {
       id: 'id',
       displayName: 'Test',
-      value: {
-        fit: x => x.id,
-      }
+      value: { fit: x => x.id }
     };
     const result = pipe.transform(column, null!);
     expect(result).toBeNull();
   });
 });
+
+@Component({})
+class TestComponent {
+}
