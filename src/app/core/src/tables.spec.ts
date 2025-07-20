@@ -2,7 +2,7 @@ import { signal, Signal } from '@angular/core';
 
 import {
   isTableCellValue, isTableCellContent,
-  defineTable, defineColumn, referValue, referColumns,
+  defineTable, defineColumn, referValue, referColumn, referColumns,
   TableColumn, TableDefinition, TableCellValue, TableCellContent
 } from './tables';
 
@@ -102,6 +102,20 @@ describe('referValue', () => {
 
   it('should throw for invalid value', () => {
     expect(() => referValue<Container, object, unknown>('entity', null!)).toThrowError(/invalid value type/i);
+  });
+});
+
+describe('referColumn', () => {
+  it('should map column and wrap value', () => {
+    const column = referColumn<Container, Entity>('entity', {
+      id: 'value',
+      displayName: 'Value',
+      width: '100%',
+      align: 'center',
+      value: { fit: item => item.value }
+    });
+    expect(column.id).toBe('entity.value');
+    expect(column.displayName).toBe('Value');
   });
 });
 

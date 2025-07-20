@@ -122,6 +122,23 @@ export function referValue<T extends object, R extends object, V = unknown>(id: 
 }
 
 /**
+ * Wraps a column as a property of a parent object.
+ * @param id The id of the property to refer to.
+ * @param column The column to wrap.
+ * @returns The wrapped column.
+ * @template T The type of an object mapped to the table.
+ * @template R The type of the nested property.
+ * @template V The type of the value in the column.
+ */
+export function referColumn<T extends object, R extends object, V = unknown>(id: keyof T, column: TableColumn<R, V>): TableColumn<T, V> {
+  return {
+    ...column,
+    id: `${String(id)}.${String(column.id)}` as keyof T,
+    value: referValue(id, column.value)
+  };
+}
+
+/**
  * Wraps a set of columns as a property of a parent object.
  * @param id The id of the property to refer to.
  * @param columns The columns to wrap.
@@ -129,10 +146,6 @@ export function referValue<T extends object, R extends object, V = unknown>(id: 
  * @template T The type of an object mapped to the table.
  * @template R The type of the nested property.
  */
-export function referColumns<T extends object, R extends object>(id: keyof T, ...columns: TableColumn<R, unknown>[]): TableColumn<T, unknown>[] {
-  return columns.map(column => ({
-    ...column,
-    id: `${String(id)}.${String(column.id)}` as keyof T,
-    value: referValue(id, column.value)
-  }));
+export function referColumns<T extends object, R extends object>(id: keyof T, ...columns: TableColumn<R>[]): TableColumn<T>[] {
+  return columns.map(column => referColumn(id, column));
 }
