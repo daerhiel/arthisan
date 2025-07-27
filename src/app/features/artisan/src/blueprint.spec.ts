@@ -74,7 +74,7 @@ describe('Blueprint', () => {
     expect(blueprint.item).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT2', type: Craftable, quantity: 3 },
-      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'FluxT5', type: Entity, quantity: 1 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.02);
@@ -93,7 +93,7 @@ describe('Blueprint', () => {
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT4', type: Entity, quantity: 6 },
       { id: 'IngotT3', type: Craftable, quantity: 2 },
-      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'FluxT5', type: Entity, quantity: 1 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.05);
@@ -112,7 +112,7 @@ describe('Blueprint', () => {
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT5', type: Entity, quantity: 8 },
       { id: 'IngotT4', type: Craftable, quantity: 2 },
-      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'FluxT5', type: Entity, quantity: 1 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.07);
@@ -131,7 +131,7 @@ describe('Blueprint', () => {
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT52', type: Entity, quantity: 12 },
       { id: 'IngotT5', type: Craftable, quantity: 2 },
-      { id: 'FluxT5', type: Craftable, quantity: 1 },
+      { id: 'FluxT5', type: Entity, quantity: 1 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 }
     ]);
     expect(blueprint.bonus).toBe(-0.2);

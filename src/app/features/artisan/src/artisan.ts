@@ -1,13 +1,27 @@
 import { inject, Injectable } from '@angular/core';
 
 import { ObjectMap } from '@app/core';
-import { CraftingIngredientType, CraftingTradeskill } from '@app/nw-data';
+import { CraftingIngredientType, CraftingRecipeData, CraftingTradeskill } from '@app/nw-data';
 import { NwBuddy } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
 import { Craftable } from './craftable';
 import { Category } from './category';
 import { Equipment } from './equipment';
 import { Entity } from './entity';
+
+/**
+ * Filters out unsupported crafting recipes.
+ * @param recipes A list of crafting recipes to filter.
+ * @returns A filtered list of crafting recipes that excludes material conversion recipes.
+ */
+function supported(recipes: CraftingRecipeData[] | null): CraftingRecipeData[] | null {
+  if (recipes) {
+    recipes = recipes.filter(recipe =>
+      recipe.CraftingCategory !== 'MaterialConversion'
+    );
+  }
+  return recipes?.length ? recipes : null;
+}
 
 /**
  * Represents the Artisan module that provides crafting functionality.
@@ -48,7 +62,7 @@ export class Artisan {
       if (!item) {
         throw new Error(`Master item is not found: ${id}.`);
       }
-      const recipes = this.data.recipes.get(id);
+      const recipes = supported(this.data.recipes.get(id));
       entity = recipes ? new Craftable(this, item, recipes) : new Entity(this, item);
       this.#entities.set(id, entity);
       entity.initialize();
@@ -78,7 +92,7 @@ export class Artisan {
       if (!item) {
         throw new Error(`Master item is not found: ${id}.`);
       }
-      const recipes = this.data.recipes.get(id);
+      const recipes = supported(this.data.recipes.get(id));
       if (!recipes) {
         throw new Error(`Recipes are not found: ${id}.`);
       }
