@@ -1,5 +1,6 @@
 import { CraftingIngredientType } from '@app/nw-data';
-import { Deferrable, Materials } from './contracts';
+import { Deferrable, Providable } from './contracts';
+import { Materials } from './materials';
 import { Artisan } from './artisan';
 import { Entity } from './entity';
 import { Category } from './category';
@@ -17,7 +18,7 @@ export interface CraftingIngredientData {
 /**
  * Represents an ingredient used in crafting recipes.
  */
-export class Ingredient implements Deferrable, Materials<Provision> {
+export class Ingredient implements Deferrable, Providable<Provision> {
   readonly #source: CraftingIngredientData;
   #entity!: Entity | Category;
 
@@ -52,7 +53,7 @@ export class Ingredient implements Deferrable, Materials<Provision> {
   }
 
   /** @inheritdoc */
-  request(): Provision {
-    return new Provision(this);
+  request(materials: Materials): Provision {
+    return new Provision(this, materials);
   }
 }

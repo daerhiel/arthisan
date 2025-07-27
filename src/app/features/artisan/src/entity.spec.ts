@@ -5,12 +5,13 @@ import { TestBed } from '@angular/core/testing';
 import { getIconPath, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
+import { MasterItemDefinitions } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Materials } from './materials';
 import { Entity, getIconInputs } from "./entity";
 import { Purchase } from './purchase';
-import { MasterItemDefinitions } from '@app/nw-data';
 
 describe('Entity', () => {
   let service: Artisan;
@@ -24,6 +25,7 @@ describe('Entity', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {
@@ -90,9 +92,12 @@ describe('Entity', () => {
   it('should request a purchase', () => {
     const item = service.data.items.get('OreT1')!;
     const entity = new Entity(service, item);
-    const purchase = entity.request();
+    const materials = new Materials();
+    const purchase = entity.request(materials);
     expect(purchase).toBeInstanceOf(Purchase);
     expect(purchase.entity).toBe(entity);
+    expect(purchase.materials).toBe(materials);
+    expect(purchase.bonus).toBeNull();
   });
 
   describe('getIconInputs', () => {

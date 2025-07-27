@@ -11,7 +11,7 @@ import { Artisan } from './artisan';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
 
-describe('Purchase', () => {
+describe('Materials', () => {
   let service: Artisan;
 
   beforeEach(async () => {
@@ -31,38 +31,27 @@ describe('Purchase', () => {
     }
   });
 
-  it('should throw on missing entity', () => {
-    expect(() => new Purchase(null!, null!)).toThrowError('Invalid entity instance.');
-  });
-
-  it('should throw on missing materials', () => {
-    const entity = service.getEntity('OreT1')!;
-    expect(() => new Purchase(entity, null!)).toThrowError('Invalid materials instance.');
-  });
-
-  it('should create for existing entity', () => {
-    const entity = service.getEntity('OreT1')!;
+  it('should create material index', () => {
     const materials = new Materials();
-    const purchase = new Purchase(entity, materials);
-    expect(purchase).toBeTruthy();
-    expect(purchase.entity).toBe(entity);
-    expect(purchase.materials).toBe(materials);
-    expect(purchase.bonus).toBeNull();
+    expect(materials).toBeTruthy();
   });
 
-  it('should create for existing craftable', () => {
-    const entity = service.getEntity('IngotT2')!;
+  it('should request a purchase for a material', () => {
     const materials = new Materials();
-    const purchase = new Purchase(entity, materials);
-    expect(purchase).toBeTruthy();
-    expect(purchase.entity).toBe(entity);
-    expect(purchase.bonus).toBeNull();
+    const item = service.getEntity('OreT1')!;
+    const purchase = materials.request(item);
+    expect(purchase).toBeInstanceOf(Purchase);
+    expect(purchase.entity).toBe(item);
   });
 
-  it('should not have a bonus by default', () => {
-    const entity = service.getEntity('OreT1')!;
+  it('should return cached purchase for a material', () => {
     const materials = new Materials();
-    const purchase = new Purchase(entity, materials);
-    expect(purchase.bonus).toBeNull();
+    const item = service.getEntity('OreT1')!;
+    const purchase1 = materials.request(item);
+    expect(purchase1).toBeInstanceOf(Purchase);
+    expect(purchase1.entity).toBe(item);
+
+    const purchase2 = materials.request(item);
+    expect(purchase2).toBe(purchase1);
   });
 });

@@ -2,13 +2,14 @@ import { computed } from '@angular/core';
 
 import { getItemRarity, HouseItems, isHousingItem, isItemNamed, isMasterItem, MasterItemDefinitions } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Deferrable, Materials } from './contracts';
+import { Deferrable } from './contracts';
+import { Materials, Material } from './materials';
 import { Purchase } from './purchase';
 
 /**
  * Represents an entity in the artisan system, which can be a master item or housing.
  */
-export class Entity implements Deferrable, Materials<Purchase> {
+export class Entity implements Deferrable, Material<Purchase> {
   readonly #item: MasterItemDefinitions | HouseItems;
   readonly #id: string;
 
@@ -56,8 +57,8 @@ export class Entity implements Deferrable, Materials<Purchase> {
   }
 
   /** @inheritdoc */
-  request(): Purchase {
-    return new Purchase(this);
+  request(materials: Materials): Purchase {
+    return new Purchase(this, materials);
   }
 }
 

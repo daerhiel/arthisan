@@ -1,6 +1,7 @@
 import { computed } from '@angular/core';
 
 import { greater } from '@app/core';
+import { Materials } from './materials';
 import { Purchase } from './purchase';
 import { Craftable } from './craftable';
 import { Projection } from './projection';
@@ -30,10 +31,12 @@ export class Assembly extends Purchase {
   /**
    * Creates a new Assembly instance.
    * @param entity The craftable entity associated with this assembly.
+   * @param materials The materials required for this craft.
    * @throws Will throw an error if the entity is invalid.
    */
-  constructor(override readonly entity: Craftable) {
-    super(entity);
-    this.projections = entity.blueprints.map(blueprint => blueprint.request());
+  constructor(override readonly entity: Craftable, materials?: Materials) {
+    super(entity, materials ??= new Materials());
+    this.materials.root(this);
+    this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
   }
 }

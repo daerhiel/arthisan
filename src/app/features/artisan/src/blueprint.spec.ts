@@ -7,11 +7,13 @@ import { CraftingRecipeData } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Materials } from './materials';
 import { Equipment } from './equipment';
 import { Entity } from './entity';
 import { Craftable } from './craftable';
 import { Category } from './category';
 import { Blueprint, getIngredients } from './blueprint';
+import { Projection } from './projection';
 import { Ingredient } from './ingredient';
 
 function extractData(ingredient: Ingredient) {
@@ -168,6 +170,18 @@ describe('Blueprint', () => {
     const blueprint = new Blueprint(service, item, recipe);
     const context = blueprint.getContext();
     expect(context).toBeInstanceOf(Equipment);
+  });
+
+  it('should request a projection', () => {
+    const id = 'IngotT2';
+    const item = service.getCraftable(id);
+    const [recipe] = service.data.recipes.get(id) ?? [];
+    const blueprint = new Blueprint(service, item, recipe);
+    const materials = new Materials();
+    const projection = blueprint.request(materials);
+    expect(projection).toBeInstanceOf(Projection);
+    expect(projection.blueprint).toBe(blueprint);
+    expect(projection.materials).toBe(materials);
   });
 });
 

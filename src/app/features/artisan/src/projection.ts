@@ -2,18 +2,19 @@ import { computed } from '@angular/core';
 
 import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
+import { Materials } from './materials';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
 const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
 
 /**
- * Represents a projection of a crafting blueprint.
- * Projections estimate crafting cost based on the preferences and equipment of an artisan.
+ * Represents a projection of a crafting blueprint, which includes the provisions and their costs.
+ * @remarks Projections estimate crafting cost based on the preferences and equipment of an artisan.
  */
 export class Projection {
   /**
-   * The list of provisioned ingredients in a current projection foa blueprint.
+   * The list of provisioned ingredients in a current projection for a blueprint.
    */
   readonly provisions: Provision[];
 
@@ -53,12 +54,17 @@ export class Projection {
   /**
    * Creates a new Projection instance.
    * @param blueprint The blueprint to project.
+   * @param materials The materials required for this craft.
    * @throws Will throw an error if the blueprint is invalid.
+   * @throws Will throw an error if the materials are invalid.
    */
-  constructor(readonly blueprint: Blueprint) {
+  constructor(readonly blueprint: Blueprint, readonly materials: Materials) {
     if (!blueprint) {
       throw new Error('Invalid blueprint instance.');
     }
-    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request());
+    if (!materials) {
+      throw new Error('Invalid materials instance.');
+    }
+    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(materials));
   }
 }

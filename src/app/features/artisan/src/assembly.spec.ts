@@ -8,6 +8,7 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 
 describe('Assembly', () => {
@@ -22,6 +23,7 @@ describe('Assembly', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {
@@ -40,6 +42,7 @@ describe('Assembly', () => {
     expect(assembly).toBeTruthy();
     expect(assembly.entity).toBe(craftable);
     expect(assembly.projections.map(x => x.blueprint) ?? null).toEqual(craftable.blueprints);
+    expect(assembly.materials).toBeInstanceOf(Materials);
   });
 
   it('should throw for non-existing craftable', () => {
