@@ -15,6 +15,7 @@ export const commodities: Commodity[] = [
   { id: "IngotT2", price: 4 },
   { id: "OreT1", price: 0.5 },
   { id: "FluxT5", price: 0.1 },
+  { id: 'WoodT1', price: 0.1 },
   { id: "SandpaperT5", price: 0.2 },
   { id: "TanninT5", price: 0.3 },
   { id: "SolventT5", price: 0.5 },
@@ -24,6 +25,7 @@ export const commodities: Commodity[] = [
   { id: "WoodenCoin", price: 0 },
   { id: "BeeswaxT1", price: 0 },
   { id: "AlchemyFireT1", price: 0 },
+  { id: 'WoodenCoin', price: 10 },
   { id: "House_HousingItem_Lighting_CandleHolder_A", price: 0 },
 ].map(item => ({ id: item.id.toLowerCase(), price: item.price }));
 
