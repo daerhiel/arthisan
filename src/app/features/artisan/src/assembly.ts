@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 
-import { greater } from '@app/core';
+import { smaller } from '@app/core';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
 import { Craftable } from './craftable';
@@ -19,7 +19,7 @@ export class Assembly extends Purchase {
    * The selected projection for this assembly.
    */
   readonly #projection = computed(() =>
-    this.projections.reduce((p, c) => greater(p.cost, c.cost) ? p : c) ?? null
+    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c) ?? null
   );
   get projection(): Projection | null { return this.#projection(); }
 
