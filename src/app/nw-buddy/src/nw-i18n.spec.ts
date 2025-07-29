@@ -17,6 +17,7 @@ describe('NwI18n', () => {
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });
+
     i18n = TestBed.inject(NwI18n);
     while (i18n.isLoading()) {
       await firstValueFrom(timer(100));
