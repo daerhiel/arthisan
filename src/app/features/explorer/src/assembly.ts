@@ -1,3 +1,5 @@
+import { MatDialogConfig } from "@angular/material/dialog";
+
 import { defineColumn, defineTable } from "@app/core";
 import { getPriceInputs, NwIcon, NwPrice } from "@app/nw-buddy";
 import { Assembly, getIconInputs, getOpenerInputs, Opener } from "@features/artisan";
@@ -11,6 +13,14 @@ function getPriceState(assembly: Assembly): boolean | null {
   return profit ? profit > 0 : null;
 }
 
+/**
+ * Dialog configuration for the Schematic component.
+ */
+const dialog: MatDialogConfig<Assembly> = {
+  enterAnimationDuration: 0, exitAnimationDuration: 0,
+  position: { top: '9rem' }, maxWidth: '95vw', maxHeight: '84vh'
+};
+
 export const assemblyIcon = defineColumn<Assembly>('entity.icon',
   'Icon',
   { component: NwIcon, map: assembly => getIconInputs(assembly.entity) },
@@ -19,7 +29,7 @@ export const assemblyIcon = defineColumn<Assembly>('entity.icon',
 
 export const assemblyName = defineColumn<Assembly, string>('entity.name',
   'Name',
-  { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, {}) },
+  { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, dialog) },
   { width: '48%' }
 );
 
