@@ -75,7 +75,7 @@ export class Materials {
     while (last.length > 0) {
       const next: Purchase[] = [];
       for (const material of last) {
-        if (material instanceof Assembly) {
+        if (material instanceof Assembly && material.crafted()) {
           const projection = material.projection;
           if (projection) {
             for (const provision of projection.provisions) {

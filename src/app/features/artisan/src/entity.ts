@@ -24,7 +24,12 @@ export class Entity implements Deferrable, Material<Purchase> {
   get type() { return this.#item.ItemType; }
   get tier() { return this.#item.Tier; }
 
-  readonly price = computed(() => this.artisan.gaming.get(this.id));
+  /**
+   * The market price of a unit of an entity.
+   */
+  readonly price = computed(() =>
+    this.artisan.gaming.get(this.id)
+  );
 
   /**
    * Creates a new Entity instance.

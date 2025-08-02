@@ -9,6 +9,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials, Stage } from './materials';
+import { OptimizationMode } from './assembly';
 import { Purchase } from './purchase';
 
 function extractStage(stage: Stage): { id: string; items: string[] } {
@@ -75,6 +76,7 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT2')!;
     const assembly = craftable.request(materials);
+    assembly.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -86,6 +88,7 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT3')!;
     const assembly = craftable.request(materials);
+    assembly.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -98,6 +101,7 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT4')!;
     const assembly = craftable.request(materials);
+    assembly.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -111,6 +115,7 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT5')!;
     const assembly = craftable.request(materials);
+    assembly.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -125,6 +130,7 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT52')!;
     const assembly = craftable.request(materials);
+    assembly.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },

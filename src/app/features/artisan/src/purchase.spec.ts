@@ -65,4 +65,26 @@ describe('Purchase', () => {
     const purchase = new Purchase(entity, materials);
     expect(purchase.bonus).toBeNull();
   });
+
+  it('should get the item price', () => {
+    const entity = service.getEntity('IngotT2')!;
+    const materials = new Materials();
+    const purchase = new Purchase(entity, materials);
+    expect(purchase.price).toBe(4);
+  });
+
+  it('should have default cost of zero', () => {
+    const entity = service.getEntity('OreT1')!;
+    const materials = new Materials();
+    const purchase = new Purchase(entity, materials);
+    expect(purchase.cost()).toBe(0);
+  });
+
+  it('should calculate cost based on requested items', () => {
+    const entity = service.getEntity('IngotT2')!;
+    const materials = new Materials();
+    const purchase = new Purchase(entity, materials);
+    purchase.requested.set(3);
+    expect(purchase.cost()).toBe(12);
+  });
 });

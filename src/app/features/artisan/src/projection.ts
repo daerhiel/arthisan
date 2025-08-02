@@ -3,6 +3,7 @@ import { computed } from '@angular/core';
 import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
 import { Materials } from './materials';
+import { OptimizationMode } from './assembly';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
@@ -19,26 +20,6 @@ export class Projection {
   readonly provisions: Provision[];
 
   /**
-   * The total cost of the projection, calculated from the provisions.
-   */
-  readonly #cost = computed(() =>
-    this.provisions.reduce((s: number | null, x) => sum(s, x.cost), null)
-  );
-  get cost(): number | null {
-    return this.#cost();
-  }
-
-  /**
-   * The projected profit relative to market prices.
-   */
-  readonly #profit = computed(() =>
-    subtract(this.blueprint.item.price(), this.cost)
-  );
-  get profit(): number | null {
-    return this.#profit();
-  }
-
-  /**
    * The chance to craft additional items.
    */
   readonly #chance = computed(() => {
@@ -50,6 +31,36 @@ export class Projection {
     return null;
   });
   get chance(): number | null { return this.#chance(); }
+
+  /**
+   * The total cost of the projection, calculated from the provisions.
+   */
+  readonly #cost = computed(() =>
+    this.provisions.reduce((s: number | null, x) => sum(s, x.cost), null)
+  );
+  get cost(): number | null {
+    return this.#cost();
+  }
+
+  /**
+   * The effective value of the craft of a unit based on prices and extra items bonuses.
+   */
+  readonly #value = computed(() =>
+    this.cost
+  );
+  get value(): number | null {
+    return this.#value();
+  }
+
+  /**
+   * The projected profit relative to market prices.
+   */
+  readonly #profit = computed(() =>
+    subtract(this.blueprint.item.price(), this.cost)
+  );
+  get profit(): number | null {
+    return this.#profit();
+  }
 
   /**
    * Creates a new Projection instance.
@@ -66,5 +77,15 @@ export class Projection {
       throw new Error('Invalid materials instance.');
     }
     this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(materials));
+  }
+
+  /**
+   * Optimizes the assembly based on the specified optimization criteria.
+   * @param mode The optimization mode to apply.
+   */
+  optimize(mode: OptimizationMode) {
+    for (const provision of this.provisions) {
+      provision.optimize(mode);
+    }
   }
 }

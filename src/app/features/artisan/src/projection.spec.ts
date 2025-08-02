@@ -9,6 +9,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
+import { OptimizationMode } from './assembly';
 import { Projection } from './projection';
 
 describe('Projection', () => {
@@ -52,6 +53,15 @@ describe('Projection', () => {
     expect(projection.materials).toBe(materials);
   });
 
+  it('should get the projection crafting chance', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const [blueprint] = craftable.blueprints;
+    const materials = new Materials();
+    const projection = new Projection(blueprint, materials);
+
+    expect(projection.chance).toBe(0.3);
+  });
+
   it('should get the projection cost', () => {
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
@@ -59,6 +69,15 @@ describe('Projection', () => {
     const projection = new Projection(blueprint, materials);
 
     expect(projection.cost).toBe(2);
+  });
+
+  it('should get the projection effective value', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const [blueprint] = craftable.blueprints;
+    const materials = new Materials();
+    const projection = new Projection(blueprint, materials);
+
+    expect(projection.value).toBe(2);
   });
 
   it('should get the projection crafting profit', () => {
@@ -70,12 +89,16 @@ describe('Projection', () => {
     expect(projection.profit).toBe(2);
   });
 
-  it('should get the projection crafting chance', () => {
+  it('should call optimize on all provisions', () => {
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
     const materials = new Materials();
     const projection = new Projection(blueprint, materials);
 
-    expect(projection.chance).toBe(0.3);
+    const dependencies = projection.provisions.map(x => spyOn(x, 'optimize'));
+    projection.optimize(OptimizationMode.CraftAll);
+    dependencies.forEach(optimize => {
+      expect(optimize).toHaveBeenCalledWith(OptimizationMode.CraftAll);
+    });
   });
 });

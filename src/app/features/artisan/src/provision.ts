@@ -2,6 +2,7 @@ import { computed, signal } from '@angular/core';
 
 import { greater, product } from '@app/core';
 import { Materials } from './materials';
+import { Assembly, OptimizationMode } from './assembly';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
 import { Purchase } from './purchase';
@@ -74,6 +75,17 @@ export class Provision {
     }
     if (!materials) {
       throw new Error('Invalid materials instance.');
+    }
+  }
+
+  /**
+   * Optimizes the provision based on the specified optimization criteria.
+   * @param mode The optimization mode to apply.
+   */
+  optimize(mode: OptimizationMode) {
+    const purchase = this.#purchase();
+    if (purchase instanceof Assembly) {
+      purchase.optimize(mode);
     }
   }
 }

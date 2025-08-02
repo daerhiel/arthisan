@@ -9,7 +9,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
-import { Assembly } from './assembly';
+import { Assembly, OptimizationMode } from './assembly';
 
 describe('Assembly', () => {
   let service: Artisan;
@@ -47,5 +47,83 @@ describe('Assembly', () => {
 
   it('should throw for non-existing craftable', () => {
     expect(() => new Assembly(null!)).toThrowError(/invalid entity instance/i);
+  });
+
+  it('should get the preferred projection', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.projection).toBeTruthy();
+    expect(assembly.projection?.blueprint).toBe(craftable.blueprints[0]);
+  });
+
+  it('should get preferred T2 crafting chance', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.bonus).toBe(0);
+  });
+
+  it('should get preferred T3 crafting chance', () => {
+    const craftable = service.getCraftable('IngotT3');
+    const assembly = new Assembly(craftable);
+    expect(assembly.bonus).toBe(-0.02);
+  });
+
+  it('should get preferred T4 crafting chance', () => {
+    const craftable = service.getCraftable('IngotT4');
+    const assembly = new Assembly(craftable);
+    expect(assembly.bonus).toBe(-0.05);
+  });
+
+  it('should get preferred T5 crafting chance', () => {
+    const craftable = service.getCraftable('IngotT5');
+    const assembly = new Assembly(craftable);
+    expect(assembly.bonus).toBe(-0.07);
+  });
+
+  it('should get preferred T52 crafting chance', () => {
+    const craftable = service.getCraftable('IngotT52');
+    const assembly = new Assembly(craftable);
+    expect(assembly.bonus).toBe(-0.2);
+  });
+
+  it('should get the assembly value', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.value).toBe(2);
+  });
+
+  it('should have a purchase flag by default', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.crafted()).toBe(false);
+  });
+
+  it('should set the crafted flag', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.crafted()).toBe(false);
+
+    assembly.crafted.set(true);
+    expect(assembly.crafted()).toBe(true);
+  });
+
+  it('should call optimize on all projections', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+
+    const dependencies = assembly.projections.map(x => spyOn(x, 'optimize'));
+    assembly.optimize(OptimizationMode.CraftAll);
+    dependencies.forEach(optimize => {
+      expect(optimize).toHaveBeenCalledWith(OptimizationMode.CraftAll);
+    });
+  });
+
+  it('should set crafted flag when optimizing', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.crafted()).toBe(false);
+
+    assembly.optimize(OptimizationMode.CraftAll);
+    expect(assembly.crafted()).toBe(true);
   });
 });

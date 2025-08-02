@@ -1,10 +1,20 @@
-import { computed } from '@angular/core';
+import { computed, signal } from '@angular/core';
 
 import { smaller } from '@app/core';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
 import { Craftable } from './craftable';
 import { Projection } from './projection';
+
+/**
+ * Represents the assembly crafting optimization mode.
+ */
+export enum OptimizationMode {
+  /**
+   * Craft all items in a crafting schematics that can be crafted.
+   */
+  CraftAll
+}
 
 /**
  * Represents an assembly of craftable items, which includes projections based on blueprints.
@@ -29,6 +39,21 @@ export class Assembly extends Purchase {
   }
 
   /**
+   * The effective value of the craft based on prices and extra items bonuses.
+   */
+  readonly #value = computed(() =>
+    this.projection?.value ?? null
+  );
+  get value(): number | null {
+    return this.#value();
+  }
+
+  /**
+   * Indicates whether the assembly has been crafted or purchased on the market.
+   */
+  readonly crafted = signal(false);
+
+  /**
    * Creates a new Assembly instance.
    * @param entity The craftable entity associated with this assembly.
    * @param materials The materials required for this craft.
@@ -38,5 +63,18 @@ export class Assembly extends Purchase {
     super(entity, materials ??= new Materials());
     this.materials.root(this);
     this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
+  }
+
+  /**
+   * Optimizes the assembly based on the specified optimization criteria.
+   * @param mode The optimization mode to apply.
+   */
+  optimize(mode: OptimizationMode) {
+    if (mode === OptimizationMode.CraftAll) {
+      this.crafted.set(true);
+    }
+    for (const projection of this.projections) {
+      projection.optimize(mode);
+    }
   }
 }

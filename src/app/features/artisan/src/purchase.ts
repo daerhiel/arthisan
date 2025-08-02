@@ -1,3 +1,6 @@
+import { computed, signal } from "@angular/core";
+
+import { product } from "@app/core";
 import { Materials } from "./materials";
 import { Entity } from "./entity";
 
@@ -13,6 +16,25 @@ export class Purchase {
   get bonus(): number | null {
     return null;
   }
+
+  /**
+   * The market price of a unit of an entity.
+   */
+  get price(): number | null {
+    return this.entity.price();
+  }
+
+  /**
+   * The number of items requested by the parent provision.
+   */
+  readonly requested = signal(0);
+
+  /**
+   * The total cost of the purchase.
+   */
+  readonly cost = computed(() =>
+    product(this.price, this.requested())
+  );
 
   /**
    * Creates a new Purchase instance.

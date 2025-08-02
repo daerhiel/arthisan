@@ -9,6 +9,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
+import { Assembly, OptimizationMode } from './assembly';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Provision } from './provision';
 
@@ -126,5 +127,18 @@ describe('Provision', () => {
 
     ingredient.initialize();
     expect(provision.chance).toBe(0);
+  });
+
+  it('should call optimize on an assembly', () => {
+    const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
+    const ingredient = new Ingredient(service, data);
+    const materials = new Materials();
+    const provision = new Provision(ingredient, materials);
+
+    ingredient.initialize();
+    const dependency = spyOn(provision.purchase as Assembly, 'optimize');
+
+    provision.optimize(OptimizationMode.CraftAll);
+    expect(dependency).toHaveBeenCalledWith(OptimizationMode.CraftAll);
   });
 });
