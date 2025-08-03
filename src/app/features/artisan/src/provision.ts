@@ -2,10 +2,10 @@ import { computed, signal } from '@angular/core';
 
 import { greater, product } from '@app/core';
 import { Materials } from './materials';
-import { Assembly, OptimizationMode } from './assembly';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
 import { Purchase } from './purchase';
+import { Assembly } from './assembly';
 
 /**
  * Represents a provision for an ingredient, which includes the ingredient and materials required.
@@ -78,14 +78,15 @@ export class Provision {
     }
   }
 
-  /**
-   * Optimizes the provision based on the specified optimization criteria.
-   * @param mode The optimization mode to apply.
-   */
-  optimize(mode: OptimizationMode) {
-    const purchase = this.#purchase();
-    if (purchase instanceof Assembly) {
-      purchase.optimize(mode);
-    }
+  // TODO: Remove this function when materialization is automatic
+  materialize(): void {
+    const entity = this.ingredient.entity;
+    const entitles = entity instanceof Category ? entity.entities : [entity];
+    entitles.forEach(x => {
+      const purchase = this.materials.request(x)
+      if (purchase instanceof Assembly) {
+        purchase.materialize();
+      }
+    });
   }
 }

@@ -3,6 +3,16 @@ import { Assembly } from "./assembly";
 import { Purchase } from "./purchase";
 
 /**
+ * Represents the assembly crafting optimization mode.
+ */
+export enum OptimizationMode {
+  /**
+   * Craft all items in a crafting schematics that can be crafted.
+   */
+  CraftAll
+}
+
+/**
  * Represents a material that can be requested for assembly planning.
  * @template T The type of the purchase to request.
  */
@@ -25,6 +35,13 @@ export interface Stage {
 export class Materials {
   readonly #index: Record<string, Purchase> = {};
   #assembly: Assembly | null = null;
+
+  /**
+   * The list of material ids in the material index.
+   */
+  get ids(): string[] {
+    return Object.keys(this.#index);
+  }
 
   /**
    * The root assembly for this materials index.
@@ -107,6 +124,26 @@ export class Materials {
       if (!materials.includes(purchase)) {
         materials.push(purchase);
       }
+    }
+  }
+
+  /**
+   * Optimizes the assembly based on the specified optimization criteria.
+   * @param mode The optimization mode to apply.
+   */
+  optimize(mode: OptimizationMode) {
+    switch (mode) {
+      case OptimizationMode.CraftAll:
+        for (const id in this.#index) {
+          const purchase = this.#index[id];
+          if (purchase instanceof Assembly) {
+            purchase.crafted.set(true);
+          }
+        }
+        break;
+
+      default:
+        throw new Error(`Unsupported optimization mode: ${mode}`);
     }
   }
 }

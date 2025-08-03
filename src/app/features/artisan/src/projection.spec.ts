@@ -9,7 +9,6 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
-import { OptimizationMode } from './assembly';
 import { Projection } from './projection';
 
 describe('Projection', () => {
@@ -87,18 +86,5 @@ describe('Projection', () => {
     const projection = new Projection(blueprint, materials);
 
     expect(projection.profit).toBe(2);
-  });
-
-  it('should call optimize on all provisions', () => {
-    const craftable = service.getCraftable('IngotT2');
-    const [blueprint] = craftable.blueprints;
-    const materials = new Materials();
-    const projection = new Projection(blueprint, materials);
-
-    const dependencies = projection.provisions.map(x => spyOn(x, 'optimize'));
-    projection.optimize(OptimizationMode.CraftAll);
-    dependencies.forEach(optimize => {
-      expect(optimize).toHaveBeenCalledWith(OptimizationMode.CraftAll);
-    });
   });
 });

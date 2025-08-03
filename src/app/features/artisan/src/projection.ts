@@ -3,7 +3,6 @@ import { computed } from '@angular/core';
 import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
 import { Materials } from './materials';
-import { OptimizationMode } from './assembly';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
@@ -79,13 +78,8 @@ export class Projection {
     this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(materials));
   }
 
-  /**
-   * Optimizes the assembly based on the specified optimization criteria.
-   * @param mode The optimization mode to apply.
-   */
-  optimize(mode: OptimizationMode) {
-    for (const provision of this.provisions) {
-      provision.optimize(mode);
-    }
+  // TODO: Remove this function when materialization is automatic
+  materialize(): void {
+    this.provisions.forEach(x => x.materialize());
   }
 }

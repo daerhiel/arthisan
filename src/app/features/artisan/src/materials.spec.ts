@@ -8,8 +8,7 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials, Stage } from './materials';
-import { OptimizationMode } from './assembly';
+import { Materials, OptimizationMode, Stage } from './materials';
 import { Purchase } from './purchase';
 
 function extractStage(stage: Stage): { id: string; items: string[] } {
@@ -72,11 +71,83 @@ describe('Materials', () => {
     expect(() => materials.prepare()).toThrowError('Root assembly is not set.');
   });
 
+  it('should build metadata for T2 assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT2')!;
+    const assembly = craftable.request(materials);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(materials.ids).toEqual([
+      assembly.entity.id, 'OreT1'
+    ]);
+  });
+
+  it('should build metadata for T3 assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT3')!;
+    const assembly = craftable.request(materials);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(materials.ids).toEqual([
+      assembly.entity.id,
+      'IngotT2', 'OreT1',
+      'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
+      'WoodenCoin'
+    ]);
+  });
+
+  it('should build metadata for T4 assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT4')!;
+    const assembly = craftable.request(materials);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(materials.ids).toEqual([
+      assembly.entity.id,
+      'OreT4', 'IngotT3',
+      'IngotT2', 'OreT1',
+      'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
+      'WoodenCoin'
+    ]);
+  });
+
+  it('should build metadata for T5 assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT5')!;
+    const assembly = craftable.request(materials);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(materials.ids).toEqual([
+      assembly.entity.id,
+      'OreT5', 'IngotT4',
+      'OreT4', 'IngotT3',
+      'IngotT2', 'OreT1',
+      'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
+      'WoodenCoin'
+    ]);
+  });
+
+  it('should build metadata for T52 assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT52')!;
+    const assembly = craftable.request(materials);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(materials.ids).toEqual([
+      assembly.entity.id, 'OreT52', 'IngotT5', 'OreT5', 'IngotT4', 'OreT4', 'IngotT3', 'IngotT2', 'OreT1', 'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52', 'WoodenCoin'
+    ]);
+  });
+
   it('should prepare stages for T2 assembly', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT2')!;
     const assembly = craftable.request(materials);
-    assembly.optimize(OptimizationMode.CraftAll);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -88,7 +159,8 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT3')!;
     const assembly = craftable.request(materials);
-    assembly.optimize(OptimizationMode.CraftAll);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -101,7 +173,8 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT4')!;
     const assembly = craftable.request(materials);
-    assembly.optimize(OptimizationMode.CraftAll);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -115,7 +188,8 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT5')!;
     const assembly = craftable.request(materials);
-    assembly.optimize(OptimizationMode.CraftAll);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },
@@ -130,7 +204,8 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT52')!;
     const assembly = craftable.request(materials);
-    assembly.optimize(OptimizationMode.CraftAll);
+    assembly.materialize();
+    materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
       { id: 'assembly', items: [assembly.entity.id] },

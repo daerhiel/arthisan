@@ -7,16 +7,6 @@ import { Craftable } from './craftable';
 import { Projection } from './projection';
 
 /**
- * Represents the assembly crafting optimization mode.
- */
-export enum OptimizationMode {
-  /**
-   * Craft all items in a crafting schematics that can be crafted.
-   */
-  CraftAll
-}
-
-/**
  * Represents an assembly of craftable items, which includes projections based on blueprints.
  */
 export class Assembly extends Purchase {
@@ -65,16 +55,8 @@ export class Assembly extends Purchase {
     this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
   }
 
-  /**
-   * Optimizes the assembly based on the specified optimization criteria.
-   * @param mode The optimization mode to apply.
-   */
-  optimize(mode: OptimizationMode) {
-    if (mode === OptimizationMode.CraftAll) {
-      this.crafted.set(true);
-    }
-    for (const projection of this.projections) {
-      projection.optimize(mode);
-    }
+  // TODO: Remove this function when materialization is automatic
+  materialize(): void {
+    this.projections.forEach(x => x.materialize());
   }
 }

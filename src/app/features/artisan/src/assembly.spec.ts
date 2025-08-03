@@ -9,7 +9,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
-import { Assembly, OptimizationMode } from './assembly';
+import { Assembly } from './assembly';
 
 describe('Assembly', () => {
   let service: Artisan;
@@ -104,26 +104,6 @@ describe('Assembly', () => {
     expect(assembly.crafted()).toBe(false);
 
     assembly.crafted.set(true);
-    expect(assembly.crafted()).toBe(true);
-  });
-
-  it('should call optimize on all projections', () => {
-    const craftable = service.getCraftable('IngotT2');
-    const assembly = new Assembly(craftable);
-
-    const dependencies = assembly.projections.map(x => spyOn(x, 'optimize'));
-    assembly.optimize(OptimizationMode.CraftAll);
-    dependencies.forEach(optimize => {
-      expect(optimize).toHaveBeenCalledWith(OptimizationMode.CraftAll);
-    });
-  });
-
-  it('should set crafted flag when optimizing', () => {
-    const craftable = service.getCraftable('IngotT2');
-    const assembly = new Assembly(craftable);
-    expect(assembly.crafted()).toBe(false);
-
-    assembly.optimize(OptimizationMode.CraftAll);
     expect(assembly.crafted()).toBe(true);
   });
 });
