@@ -4,8 +4,8 @@ export interface I18n {
   get(key: string, ...prefixes: string[]): string;
 }
 
-export type FitterFn<T, R> = (item: T, i18n: I18n) => R;
-export type MapperFn<T> = (item: T, i18n: I18n) => Record<string, unknown>;
+export type FitterFn<T, R> = (object: T, i18n: I18n) => R;
+export type MapperFn<T> = (object: T, i18n: I18n) => Record<string, unknown>;
 
 /**
  * Represents a cell value in a table.

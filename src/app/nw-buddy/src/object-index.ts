@@ -32,9 +32,9 @@ export class ObjectIndex<T> {
       let count = 0;
 
       for (const key of source.keys()) {
-        const item = source.get(key);
-        if (item) {
-          let values = getter(item);
+        const object = source.get(key);
+        if (object) {
+          let values = getter(object);
           if (typeof values === 'string') {
             values = [values];
           }
@@ -43,7 +43,7 @@ export class ObjectIndex<T> {
             if (!objects) {
               this.#objects.set(value, objects = []);
             }
-            objects.push(item);
+            objects.push(object);
             count++;
           }
         }
@@ -64,8 +64,8 @@ export class ObjectIndex<T> {
 
   /**
    * Gets the object with the specified id.
-   * @param id The id to get an item for.
-   * @returns The item with the specified id; otherwise, null.
+   * @param id The id to get an object for.
+   * @returns The object with the specified id; otherwise, null.
    */
   get(id: string): T[] | null {
     this.version();

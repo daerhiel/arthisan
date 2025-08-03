@@ -42,20 +42,20 @@ describe('Materials', () => {
 
   it('should request a purchase for a material', () => {
     const materials = new Materials();
-    const item = service.getEntity('OreT1')!;
-    const purchase = materials.request(item);
+    const entity = service.getEntity('OreT1')!;
+    const purchase = materials.request(entity);
     expect(purchase).toBeInstanceOf(Purchase);
-    expect(purchase.entity).toBe(item);
+    expect(purchase.entity).toBe(entity);
   });
 
   it('should return cached purchase for a material', () => {
     const materials = new Materials();
-    const item = service.getEntity('OreT1')!;
-    const purchase1 = materials.request(item);
+    const entity = service.getEntity('OreT1')!;
+    const purchase1 = materials.request(entity);
     expect(purchase1).toBeInstanceOf(Purchase);
-    expect(purchase1.entity).toBe(item);
+    expect(purchase1.entity).toBe(entity);
 
-    const purchase2 = materials.request(item);
+    const purchase2 = materials.request(entity);
     expect(purchase2).toBe(purchase1);
   });
 

@@ -33,13 +33,13 @@ export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientDa
 }
 
 /**
- * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
+ * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting.
  */
 export class Blueprint implements Deferrable, Providable<Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
-   * Gets the bonus items chance for the current item.
+   * Gets the bonus items chance for the current craftable.
    */
   get bonus(): number { return this.recipe.BonusItemChance; }
 
@@ -55,7 +55,7 @@ export class Blueprint implements Deferrable, Providable<Projection> {
    * @param artisan The artisan instance to use for crafting.
    * @param entity The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
-   * @throws Will throw an error if the artisan or item is invalid.
+   * @throws Will throw an error if the artisan or entity is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
    */
   constructor(private readonly artisan: Artisan, readonly entity: Craftable, private readonly recipe: CraftingRecipeData) {

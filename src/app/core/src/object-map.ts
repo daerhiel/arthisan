@@ -2,7 +2,7 @@ function transform(key: string): string {
   return key?.toLowerCase();
 }
 
-export type GetterFn<T, R> = (item: T) => R;
+export type GetterFn<T, R> = (object: T) => R;
 
 export class ObjectMap<T> extends Map<string, T> {
   public override has(key: string): boolean {

@@ -16,7 +16,7 @@ export class Provision {
   readonly automatic = signal(false);
 
   /**
-   * The assembly matching an item or category of items.
+   * The assembly matching an entity or category of entities.
    */
   readonly #purchase = computed(() => {
     let entity = this.ingredient.entity;
@@ -26,7 +26,7 @@ export class Provision {
         entity = entities.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
       } else {
         const selected = this.selected();
-        entity = entities.find(item => item.id === selected) ?? entities[0]!;
+        entity = entities.find(entity => entity.id === selected) ?? entities[0]!;
       }
     }
     return this.materials.request(entity);

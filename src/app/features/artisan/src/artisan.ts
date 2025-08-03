@@ -42,8 +42,8 @@ export class Artisan {
 
   /**
    * Gets an entity from cache; creates a new one if not found.
-   * @param id The ID of an item to retrieve.
-   * @returns The item if found or created; otherwise, null.
+   * @param id The ID of an entity to retrieve.
+   * @returns The entity if found or created; otherwise, null.
    */
   getEntity(id: string): Entity {
     let entity = this.#entities.get(id) ?? null;
@@ -72,8 +72,8 @@ export class Artisan {
 
   /**
    * Gets a craftable entity from cache; creates a new one if not found.
-   * @param id The ID of an item to retrieve.
-   * @returns The item if found or created; otherwise, null.
+   * @param id The ID of a craftable entity to retrieve.
+   * @returns The craftable entity if found or created; otherwise, null.
    */
   getCraftable(id: string): Craftable {
     let entity = this.#entities.get(id) ?? null;

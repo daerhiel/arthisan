@@ -3,7 +3,7 @@ import { Observable, Subscription, tap } from 'rxjs';
 
 import { ObjectMap } from '@app/core';
 
-export type GetterFn<T, R> = (item: T) => R;
+export type GetterFn<T, R> = (object: T) => R;
 
 type HydrateFn<T> = (name: string, value: T) => void;
 type IteratorFn<T> = (data: Record<string, T[]>) => void;
