@@ -141,7 +141,6 @@ export class Materials {
           }
         }
         break;
-
       default:
         throw new Error(`Unsupported optimization mode: ${mode}`);
     }

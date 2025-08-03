@@ -49,7 +49,7 @@ describe('Craftable', () => {
     const item = service.data.items.get('IngotT2')!;
     const recipes = service.data.recipes.get('IngotT2')!;
     const craftable = new Craftable(service, item, recipes);
-    expect(craftable.blueprints.map(x => x.item.id)).toEqual(['IngotT2']);
+    expect(craftable.blueprints.map(x => x.entity.id)).toEqual(['IngotT2']);
   });
 
   it('should request an assembly with default materials', () => {

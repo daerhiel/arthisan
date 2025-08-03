@@ -83,7 +83,7 @@ export class Provision {
     const entity = this.ingredient.entity;
     const entitles = entity instanceof Category ? entity.entities : [entity];
     entitles.forEach(x => {
-      const purchase = this.materials.request(x)
+      const purchase = this.materials.request(x);
       if (purchase instanceof Assembly) {
         purchase.materialize();
       }

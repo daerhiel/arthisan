@@ -22,7 +22,7 @@ export class Projection {
    * The chance to craft additional items.
    */
   readonly #chance = computed(() => {
-    const type = this.blueprint.item.type;
+    const type = this.blueprint.entity.type;
     if (!type || !unsupported.includes(type)) {
       const chance = this.provisions.reduce((s, x) => sum(s, x.chance), this.blueprint.chance);
       return Math.max(chance, 0);
@@ -55,7 +55,7 @@ export class Projection {
    * The projected profit relative to market prices.
    */
   readonly #profit = computed(() =>
-    subtract(this.blueprint.item.price(), this.cost)
+    subtract(this.blueprint.entity.price(), this.cost)
   );
   get profit(): number | null {
     return this.#profit();

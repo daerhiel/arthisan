@@ -53,17 +53,17 @@ export class Blueprint implements Deferrable, Providable<Projection> {
   /**
    * Creates a new Blueprint instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param item The craftable entity associated with this blueprint.
+   * @param entity The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
    * @throws Will throw an error if the artisan or item is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
    */
-  constructor(private readonly artisan: Artisan, readonly item: Craftable, private readonly recipe: CraftingRecipeData) {
+  constructor(private readonly artisan: Artisan, readonly entity: Craftable, private readonly recipe: CraftingRecipeData) {
     if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
-    if (!item) {
-      throw new Error('Invalid item data.');
+    if (!entity) {
+      throw new Error('Invalid entity data.');
     }
 
     for (const ingredient of getIngredients(recipe)) {

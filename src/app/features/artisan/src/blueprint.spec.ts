@@ -43,8 +43,8 @@ describe('Blueprint', () => {
     expect(() => new Blueprint(null!, null!, null!)).toThrowError('Invalid artisan instance.');
   });
 
-  it('should throw on missing item data', () => {
-    expect(() => new Blueprint(service, null!, null!)).toThrowError('Invalid item data.');
+  it('should throw on missing entity data', () => {
+    expect(() => new Blueprint(service, null!, null!)).toThrowError('Invalid entity data.');
   });
 
   it('should create a blueprint for T2 ingot', () => {
@@ -55,7 +55,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
@@ -71,7 +71,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT2', type: Craftable, quantity: 3 },
       { id: 'FluxT5', type: Entity, quantity: 1 },
@@ -89,7 +89,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT4', type: Entity, quantity: 6 },
       { id: 'IngotT3', type: Craftable, quantity: 2 },
@@ -108,7 +108,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT5', type: Entity, quantity: 8 },
       { id: 'IngotT4', type: Craftable, quantity: 2 },
@@ -127,7 +127,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT52', type: Entity, quantity: 12 },
       { id: 'IngotT5', type: Craftable, quantity: 2 },
@@ -146,7 +146,7 @@ describe('Blueprint', () => {
     blueprint.initialize();
 
     expect(blueprint).toBeTruthy();
-    expect(blueprint.item).toBe(item);
+    expect(blueprint.entity).toBe(item);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'RubyT1', type: Entity, quantity: 3 },
       { id: 'AlchemyFireT2', type: Craftable, quantity: 1 },
