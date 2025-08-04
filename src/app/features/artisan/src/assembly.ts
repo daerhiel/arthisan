@@ -51,12 +51,6 @@ export class Assembly extends Purchase {
    */
   constructor(override readonly entity: Craftable, materials?: Materials) {
     super(entity, materials ??= new Materials());
-    this.materials.root(this);
     this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
-  }
-
-  // TODO: Remove this function when materialization is automatic
-  materialize(): void {
-    this.projections.forEach(x => x.materialize());
   }
 }

@@ -51,13 +51,23 @@ export class Materials {
   }
 
   /**
-   * Sets the root assembly for this materials index.
-   * @param assembly The root assembly for this materials index.
-   * @throws Will throw an error if the root assembly is already set.
+   * Indexes a purchase for the specified material.
+   * @param purchase The purchase to index.
+   * @template T The type of the purchase to index.
+   * @throws Will throw an error if the material is already indexed.
    */
-  root(assembly: Assembly): void {
-    this.#assembly ??= assembly;
-    this.#index[assembly.entity.id] = assembly;
+  index<T extends Purchase>(purchase: T): void {
+    if (!purchase) {
+      throw new Error('Invalid purchase instance.');
+    }
+    const id = purchase.entity.id;
+    if (id in this.#index && this.#index[id] !== purchase) {
+      throw new Error(`Material is already indexed: ${id}.`);
+    }
+    this.#index[id] = purchase;
+    if (purchase instanceof Assembly) {
+      this.#assembly ??= purchase;
+    }
   }
 
   /**
@@ -70,7 +80,7 @@ export class Materials {
     let purchase = this.#index[material.id] as T;
     if (!purchase) {
       purchase = material.request(this);
-      this.#index[material.id] = purchase;
+      this.index(purchase);
     }
     return purchase;
   }

@@ -77,9 +77,4 @@ export class Projection {
     }
     this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(materials));
   }
-
-  // TODO: Remove this function when materialization is automatic
-  materialize(): void {
-    this.provisions.forEach(x => x.materialize());
-  }
 }

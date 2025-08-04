@@ -56,6 +56,8 @@ describe('Craftable', () => {
     const item = service.data.items.get('IngotT2')!;
     const recipes = service.data.recipes.get('IngotT2')!;
     const craftable = new Craftable(service, item, recipes);
+    craftable.initialize();
+
     const assembly = craftable.request();
     expect(assembly).toBeInstanceOf(Assembly);
     expect(assembly.entity).toBe(craftable);
@@ -66,6 +68,8 @@ describe('Craftable', () => {
     const item = service.data.items.get('IngotT2')!;
     const recipes = service.data.recipes.get('IngotT2')!;
     const craftable = new Craftable(service, item, recipes);
+    craftable.initialize();
+
     const materials = new Materials();
     const assembly = craftable.request(materials);
     expect(assembly).toBeInstanceOf(Assembly);

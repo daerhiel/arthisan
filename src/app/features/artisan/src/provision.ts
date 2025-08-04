@@ -5,7 +5,6 @@ import { Materials } from './materials';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
 import { Purchase } from './purchase';
-import { Assembly } from './assembly';
 
 /**
  * Represents a provision for an ingredient, which includes the ingredient and materials required.
@@ -76,17 +75,11 @@ export class Provision {
     if (!materials) {
       throw new Error('Invalid materials instance.');
     }
-  }
 
-  // TODO: Remove this function when materialization is automatic
-  materialize(): void {
-    const entity = this.ingredient.entity;
-    const entitles = entity instanceof Category ? entity.entities : [entity];
-    entitles.forEach(x => {
-      const purchase = this.materials.request(x);
-      if (purchase instanceof Assembly) {
-        purchase.materialize();
-      }
-    });
+    const category = ingredient.entity;
+    const entitles = category instanceof Category ? category.entities : [category];
+    for (const entity of entitles) {
+      materials.request(entity);
+    }
   }
 }

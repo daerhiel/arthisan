@@ -50,5 +50,6 @@ export class Purchase {
     if (!materials) {
       throw new Error('Invalid materials instance.');
     }
+    this.materials.index(this);
   }
 }

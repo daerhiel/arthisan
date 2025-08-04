@@ -40,6 +40,60 @@ describe('Materials', () => {
     expect(materials).toBeTruthy();
   });
 
+  it('should throw on missing purchase instance', () => {
+    const materials = new Materials();
+    expect(() => materials.index(null!)).toThrowError(/invalid purchase instance/i);
+  });
+
+  it('should throw on duplicate purchase index', () => {
+    const materials = new Materials();
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity, materials);
+    materials.index(purchase);
+    expect(() => new Purchase(entity, materials)).toThrowError(/material is already indexed/i);
+  });
+
+  it('should index a purchase', () => {
+    const materials = new Materials();
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity, materials);
+    materials.index(purchase);
+    expect(materials.ids).toEqual(['OreT1']);
+  });
+
+  it('should index an assembly', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT2')!;
+    const assembly = craftable.request(materials);
+    materials.index(assembly);
+    expect(materials.ids).toEqual([assembly.entity.id, 'OreT1']);
+    expect(materials.assembly).toBe(assembly);
+  });
+
+  it('should index the same purchase multiple times', () => {
+    const materials = new Materials();
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity, materials);
+    materials.index(purchase);
+    materials.index(purchase);
+    expect(materials.ids).toEqual(['OreT1']);
+  });
+
+  it('should assign only root assembly when indexing', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT3')!;
+    const assembly = craftable.request(materials);
+    materials.index(assembly);
+    expect(materials.assembly).toBe(assembly);
+    expect(materials.ids).toEqual([
+      assembly.entity.id,
+      'IngotT2', 'OreT1',
+      'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
+      'WoodenCoin'
+    ]);
+  });
+
   it('should request a purchase for a material', () => {
     const materials = new Materials();
     const entity = service.getEntity('OreT1')!;
@@ -75,7 +129,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT2')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id, 'OreT1'
@@ -86,7 +139,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT3')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
@@ -101,7 +153,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT4')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
@@ -117,7 +168,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT5')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
@@ -134,11 +184,16 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT52')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
-      assembly.entity.id, 'OreT52', 'IngotT5', 'OreT5', 'IngotT4', 'OreT4', 'IngotT3', 'IngotT2', 'OreT1', 'FluxT5', 'CharcoalT1',
-      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52', 'WoodenCoin'
+      assembly.entity.id,
+      'OreT52', 'IngotT5',
+      'OreT5', 'IngotT4',
+      'OreT4', 'IngotT3',
+      'IngotT2', 'OreT1',
+      'FluxT5', 'CharcoalT1',
+      'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
+      'WoodenCoin'
     ]);
   });
 
@@ -146,7 +201,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT2')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
@@ -159,7 +213,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT3')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
@@ -173,7 +226,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT4')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
@@ -188,7 +240,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT5')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([
@@ -204,7 +255,6 @@ describe('Materials', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT52')!;
     const assembly = craftable.request(materials);
-    assembly.materialize();
     materials.optimize(OptimizationMode.CraftAll);
     const stages = materials.prepare();
     expect(stages.map(extractStage)).toEqual([

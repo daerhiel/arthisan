@@ -102,6 +102,8 @@ describe('Ingredient', () => {
   it('should request a provision', () => {
     const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 1 };
     const ingredient = new Ingredient(service, data);
+    ingredient.initialize();
+
     const materials = new Materials();
     const provision = ingredient.request(materials);
     expect(provision).toBeInstanceOf(Provision);

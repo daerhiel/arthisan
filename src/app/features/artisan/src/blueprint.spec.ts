@@ -159,6 +159,8 @@ describe('Blueprint', () => {
     const entity = service.getEntity(id) as Craftable;
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, entity, recipe);
+    blueprint.initialize();
+
     const context = blueprint.getContext();
     expect(context).toBeNull();
   });
@@ -168,6 +170,8 @@ describe('Blueprint', () => {
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, entity, recipe);
+    blueprint.initialize();
+
     const context = blueprint.getContext();
     expect(context).toBeInstanceOf(Equipment);
   });
@@ -177,6 +181,8 @@ describe('Blueprint', () => {
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
     const blueprint = new Blueprint(service, entity, recipe);
+    blueprint.initialize();
+
     const materials = new Materials();
     const projection = blueprint.request(materials);
     expect(projection).toBeInstanceOf(Projection);
