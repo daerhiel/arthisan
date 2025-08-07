@@ -53,7 +53,7 @@ describe('Entity', () => {
     expect(entity.family).toBe('RawResources');
     expect(entity.type).toBe('Resource');
     expect(entity.tier).toBe(1);
-    expect(entity.price()).toBe(0.5);
+    expect(entity.price).toBe(0.5);
   });
 
   it('should get an entity', () => {

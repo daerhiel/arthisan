@@ -22,7 +22,7 @@ export class Provision {
     if (entity instanceof Category) {
       const entities = entity.entities;
       if (this.automatic()) {
-        entity = entities.reduce((p, c) => greater(p.price(), c.price()) ? p : c) ?? null;
+        entity = entities.reduce((p, c) => greater(p.price, c.price) ? p : c) ?? null;
       } else {
         const selected = this.selected();
         entity = entities.find(entity => entity.id === selected) ?? entities[0]!;
@@ -36,21 +36,15 @@ export class Provision {
    * The purchase cost.
    */
   readonly #cost = computed(() =>
-    product(this.purchase.entity.price(), this.ingredient.quantity)
+    product(this.purchase.entity.price, this.ingredient.quantity)
   );
-  get cost(): number | null {
-    return this.#cost();
-  }
+  get cost(): number | null { return this.#cost(); }
 
   /**
    * The chance to craft additional items.
    */
-  readonly #chance = computed(() =>
-    this.purchase.bonus
-  );
-  get chance(): number | null {
-    return this.#chance();
-  }
+  readonly #chance = computed(() => this.purchase.bonus);
+  get chance(): number | null { return this.#chance(); }
 
   // readonly effectiveValue = computed(() => {
   //   const bonus = this.#parent.extraItemChance();

@@ -60,7 +60,7 @@ export const assemblyTier = defineColumn<Assembly, number>('entity.tier',
 
 export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
   'Price',
-  { component: NwPrice, map: getPriceInputs(x => x.entity.price()) },
+  { component: NwPrice, map: getPriceInputs(x => x.entity.price) },
   { width: '5%', align: 'right' }
 );
 

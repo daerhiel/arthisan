@@ -1,13 +1,21 @@
 import { inject, Injectable } from '@angular/core';
 
 import { ObjectMap } from '@app/core';
-import { CraftingIngredientType, CraftingRecipeData, CraftingTradeskill } from '@app/nw-data';
+import {
+  CraftingRecipeData,
+  CraftingCategory, CraftingIngredientType, CraftingTradeskill
+} from '@app/nw-data';
 import { NwBuddy } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
 import { Craftable } from './craftable';
 import { Category } from './category';
 import { Equipment } from './equipment';
 import { Entity } from './entity';
+
+/**
+ * Excludes specific crafting categories from the list of supported recipes.
+ */
+const EXCLUDE_CATEGORIES: CraftingCategory[] = ['MaterialConversion'];
 
 /**
  * Filters out unsupported crafting recipes.
@@ -17,7 +25,7 @@ import { Entity } from './entity';
 function supported(recipes: CraftingRecipeData[] | null): CraftingRecipeData[] | null {
   if (recipes) {
     recipes = recipes.filter(recipe =>
-      recipe.CraftingCategory !== 'MaterialConversion'
+      !EXCLUDE_CATEGORIES.includes(recipe.CraftingCategory)
     );
   }
   return recipes?.length ? recipes : null;

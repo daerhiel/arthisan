@@ -77,7 +77,7 @@ describe('Purchase', () => {
     const entity = service.getEntity('OreT1')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
-    expect(purchase.cost()).toBe(0);
+    expect(purchase.cost).toBe(0);
   });
 
   it('should calculate cost based on requested items', () => {
@@ -85,6 +85,6 @@ describe('Purchase', () => {
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
     purchase.requested.set(3);
-    expect(purchase.cost()).toBe(12);
+    expect(purchase.cost).toBe(12);
   });
 });

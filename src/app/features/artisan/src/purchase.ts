@@ -13,28 +13,23 @@ export class Purchase {
    * The chance to craft additional items.
    */
   // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  get bonus(): number | null {
-    return null;
-  }
+  get bonus(): number | null { return null; }
 
   /**
    * The market price of a unit of an entity.
    */
-  get price(): number | null {
-    return this.entity.price();
-  }
+  get price(): number | null { return this.entity.price; }
+
+  /**
+   * The total cost of the purchase.
+   */
+  readonly #cost = computed(() => product(this.price, this.requested()));
+  get cost(): number | null { return this.#cost(); }
 
   /**
    * The number of items requested by the parent provision.
    */
   readonly requested = signal(0);
-
-  /**
-   * The total cost of the purchase.
-   */
-  readonly cost = computed(() =>
-    product(this.price, this.requested())
-  );
 
   /**
    * Creates a new Purchase instance.

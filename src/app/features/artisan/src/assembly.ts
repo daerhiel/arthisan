@@ -19,7 +19,7 @@ export class Assembly extends Purchase {
    * The selected projection for this assembly.
    */
   readonly #projection = computed(() =>
-    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c) ?? null
+    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
   );
   get projection(): Projection | null { return this.#projection(); }
 
@@ -31,12 +31,8 @@ export class Assembly extends Purchase {
   /**
    * The effective value of the craft based on prices and extra items bonuses.
    */
-  readonly #value = computed(() =>
-    this.projection?.value ?? null
-  );
-  get value(): number | null {
-    return this.#value();
-  }
+  readonly #value = computed(() => this.projection?.value ?? null);
+  get value(): number | null { return this.#value(); }
 
   /**
    * Indicates whether the assembly has been crafted or purchased on the market.

@@ -35,31 +35,21 @@ export class Projection {
    * The total cost of the projection, calculated from the provisions.
    */
   readonly #cost = computed(() =>
-    this.provisions.reduce((s: number | null, x) => sum(s, x.cost), null)
+    this.provisions.reduce<number | null>((s, x) => sum(s, x.cost), null)
   );
-  get cost(): number | null {
-    return this.#cost();
-  }
+  get cost(): number | null { return this.#cost(); }
 
   /**
    * The effective value of the craft of a unit based on prices and extra items bonuses.
    */
-  readonly #value = computed(() =>
-    this.cost
-  );
-  get value(): number | null {
-    return this.#value();
-  }
+  readonly #value = computed(() => this.cost);
+  get value(): number | null { return this.#value(); }
 
   /**
    * The projected profit relative to market prices.
    */
-  readonly #profit = computed(() =>
-    subtract(this.blueprint.entity.price(), this.cost)
-  );
-  get profit(): number | null {
-    return this.#profit();
-  }
+  readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
+  get profit(): number | null { return this.#profit(); }
 
   /**
    * Creates a new Projection instance.
