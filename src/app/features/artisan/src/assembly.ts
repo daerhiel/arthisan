@@ -1,15 +1,23 @@
 import { computed, signal } from '@angular/core';
 
 import { smaller } from '@app/core';
+import { Persistent } from './contracts';
 import { Materials } from './materials';
-import { Purchase } from './purchase';
+import { Purchase, PurchaseState } from './purchase';
 import { Craftable } from './craftable';
 import { Projection } from './projection';
 
 /**
+ * Represents the state of an assembly.
+ */
+export interface AssemblyState extends PurchaseState {
+  crafted: boolean;
+}
+
+/**
  * Represents an assembly of craftable items, which includes projections based on blueprints.
  */
-export class Assembly extends Purchase {
+export class Assembly extends Purchase implements Persistent<AssemblyState> {
   /**
    * The list of projections for this assembly associated with source ingredients.
    */
@@ -48,5 +56,16 @@ export class Assembly extends Purchase {
   constructor(override readonly entity: Craftable, materials?: Materials) {
     super(entity, materials ??= new Materials());
     this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
+  }
+
+
+  /** @inheritdoc */
+  override getState(): AssemblyState {
+    return { crafted: this.crafted() };
+  }
+
+  /** @inheritdoc */
+  override setState(state: AssemblyState): void {
+    state && this.crafted.set(state.crafted);
   }
 }

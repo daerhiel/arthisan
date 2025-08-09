@@ -11,6 +11,23 @@ export interface Deferrable {
 }
 
 /**
+ * Represents an object that can be persisted to the storage through abstract state.
+ */
+export interface Persistent<T> {
+  /**
+   * Gets the current state of the object.
+   * @returns The state of the object retrieved.
+   */
+  getState(): T;
+
+  /**
+   * Sets the current state of the object.
+   * @param state The new state to set.
+   */
+  setState(state: T): void;
+}
+
+/**
  * Represents an object that can be requested for assembly planning.
  * @template T The type of the object that can be provided.
  */

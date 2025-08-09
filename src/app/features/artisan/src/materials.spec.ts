@@ -266,4 +266,64 @@ describe('Materials', () => {
       { id: 'stage-5', items: ['OreT1', 'WoodT1'] }
     ]);
   });
+
+  it('should optimize materials', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT52')!;
+    const assembly = craftable.request(materials);
+    materials.optimize(OptimizationMode.CraftAll);
+    expect(assembly.crafted()).toBeTrue();
+  });
+
+  it('should throw on invalid optimization mode', () => {
+    const materials = new Materials();
+    expect(() => materials.optimize(9999 as OptimizationMode)).toThrowError(/unsupported optimization mode/i);
+  });
+
+  it('should get state', () => {
+    const materials = new Materials();
+    const state = materials.getState();
+    expect(state).toEqual({ entities: {} });
+  });
+
+  it('should get T2 craftable state', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT2')!;
+    const assembly = craftable.request(materials);
+    assembly.crafted.set(true);
+    const state = materials.getState();
+    expect(state).toEqual({
+      entities: {
+        'IngotT2': { crafted: true },
+        'OreT1': {}
+      }
+    });
+  });
+
+  it('should set state', () => {
+    const materials = new Materials();
+    materials.setState({ entities: {} });
+    const state = materials.getState();
+    expect(state).toEqual({ entities: {} });
+  });
+
+  it('should handle null state', () => {
+    const materials = new Materials();
+    materials.setState(null!);
+    const state = materials.getState();
+    expect(state).toEqual({ entities: {} });
+  });
+
+  it('should set T2 craftable state', () => {
+    const materials = new Materials();
+    const craftable = service.getCraftable('IngotT2')!;
+    const assembly = craftable.request(materials);
+    materials.setState({
+      entities: {
+        'IngotT2': { crafted: true },
+        'OreT1': {}
+      }
+    });
+    expect(assembly.crafted()).toBeTrue();
+  });
 });

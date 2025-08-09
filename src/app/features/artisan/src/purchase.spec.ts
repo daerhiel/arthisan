@@ -87,4 +87,20 @@ describe('Purchase', () => {
     purchase.requested.set(3);
     expect(purchase.cost).toBe(12);
   });
+
+  it('should get state', () => {
+    const entity = service.getEntity('OreT1')!;
+    const materials = new Materials();
+    const purchase = new Purchase(entity, materials);
+    const state = purchase.getState();
+    expect(state).toEqual({});
+  });
+
+  it('should set state', () => {
+    const entity = service.getEntity('OreT1')!;
+    const materials = new Materials();
+    const purchase = new Purchase(entity, materials);
+    purchase.setState({});
+    expect(purchase).toBeTruthy();
+  });
 });

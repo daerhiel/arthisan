@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, OnDestroy, ViewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 
-import { TableDefinition } from '@app/core';
+import { getStorageItem, TableDefinition } from '@app/core';
 import { CraftingCategory, ItemClass } from '@app/nw-data';
 import { NwI18n } from '@app/nw-buddy';
-import { Artisan, Assembly, ColumnPipe, ColumnsPipe } from '@features/artisan';
+import { Artisan, Assembly, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
@@ -23,7 +23,7 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
   styleUrl: './explorer.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Explorer {
+export class Explorer implements OnDestroy {
   readonly #artisan = inject(Artisan);
   readonly #categories = inject(EXPLORE_ITEM_CATEGORIES, { optional: true }) ?? [];
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
@@ -45,7 +45,15 @@ export class Explorer {
   readonly data = new MatTableDataSource<Assembly>();
   readonly craftables: TableDefinition<Assembly> = assemblyTable;
 
-  protected _refresh = effect(() => {
+  readonly #recover = effect(() => {
+    const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
+    const objects = this.#data();
+    for (const object of objects) {
+      const state = materials[object.entity.id];
+      state && object.materials.setState(state);
+    }
+  });
+  readonly #refresh = effect(() => {
     this.data.data = this.#data();
   });
 
@@ -53,4 +61,11 @@ export class Explorer {
   set sort(sort: MatSort) {
     this.data.sort = sort;
   }
+
+  /** @inheritdoc */
+  ngOnDestroy(): void {
+    this.#recover.destroy();
+    this.#refresh.destroy();
+  }
+
 }

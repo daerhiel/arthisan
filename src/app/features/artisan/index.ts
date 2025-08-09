@@ -13,4 +13,5 @@ export * from './src/assembly';
 export * from './src/projection';
 export * from './src/provision';
 export * from './src/equipment';
+export * from './src/materials';
 export * from './src/opener';

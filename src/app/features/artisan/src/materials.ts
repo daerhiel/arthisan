@@ -1,6 +1,6 @@
-import { Providable } from "./contracts";
+import { Persistent, Providable } from "./contracts";
 import { Assembly } from "./assembly";
-import { Purchase } from "./purchase";
+import { Purchase, PurchaseState } from "./purchase";
 
 /**
  * Represents the assembly crafting optimization mode.
@@ -30,9 +30,21 @@ export interface Stage {
 }
 
 /**
+ * Represents the state of the materials used in assembly planning.
+ */
+export interface MaterialsState {
+  entities: Record<string, PurchaseState>;
+}
+
+/**
+ * Represents the key used to store materials in local storage.
+ */
+export const MATERIALS_STORAGE_KEY = 'materials';
+
+/**
  * Represents an index of materials used in assembly planning.
  */
-export class Materials {
+export class Materials implements Persistent<MaterialsState> {
   readonly #index: Record<string, Purchase> = {};
   #assembly: Assembly | null = null;
 
@@ -153,6 +165,36 @@ export class Materials {
         break;
       default:
         throw new Error(`Unsupported optimization mode: ${mode}`);
+    }
+  }
+
+  /** @inheritdoc */
+  getState(): MaterialsState {
+    const state: MaterialsState = {
+      entities: {}
+    };
+
+    for (const id in this.#index) {
+      const purchase = this.#index[id].getState();
+      if (purchase) {
+        state.entities[id] = purchase;
+      }
+    }
+
+    return state;
+  }
+
+  /** @inheritdoc */
+  setState(state: MaterialsState): void {
+    if (!state) {
+      return;
+    }
+
+    for (const id in state.entities) {
+      const purchase = this.#index[id];
+      if (purchase) {
+        purchase.setState(state.entities[id]);
+      }
     }
   }
 }

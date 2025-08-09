@@ -106,4 +106,19 @@ describe('Assembly', () => {
     assembly.crafted.set(true);
     expect(assembly.crafted()).toBe(true);
   });
+
+  it('should get state', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    const state = assembly.getState();
+    expect(state).toEqual({ crafted: false });
+  });
+
+  it('should set state', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    assembly.setState({ crafted: true });
+    expect(assembly).toBeTruthy();
+    expect(assembly.crafted()).toBe(true);
+  });
 });

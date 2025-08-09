@@ -1,14 +1,22 @@
 import { computed, signal } from "@angular/core";
 
 import { product } from "@app/core";
+import { Persistent } from "./contracts";
 import { Materials } from "./materials";
 import { Entity } from "./entity";
+
+/**
+ * Represents the state of a purchase.
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PurchaseState {
+}
 
 /**
  * Represents a purchase request for an entity, which can be a master item or housing.
  * @remarks Purchase contains details about how many items of an entity is required in a crafting operation.
  */
-export class Purchase {
+export class Purchase implements Persistent<PurchaseState> {
   /**
    * The chance to craft additional items.
    */
@@ -46,5 +54,15 @@ export class Purchase {
       throw new Error('Invalid materials instance.');
     }
     this.materials.index(this);
+  }
+
+  /** @inheritdoc */
+  getState(): PurchaseState {
+    return {};
+  }
+
+  /** @inheritdoc */
+  setState(state: PurchaseState): void {
+    state;
   }
 }
