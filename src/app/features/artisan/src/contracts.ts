@@ -39,3 +39,18 @@ export interface Providable<T> {
    */
   request(materials: Materials): T;
 }
+
+/**
+ * Represents an object that can be requested as contained within another object.
+ * @template P The type of the parent object.
+ * @template T The type of the contained object.
+ */
+export interface Containable<P, T> {
+  /**
+   * Requests the object of type T encapsulated by type P.
+   * @param parent The parent object that contains the request.
+   * @param materials The index of materials to associate with request.
+   * @returns An instance of type T.
+   */
+  request(parent: P, materials: Materials): T;
+}

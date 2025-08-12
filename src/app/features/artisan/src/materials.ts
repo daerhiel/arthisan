@@ -1,6 +1,7 @@
 import { Persistent, Providable } from "./contracts";
 import { Assembly } from "./assembly";
 import { Purchase, PurchaseState } from "./purchase";
+import { Provision } from "./provision";
 
 /**
  * Represents the assembly crafting optimization mode.
@@ -83,17 +84,27 @@ export class Materials implements Persistent<MaterialsState> {
   }
 
   /**
+   * Retrieves a purchase from material index.
+   * @param id The item ID of the purchase to retrieve.
+   * @returns The purchase instance if found; otherwise, null.
+   */
+  get(id: string): Purchase | null {
+    return this.#index[id] ?? null;
+  }
+
+  /**
    * Requests a purchase for the specified material.
    * @param material The material to request.
    * @template T The type of the purchase to request.
    * @returns An instance of type T.
    */
-  request<T extends Purchase>(material: Material<T>): T {
+  request<T extends Purchase>(provision: Provision, material: Material<T>): T {
     let purchase = this.#index[material.id] as T;
     if (!purchase) {
       purchase = material.request(this);
       this.index(purchase);
     }
+    provision && purchase.bind(provision);
     return purchase;
   }
 

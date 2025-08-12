@@ -10,6 +10,7 @@ import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials, OptimizationMode, Stage } from './materials';
 import { Purchase } from './purchase';
+import { Provision } from './provision';
 
 function extractStage(stage: Stage): { id: string; items: string[] } {
   return { id: stage.id, items: stage.materials.map(x => x.entity.id) };
@@ -79,6 +80,14 @@ describe('Materials', () => {
     expect(materials.ids).toEqual(['OreT1']);
   });
 
+  it('should get indexed purchase by id', () => {
+    const materials = new Materials();
+    const entity = service.getEntity('OreT1')!;
+    const purchase = new Purchase(entity, materials);
+    materials.index(purchase);
+    expect(materials.get(entity.id)).toBe(purchase);
+  });
+
   it('should assign only root assembly when indexing', () => {
     const materials = new Materials();
     const craftable = service.getCraftable('IngotT3')!;
@@ -95,21 +104,23 @@ describe('Materials', () => {
   });
 
   it('should request a purchase for a material', () => {
+    const provision = jasmine.createSpyObj<Provision>('Provision', ['ingredient']);
     const materials = new Materials();
     const entity = service.getEntity('OreT1')!;
-    const purchase = materials.request(entity);
+    const purchase = materials.request(provision, entity);
     expect(purchase).toBeInstanceOf(Purchase);
     expect(purchase.entity).toBe(entity);
   });
 
   it('should return cached purchase for a material', () => {
+    const provision = jasmine.createSpyObj<Provision>('Provision', ['ingredient']);
     const materials = new Materials();
     const entity = service.getEntity('OreT1')!;
-    const purchase1 = materials.request(entity);
+    const purchase1 = materials.request(provision, entity);
     expect(purchase1).toBeInstanceOf(Purchase);
     expect(purchase1.entity).toBe(entity);
 
-    const purchase2 = materials.request(entity);
+    const purchase2 = materials.request(provision, entity);
     expect(purchase2).toBe(purchase1);
   });
 

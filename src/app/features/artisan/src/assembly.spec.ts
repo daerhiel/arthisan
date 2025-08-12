@@ -36,7 +36,7 @@ describe('Assembly', () => {
   //   expect(() => new Assembly(craftable)).toThrowError(/invalid craftable instance/i);
   // });
 
-  it('should create for existing craftable', () => {
+  it('should create for existing craftable entity', () => {
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
     expect(assembly).toBeTruthy();
@@ -45,7 +45,7 @@ describe('Assembly', () => {
     expect(assembly.materials).toBeInstanceOf(Materials);
   });
 
-  it('should throw for non-existing craftable', () => {
+  it('should throw for non-existing craftable entity', () => {
     expect(() => new Assembly(null!)).toThrowError(/invalid entity instance/i);
   });
 

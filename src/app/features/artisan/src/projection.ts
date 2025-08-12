@@ -3,6 +3,7 @@ import { computed } from '@angular/core';
 import { subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
 import { Materials } from './materials';
+import { Assembly } from './assembly';
 import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
@@ -51,6 +52,27 @@ export class Projection {
   readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
   get profit(): number | null { return this.#profit(); }
 
+  readonly effective = computed(() => {
+    const bonus = this.chance;
+    const volume = this.assembly.requested();
+    if (this.assembly.boosted() && bonus && volume) {
+      const effect = Math.max(Math.floor(volume / (1 + bonus)), 1);
+      if (effect !== volume) {
+        return effect;
+      }
+    }
+    return null;
+  });
+
+  /**
+   * The actual volume of the craft based on the assembly craft parameters.
+   */
+  readonly volume = computed(() =>
+    this.assembly.boosted() ?
+      this.effective() ?? this.assembly.requested() :
+      this.assembly.requested()
+  );
+
   /**
    * Creates a new Projection instance.
    * @param blueprint The blueprint to project.
@@ -58,13 +80,17 @@ export class Projection {
    * @throws Will throw an error if the blueprint is invalid.
    * @throws Will throw an error if the materials are invalid.
    */
-  constructor(readonly blueprint: Blueprint, readonly materials: Materials) {
+  constructor(readonly assembly: Assembly, readonly blueprint: Blueprint, readonly materials: Materials) {
+    if (!assembly) {
+      throw new Error('Invalid assembly instance.');
+    }
     if (!blueprint) {
       throw new Error('Invalid blueprint instance.');
     }
     if (!materials) {
       throw new Error('Invalid materials instance.');
     }
-    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(materials));
+
+    this.provisions = blueprint.ingredients.map(ingredient => ingredient.request(this, materials));
   }
 }

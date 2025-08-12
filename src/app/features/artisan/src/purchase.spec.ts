@@ -10,6 +10,7 @@ import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
+import { Provision } from './provision';
 
 describe('Purchase', () => {
   let service: Artisan;
@@ -50,7 +51,7 @@ describe('Purchase', () => {
     expect(purchase.bonus).toBeNull();
   });
 
-  it('should create for existing craftable', () => {
+  it('should create for existing craftable entity', () => {
     const entity = service.getEntity('IngotT2')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
@@ -84,8 +85,15 @@ describe('Purchase', () => {
     const entity = service.getEntity('IngotT2')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
-    purchase.requested.set(3);
-    expect(purchase.cost).toBe(12);
+
+    const assembly = jasmine.createSpyObj('Assembly', { crafted: true });
+    const projection = jasmine.createSpyObj('Projection', { volume: 1 }, { assembly });
+    const ingredient = jasmine.createSpyObj('Ingredient', [], { 'quantity': 4 });
+    const provision = jasmine.createSpyObj<Provision>('Provision', [], { projection, ingredient });
+    purchase.bind(provision);
+
+    expect(purchase.requested()).toBe(4);
+    expect(purchase.cost).toBe(16);
   });
 
   it('should get state', () => {

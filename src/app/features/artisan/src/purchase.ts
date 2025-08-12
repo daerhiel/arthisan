@@ -1,9 +1,10 @@
-import { computed, signal } from "@angular/core";
+import { computed, Signal } from "@angular/core";
 
-import { product } from "@app/core";
+import { product, sum } from "@app/core";
 import { Persistent } from "./contracts";
 import { Materials } from "./materials";
 import { Entity } from "./entity";
+import { Provision } from "./provision";
 
 /**
  * Represents the state of a purchase.
@@ -17,6 +18,8 @@ export interface PurchaseState {
  * @remarks Purchase contains details about how many items of an entity is required in a crafting operation.
  */
 export class Purchase implements Persistent<PurchaseState> {
+  readonly #owners: Provision[] = [];
+
   /**
    * The chance to craft additional items.
    */
@@ -37,7 +40,10 @@ export class Purchase implements Persistent<PurchaseState> {
   /**
    * The number of items requested by the parent provision.
    */
-  readonly requested = signal(0);
+  readonly requested: Signal<number | null> = computed(() => this.#owners
+    .filter(x => x.projection.assembly.crafted())
+    .reduce((s, x) => sum(s, product(x.projection.volume(), x.ingredient.quantity)), 0)
+  );
 
   /**
    * Creates a new Purchase instance.
@@ -53,7 +59,25 @@ export class Purchase implements Persistent<PurchaseState> {
     if (!materials) {
       throw new Error('Invalid materials instance.');
     }
+
     this.materials.index(this);
+  }
+
+  /**
+   * Binds the purchase to a provision.
+   * @param provision The provision to bind to.
+   * @throws Will throw an error if the provision is invalid.
+   * @remarks The binding is required to estimate the amount of materials needed for crafting depending
+   * on the crafting tree state and equipment usage.
+   */
+  bind(provision: Provision) {
+    if (!provision) {
+      throw new Error('Invalid provision instance.');
+    }
+
+    if (!this.#owners.includes(provision)) {
+      this.#owners.push(provision);
+    }
   }
 
   /** @inheritdoc */

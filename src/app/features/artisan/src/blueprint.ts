@@ -1,11 +1,12 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Deferrable, Providable } from './contracts';
+import { Containable, Deferrable } from './contracts';
 import { Materials } from './materials';
 import { Craftable } from './craftable';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Assembly } from './assembly';
 import { Projection } from './projection';
 
 /**
@@ -35,7 +36,7 @@ export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientDa
 /**
  * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting.
  */
-export class Blueprint implements Deferrable, Providable<Projection> {
+export class Blueprint implements Deferrable, Containable<Assembly, Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
@@ -87,7 +88,7 @@ export class Blueprint implements Deferrable, Providable<Projection> {
   }
 
   /** @inheritdoc */
-  request(materials: Materials): Projection {
-    return new Projection(this, materials);
+  request(parent: Assembly, materials: Materials): Projection {
+    return new Projection(parent, this, materials);
   }
 }

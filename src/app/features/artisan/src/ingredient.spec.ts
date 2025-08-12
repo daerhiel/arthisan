@@ -12,6 +12,7 @@ import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Entity } from './entity';
 import { Materials } from './materials';
 import { Craftable } from './craftable';
+import { Projection } from './projection';
 import { Provision } from './provision';
 import { Category } from './category';
 
@@ -60,6 +61,7 @@ describe('Ingredient', () => {
   it('should initialize an entity ingredient', () => {
     const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 1 };
     const ingredient = new Ingredient(service, data);
+
     ingredient.initialize();
     expect(ingredient.entity).toBeInstanceOf(Entity);
     expect(ingredient.entity.id).toBe('OreT1');
@@ -77,6 +79,7 @@ describe('Ingredient', () => {
   it('should initialize a craftable entity ingredient', () => {
     const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
     const ingredient = new Ingredient(service, data);
+
     ingredient.initialize();
     expect(ingredient.entity).toBeInstanceOf(Craftable);
     expect(ingredient.entity.id).toBe('IngotT2');
@@ -94,6 +97,7 @@ describe('Ingredient', () => {
   it('should initialize a regular category ingredient', () => {
     const data: CraftingIngredientData = { id: 'FluxReagentsT5', type: 'Category_Only', quantity: 1 };
     const ingredient = new Ingredient(service, data);
+
     ingredient.initialize();
     expect(ingredient.entity).toBeInstanceOf(Category);
     expect(ingredient.entity.id).toBe('FluxReagentsT5');
@@ -101,11 +105,12 @@ describe('Ingredient', () => {
 
   it('should request a provision', () => {
     const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 1 };
+    const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
+    const materials = new Materials();
     const ingredient = new Ingredient(service, data);
     ingredient.initialize();
 
-    const materials = new Materials();
-    const provision = ingredient.request(materials);
+    const provision = ingredient.request(projection, materials);
     expect(provision).toBeInstanceOf(Provision);
     expect(provision.ingredient).toBe(ingredient);
     expect(provision.materials).toBe(materials);

@@ -10,6 +10,7 @@ export * from './src/ingredient';
 export * from './src/category';
 export * from './src/purchase';
 export * from './src/assembly';
+export * from './src/production';
 export * from './src/projection';
 export * from './src/provision';
 export * from './src/equipment';

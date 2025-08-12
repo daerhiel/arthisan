@@ -13,6 +13,7 @@ import { Entity } from './entity';
 import { Craftable } from './craftable';
 import { Category } from './category';
 import { Blueprint, getIngredients } from './blueprint';
+import { Assembly } from './assembly';
 import { Projection } from './projection';
 import { Ingredient } from './ingredient';
 
@@ -51,6 +52,7 @@ describe('Blueprint', () => {
     const id = 'IngotT2';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -67,6 +69,7 @@ describe('Blueprint', () => {
     const id = 'IngotT3';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -85,6 +88,7 @@ describe('Blueprint', () => {
     const id = 'IngotT4';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -104,6 +108,7 @@ describe('Blueprint', () => {
     const id = 'IngotT5';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -123,6 +128,7 @@ describe('Blueprint', () => {
     const id = 'IngotT52';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -142,6 +148,7 @@ describe('Blueprint', () => {
     const id = 'RubyT2';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -158,6 +165,7 @@ describe('Blueprint', () => {
     const id = 'OreT1';
     const entity = service.getEntity(id) as Craftable;
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -169,6 +177,7 @@ describe('Blueprint', () => {
     const id = 'IngotT2';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
@@ -180,11 +189,13 @@ describe('Blueprint', () => {
     const id = 'IngotT2';
     const entity = service.getCraftable(id);
     const [recipe] = service.data.recipes.get(id) ?? [];
+
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
+    const materials = new Materials();
     const blueprint = new Blueprint(service, entity, recipe);
     blueprint.initialize();
 
-    const materials = new Materials();
-    const projection = blueprint.request(materials);
+    const projection = blueprint.request(assembly, materials);
     expect(projection).toBeInstanceOf(Projection);
     expect(projection.blueprint).toBe(blueprint);
     expect(projection.materials).toBe(materials);

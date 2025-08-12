@@ -48,6 +48,11 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   readonly crafted = signal(false);
 
   /**
+   * Indicates whether to evaluate crafting volume based on extra item chances.
+   */
+  readonly boosted = signal(true);
+
+  /**
    * Creates a new Assembly instance.
    * @param entity The craftable entity associated with this assembly.
    * @param materials The materials required for this craft.
@@ -55,9 +60,9 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
    */
   constructor(override readonly entity: Craftable, materials?: Materials) {
     super(entity, materials ??= new Materials());
-    this.projections = entity.blueprints.map(blueprint => blueprint.request(materials));
-  }
 
+    this.projections = entity.blueprints.map(blueprint => blueprint.request(this, materials));
+  }
 
   /** @inheritdoc */
   override getState(): AssemblyState {
