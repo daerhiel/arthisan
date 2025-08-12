@@ -4,9 +4,9 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { getStorageItem, TableDefinition } from '@app/core';
-import { CraftingCategory, ItemClass } from '@app/nw-data';
+import { CraftingCategory, CraftingRecipeData, ItemClass, MasterItemDefinitions } from '@app/nw-data';
 import { NwI18n } from '@app/nw-buddy';
-import { Artisan, Assembly, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState } from '@features/artisan';
+import { Artisan, Assembly, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, supported } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
@@ -33,8 +33,8 @@ export class Explorer implements OnDestroy {
     const objects: Assembly[] = [];
     for (const key of this.#artisan.data.recipes.keys() ?? []) {
       const item = this.#artisan.data.items.get(key);
-      const recipes = this.#artisan.data.recipes.get(key);
-      if (item && recipes && !recipes.every(x => this.#categories.includes(x.CraftingCategory)) && this.#classes.every(name => item.ItemClass.includes(name))) {
+      const recipes = supported(this.#artisan.data.recipes.get(key));
+      if (item && recipes?.length && this._isIncluded(item, recipes)) {
         const craftable = this.#artisan.getCraftable(key);
         craftable && objects.push(craftable.request());
       }
@@ -68,4 +68,8 @@ export class Explorer implements OnDestroy {
     this.#refresh.destroy();
   }
 
+  private _isIncluded(item: MasterItemDefinitions, recipes: CraftingRecipeData[]): boolean {
+    return !recipes.every(x => this.#categories.includes(x.CraftingCategory)) &&
+      this.#classes.every(name => item.ItemClass.includes(name));
+  }
 }

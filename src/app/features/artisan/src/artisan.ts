@@ -22,7 +22,7 @@ const EXCLUDE_CATEGORIES: CraftingCategory[] = ['MaterialConversion'];
  * @param recipes A list of crafting recipes to filter.
  * @returns A filtered list of crafting recipes that excludes material conversion recipes.
  */
-function supported(recipes: CraftingRecipeData[] | null): CraftingRecipeData[] | null {
+export function supported(recipes: CraftingRecipeData[] | null): CraftingRecipeData[] | null {
   if (recipes) {
     recipes = recipes.filter(recipe =>
       !EXCLUDE_CATEGORIES.includes(recipe.CraftingCategory)
