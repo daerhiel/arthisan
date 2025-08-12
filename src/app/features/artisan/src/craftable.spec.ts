@@ -8,6 +8,7 @@ import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Materials } from './materials';
 import { Craftable } from './craftable';
 import { Assembly } from './assembly';
 
@@ -23,6 +24,7 @@ describe('Craftable', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {
@@ -47,15 +49,31 @@ describe('Craftable', () => {
     const item = service.data.items.get('IngotT2')!;
     const recipes = service.data.recipes.get('IngotT2')!;
     const craftable = new Craftable(service, item, recipes);
-    expect(craftable.blueprints.map(x => x.item.id)).toEqual(['IngotT2']);
+    expect(craftable.blueprints.map(x => x.entity.id)).toEqual(['IngotT2']);
+  });
+
+  it('should request an assembly with default materials', () => {
+    const item = service.data.items.get('IngotT2')!;
+    const recipes = service.data.recipes.get('IngotT2')!;
+    const craftable = new Craftable(service, item, recipes);
+    craftable.initialize();
+
+    const assembly = craftable.request();
+    expect(assembly).toBeInstanceOf(Assembly);
+    expect(assembly.entity).toBe(craftable);
+    expect(assembly.materials).toBeInstanceOf(Materials);
   });
 
   it('should request an assembly', () => {
     const item = service.data.items.get('IngotT2')!;
     const recipes = service.data.recipes.get('IngotT2')!;
     const craftable = new Craftable(service, item, recipes);
-    const assembly = craftable.request();
+    craftable.initialize();
+
+    const materials = new Materials();
+    const assembly = craftable.request(materials);
     expect(assembly).toBeInstanceOf(Assembly);
     expect(assembly.entity).toBe(craftable);
+    expect(assembly.materials).toBe(materials);
   });
 });

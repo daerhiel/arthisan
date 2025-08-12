@@ -1,6 +1,6 @@
 import { CraftingRecipeData, HouseItems, MasterItemDefinitions } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Materials } from './contracts';
+import { Materials, Material } from './materials';
 import { Entity } from './entity';
 import { Blueprint } from './blueprint';
 import { Assembly } from './assembly';
@@ -8,7 +8,7 @@ import { Assembly } from './assembly';
 /**
  * Represents a craftable entity in the artisan system, which can be a master item or housing.
  */
-export class Craftable extends Entity implements Materials<Assembly> {
+export class Craftable extends Entity implements Material<Assembly> {
   readonly blueprints: Blueprint[];
 
   /**
@@ -37,7 +37,7 @@ export class Craftable extends Entity implements Materials<Assembly> {
   }
 
   /** @inheritdoc */
-  override request(): Assembly {
-    return new Assembly(this);
+  override request(materials?: Materials): Assembly {
+    return new Assembly(this, materials);
   }
 }

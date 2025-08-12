@@ -6,7 +6,7 @@ import { TableDefinition } from '@app/core';
   name: 'columns'
 })
 export class ColumnsPipe implements PipeTransform {
-  transform<T extends object>(table: TableDefinition<T>): (keyof T)[] {
+  transform<T extends object>(table: TableDefinition<T>): string[] {
     return table.columns.map(column => column.id);
   }
 }

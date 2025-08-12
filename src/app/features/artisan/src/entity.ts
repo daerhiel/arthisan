@@ -2,13 +2,14 @@ import { computed } from '@angular/core';
 
 import { getItemRarity, HouseItems, isHousingItem, isItemNamed, isMasterItem, MasterItemDefinitions } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Deferrable, Materials } from './contracts';
+import { Deferrable } from './contracts';
+import { Materials, Material } from './materials';
 import { Purchase } from './purchase';
 
 /**
  * Represents an entity in the artisan system, which can be a master item or housing.
  */
-export class Entity implements Deferrable, Materials<Purchase> {
+export class Entity implements Deferrable, Material<Purchase> {
   readonly #item: MasterItemDefinitions | HouseItems;
   readonly #id: string;
 
@@ -23,7 +24,11 @@ export class Entity implements Deferrable, Materials<Purchase> {
   get type() { return this.#item.ItemType; }
   get tier() { return this.#item.Tier; }
 
-  readonly price = computed(() => this.artisan.gaming.get(this.id));
+  /**
+   * The market price of a unit of an entity.
+   */
+  readonly #price = computed(() => this.artisan.gaming.get(this.id));
+  get price(): number | null { return this.#price(); }
 
   /**
    * Creates a new Entity instance.
@@ -56,16 +61,16 @@ export class Entity implements Deferrable, Materials<Purchase> {
   }
 
   /** @inheritdoc */
-  request(): Purchase {
-    return new Purchase(this);
+  request(materials: Materials): Purchase {
+    return new Purchase(this, materials);
   }
 }
 
 /**
  * Gets the inputs required for rendering an icon component for an entity.
- * @param item The entity for which to get icon inputs.
+ * @param entity The entity for which to get icon inputs.
  * @returns An object containing the path, name, rarity, named status, and size for the icon.
  */
-export function getIconInputs(item: Entity) {
-  return { path: item.icon, name: item.name, rarity: item.rarity, named: item.named, size: 12 };
+export function getIconInputs<T extends Entity>(entity: T) {
+  return { path: entity.icon, name: entity.name, rarity: entity.rarity, named: entity.named, size: 12 };
 }

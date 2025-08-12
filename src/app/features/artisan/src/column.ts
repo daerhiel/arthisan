@@ -6,9 +6,9 @@ import { isTableCellContent, isTableCellValue, TableCellContent, TableCellValue,
   name: 'column'
 })
 export class ColumnPipe implements PipeTransform {
-  transform<T extends object>(column: TableColumn<T>, source: 'content'): TableCellContent<T>;
-  transform<T extends object>(column: TableColumn<T>, source: 'value'): TableCellValue<T>;
-  transform<T extends object>(column: TableColumn<T>, source: 'content' | 'value'): TableCellContent<T> | TableCellValue<T> | null {
+  transform<T extends object, V>(column: TableColumn<T, V>, source: 'content'): TableCellContent<T>;
+  transform<T extends object, V>(column: TableColumn<T, V>, source: 'value'): TableCellValue<T, V>;
+  transform<T extends object, V>(column: TableColumn<T, V>, source: 'content' | 'value'): TableCellContent<T> | TableCellValue<T, V> | null {
     const value = column.value;
     if (source === 'content' && isTableCellContent(value)) {
       return value;

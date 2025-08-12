@@ -25,6 +25,10 @@
   @include mat.icon-overrides((
     color: var(--mat-sys-primary),
   ));
+  @include mat.dialog-overrides((
+    container-color: var(--mat-sys-primary-container),
+    subhead-color: var(--mat-sys-on-surface),
+  ));
 }
 
 html,

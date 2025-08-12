@@ -22,6 +22,7 @@ describe('Category', () => {
       ]
     });
     service = TestBed.inject(Artisan);
+
     const gaming = TestBed.inject(GamingTools);
     gaming.select({ name: 'Server1', age: 100 });
     while (gaming.isLoading()) {

@@ -1,10 +1,12 @@
 import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Deferrable, Materials } from './contracts';
+import { Containable, Deferrable } from './contracts';
+import { Materials } from './materials';
 import { Craftable } from './craftable';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Assembly } from './assembly';
 import { Projection } from './projection';
 
 /**
@@ -32,13 +34,13 @@ export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientDa
 }
 
 /**
- * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting an item.
+ * Represents a crafting blueprint that contains the necessary ingredients and recipe data for crafting.
  */
-export class Blueprint implements Deferrable, Materials<Projection> {
+export class Blueprint implements Deferrable, Containable<Assembly, Projection> {
   readonly ingredients: Ingredient[] = [];
 
   /**
-   * Gets the bonus items chance for the current item.
+   * Gets the bonus items chance for the current craftable.
    */
   get bonus(): number { return this.recipe.BonusItemChance; }
 
@@ -52,17 +54,17 @@ export class Blueprint implements Deferrable, Materials<Projection> {
   /**
    * Creates a new Blueprint instance.
    * @param artisan The artisan instance to use for crafting.
-   * @param item The craftable entity associated with this blueprint.
+   * @param entity The craftable entity associated with this blueprint.
    * @param recipe The crafting recipe data for this blueprint.
-   * @throws Will throw an error if the artisan or item is invalid.
+   * @throws Will throw an error if the artisan or entity is invalid.
    * @throws Will throw an error if the recipe is invalid or missing required ingredients.
    */
-  constructor(private readonly artisan: Artisan, readonly item: Craftable, private readonly recipe: CraftingRecipeData) {
+  constructor(private readonly artisan: Artisan, readonly entity: Craftable, private readonly recipe: CraftingRecipeData) {
     if (!artisan) {
       throw new Error('Invalid artisan instance.');
     }
-    if (!item) {
-      throw new Error('Invalid item data.');
+    if (!entity) {
+      throw new Error('Invalid entity data.');
     }
 
     for (const ingredient of getIngredients(recipe)) {
@@ -86,7 +88,7 @@ export class Blueprint implements Deferrable, Materials<Projection> {
   }
 
   /** @inheritdoc */
-  request(): Projection {
-    return new Projection(this);
+  request(parent: Assembly, materials: Materials): Projection {
+    return new Projection(parent, this, materials);
   }
 }

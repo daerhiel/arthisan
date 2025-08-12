@@ -179,11 +179,13 @@ describe('Artisan: no data', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
+
     const api = TestBed.inject(NwBuddyApi);
     if (api instanceof NwBuddyApiMock) {
       apiMock = api;
       apiMock.defer(true);
     }
+
     service = TestBed.inject(Artisan);
   });
 

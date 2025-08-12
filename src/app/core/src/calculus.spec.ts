@@ -1,15 +1,35 @@
-import { greater, max, product, ratio, sum, subtract } from "./calculus";
+import { greater, max, product, ratio, sum, subtract, smaller } from "./calculus";
+
+describe('smaller', () => {
+  it('should return false if both arguments are null', () => {
+    expect(smaller(null, null)).toBeFalse();
+  });
+
+  it('should return true if first argument is null', () => {
+    expect(smaller(null, 5)).toBeTrue();
+  });
+
+  it('should return false if second argument is null', () => {
+    expect(smaller(5, null)).toBeFalse();
+  });
+
+  it('should return the smaller of two numbers', () => {
+    expect(smaller(2, 3)).toBeTrue();
+    expect(smaller(3, 2)).toBeFalse();
+    expect(smaller(3, 3)).toBeFalse();
+  });
+});
 
 describe('greater', () => {
-  it('should return null if both arguments are null', () => {
+  it('should return false if both arguments are null', () => {
     expect(greater(null, null)).toBeFalse();
   });
 
-  it('should return null if first argument is null', () => {
+  it('should return false if first argument is null', () => {
     expect(greater(null, 5)).toBeFalse();
   });
 
-  it('should return null if second argument is null', () => {
+  it('should return true if second argument is null', () => {
     expect(greater(5, null)).toBeTrue();
   });
 
