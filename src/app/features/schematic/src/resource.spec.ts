@@ -1,24 +1,22 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Schematic } from './schematic';
+import { Resource } from './resource';
 
-describe('Schematic', () => {
-  let component: Schematic;
-  let fixture: ComponentFixture<Schematic>;
+describe('Resource', () => {
+  let component: Resource;
+  let fixture: ComponentFixture<Resource>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Schematic],
+      imports: [Resource],
       providers: [
         provideZonelessChangeDetection(),
-        { provide: MAT_DIALOG_DATA, useValue: {} }
       ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Schematic);
+    fixture = TestBed.createComponent(Resource);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

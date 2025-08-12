@@ -1,0 +1,132 @@
+:host {
+  display: block;
+
+  --icon-size: 40px;
+  --label-text-color: rgba(255, 255, 255, 0.4);
+  --active-label-text-color: rgba(255, 255, 255, 0.9);
+  --value-text-color: rgba(255, 255, 255, 0.6);
+  --active-value-text-color: rgba(255, 255, 255);
+
+  .labels {
+    color: var(--label-text-color);
+  }
+
+  .values {
+    color: var(--value-text-color);
+  }
+
+  .active {
+    .labels {
+      color: var(--active-label-text-color);
+    }
+    .values {
+      color: var(--active-value-text-color);
+    }
+  }
+
+  .mat-warn,
+  .mat-accent {
+    color: var(--mdc-slider-handle-color) !important;
+  }
+
+  mat-card-header {
+    text-wrap: nowrap;
+
+    mat-card-title-group {
+      flex-direction: row-reverse;
+      justify-content: stretch;
+
+      mat-card-subtitle {
+        .use-bonus {
+          cursor: pointer;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .action {
+          color: var(--mat-table-row-item-outline-color);
+        }
+      }
+
+      picture[nw-icon] {
+        overflow: visible;
+        width: calc(var(--icon-size) + 2px);
+        height: calc(var(--icon-size) + 2px);
+        margin-right: 16px;
+      }
+
+      .mat-accent {
+        color: var(--mdc-slider-handle-color);
+      }
+    }
+  }
+
+  mat-card-content {
+    text-wrap: nowrap;
+    font-family: var(--mat-table-row-item-label-text-font, Roboto, sans-serif);
+    --input-background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  input {
+    color: var(--active-value-text-color);
+    background-color: var(--input-background-color);
+    border: none;
+    border-bottom: 1px solid var(--label-text-color);
+    padding: 2px;
+    width: 50px;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+  }
+
+  table[mat-table] {
+    min-width: auto;
+    --ingredient-name-color: rgba(255, 255, 255, 0.4);
+    --formula-component-color: rgba(255, 255, 255, 0.7);
+    border-left: 1px solid var(--ingredient-name-color);
+
+    tr.mat-mdc-row {
+      height: auto;
+
+      td.mat-mdc-cell {
+        padding: 0;
+        font-size: calc(var(--mat-table-row-item-label-text-size) * 0.85);
+      }
+
+      td.mat-column-header {
+        border-bottom-width: 0;
+        color: var(--ingredient-name-color);
+      }
+
+      td.mat-column-quantity {
+        color: var(--formula-component-color);
+      }
+
+      td.mat-column-action,
+      td.mat-column-sign {
+        padding: 0 4px;
+        color: var(--mat-table-row-item-outline-color);
+      }
+
+      td.mat-column-price,
+      td.mat-column-total {
+        text-align: right;
+        color: var(--formula-component-color);
+      }
+    }
+  }
+
+  button {
+    margin: 0 -8px;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+  }
+
+  b {
+    font-weight: var(--mat-table-header-headline-weight, 500);
+  }
+}

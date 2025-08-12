@@ -1,0 +1,120 @@
+<mat-card>
+  @let purchase = data();
+
+  <mat-card-header>
+    <mat-card-title-group>
+
+      @if (purchase) {
+      <mat-card-title class="app-l-flex app-l-flex-row">
+        <div>{{purchase.entity.name | localize}}</div>
+        <div class="app-l-flex-spacer-1"></div>
+        @if (purchase | instance:Assembly) {
+        <mat-slide-toggle [(ngModel)]="purchase.crafted" matTooltip="Craft this item" matTooltipPosition="right"></mat-slide-toggle>
+        }
+      </mat-card-title>
+      }
+
+      @if (purchase) {
+      <mat-card-subtitle class="app-l-flex app-l-flex-row">
+        <div class="app-l-flex-spacer-1">
+          <b>{{purchase.requested()}}</b>
+          <span class="action"> x </span>
+          @if ((purchase | instance:Assembly) && purchase.crafted()) {
+          <b>{{purchase.value | number:'1.0-3'}}</b>
+          }
+          @else {
+          <b>{{purchase.price | number:'1.0-3'}}</b>
+          }
+          <span class="action"> = </span>
+          <!-- @if (purchase | instance:Assembly) {
+          <b [class]="purchase.profitClass()">{{purchase.cost() | number:'1.0-3'}}</b>
+          }
+          @else {
+          <b>{{purchase.cost() | number:'1.0-3'}}</b>
+          } -->
+        </div>
+        <!-- @if ((purchase | instance:Assembly) && purchase.extraItemChance()) {
+        <div class="use-bonus" [class.mat-accent]="purchase.useExtraItems()" matTooltip="Extra item chance" matTooltipPosition="right" (click)="purchase.toggleExtraItems()">
+          +{{purchase.extraItemChance()! * 100 | number:'1.0'}}%
+        </div>
+        } -->
+      </mat-card-subtitle>
+      }
+
+      @if (purchase?.entity; as entity) {
+      <picture nw-icon [path]="entity.icon" [name]="entity.name" [rarity]="entity.rarity" [named]="entity.named" [size]="12" loading="lazy" alt="icon"></picture>
+      }
+
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-align-start app-l-flex-gap-1r app-mt-hr">
+      @if (purchase) {
+      <div class="app-l-flex app-l-flex-column app-l-flex-gap-hr app-l-flex-spacer-1">
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="labels">{{(purchase | instance:Assembly) && purchase.crafted() ? 'Make' : 'Buy'}}</div>
+          <div class="values">
+            <!-- @if (purchase | instance:Product) {
+              <input matInput type="text" [formControl]="required">
+              }
+              @else{
+              <b matTooltip="Required by recipe" matTooltipPosition="above">{{purchase.requestedVolume()}}</b>
+              }
+              @if ((purchase | instance:Assembly) && purchase.effectiveVolume(); as volume) {
+              / <b matTooltip="Should craft at station" matTooltipPosition="above">{{volume}}</b>
+              } -->
+          </div>
+        </div>
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r" [class.active]="!(purchase | instance:Assembly) || !purchase.crafted()">
+          <div class="labels">Market</div>
+          <div class="values"><b>{{purchase.price | number:'1.2-3'}}</b></div>
+        </div>
+        @if (purchase | instance:Assembly) {
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r" [class.active]="purchase.crafted()">
+          <div class="labels">Crafted</div>
+          <div class="values">{{purchase.projection?.cost | number:'1.2-3'}}</div>
+        </div>
+        }
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="labels">Cost</div>
+          <div class="values"><b>{{purchase.cost | number:'1.2-3'}}</b></div>
+        </div>
+        <!-- @if (purchase | instance:Assembly) {
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="labels">Profit</div>
+          <div class="values" [class]="purchase.profitClass()">{{purchase.profit() | number:'1.2-3'}}</div>
+        </div>
+        } -->
+      </div>
+      }
+      <!-- @if (purchase | instance:Assembly) {
+      <table mat-table class="app-pl-1r mat-elevation-z0" [dataSource]="purchase.ingredients" multiTemplateDataRows>
+        <ng-container matColumnDef="header">
+          <td mat-cell *matCellDef="let ingredient" [attr.colspan]="columns.length"> {{ingredient.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <td mat-cell *matCellDef="let ingredient"> <b>{{ingredient.quantity}}</b> </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <td mat-cell *matCellDef="let ingredient"> x </td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+          <td mat-cell *matCellDef="let ingredient" [class]="ingredient.futureClass()"> <b>{{ingredient.effectiveValue() | number:'1.2-3'}}</b> </td>
+        </ng-container>
+        <ng-container matColumnDef="sign">
+          <td mat-cell *matCellDef="let ingredient"> = </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <td mat-cell *matCellDef="let ingredient" [class]="ingredient.currentClass()"> {{ingredient.total() | number:'1.2-3'}} </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: ['header']" header></tr>
+        <tr mat-row *matRowDef="let ingredient; columns: columns;"></tr>
+      </table>
+      } -->
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+  </mat-card-actions>
+</mat-card>

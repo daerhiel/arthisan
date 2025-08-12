@@ -6,7 +6,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { getStorageItem, TableDefinition } from '@app/core';
 import { CraftingCategory, CraftingRecipeData, ItemClass, MasterItemDefinitions } from '@app/nw-data';
 import { NwI18n } from '@app/nw-buddy';
-import { Artisan, Assembly, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, supported } from '@features/artisan';
+import { Artisan, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, Production, supported } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
@@ -30,20 +30,20 @@ export class Explorer implements OnDestroy {
   protected readonly _i18n = inject(NwI18n);
 
   readonly #data = computed(() => {
-    const objects: Assembly[] = [];
+    const objects: Production[] = [];
     for (const key of this.#artisan.data.recipes.keys() ?? []) {
       const item = this.#artisan.data.items.get(key);
       const recipes = supported(this.#artisan.data.recipes.get(key));
       if (item && recipes?.length && this._isIncluded(item, recipes)) {
         const craftable = this.#artisan.getCraftable(key);
-        craftable && objects.push(craftable.request());
+        craftable && objects.push(new Production(craftable));
       }
     }
     return objects;
   });
 
-  readonly data = new MatTableDataSource<Assembly>();
-  readonly craftables: TableDefinition<Assembly> = assemblyTable;
+  readonly data = new MatTableDataSource<Production>();
+  readonly craftables: TableDefinition<Production> = assemblyTable;
 
   readonly #recover = effect(() => {
     const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
@@ -69,6 +69,8 @@ export class Explorer implements OnDestroy {
   }
 
   private _isIncluded(item: MasterItemDefinitions, recipes: CraftingRecipeData[]): boolean {
+    // return item.ItemID === 'IngotT2';
+    // return item.ItemID === 'Runeglass_Gem_Diamond_Heal';
     return !recipes.every(x => this.#categories.includes(x.CraftingCategory)) &&
       this.#classes.every(name => item.ItemClass.includes(name));
   }

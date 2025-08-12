@@ -10,24 +10,44 @@
   @include mat.table-overrides((
     row-item-outline-color: var(--mat-sys-surface-container-high),
   ));
+
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
     container-text-color: var(--mat-sys-primary),
   ));
+
   @include mat.menu-overrides((
     item-label-text-color: var(--mat-sys-on-surface),
     item-icon-color: var(--mat-sys-secondary),
   ));
+
   @include mat.button-overrides((
     filled-container-color: var(--mat-sys-primary-container),
     filled-label-text-color: var(--mat-sys-primary),
   ));
+
+  @include mat.slide-toggle-overrides((
+    track-width: 36px,
+    track-height: 20px,
+    selected-pressed-handle-horizontal-margin: 0 16px,
+    selected-with-icon-handle-horizontal-margin: 0 16px,
+    unselected-pressed-handle-horizontal-margin: 0 -8px,
+    unselected-with-icon-handle-horizontal-margin: 0 -6px,
+  ));
+
   @include mat.icon-overrides((
     color: var(--mat-sys-primary),
   ));
+
   @include mat.dialog-overrides((
     container-color: var(--mat-sys-primary-container),
     subhead-color: var(--mat-sys-on-surface),
+    container-shape: 0.5rem,
+  ));
+
+  @include mat.card-overrides((
+    title-text-size: calc(var(--mat-sys-title-medium-size) * 1.1),
+    elevated-container-shape: 0.25rem,
   ));
 }
 
@@ -47,6 +67,107 @@ body {
     height: calc(var(--spacing) * var(--multiplier));
   }
 }
+
+/** Layouts **/
+
+.app-l-flex {
+  display: flex !important;
+}
+
+.app-l-inline-flex {
+  display: inline-flex !important;
+}
+
+.app-l-flex-spacer-1 {
+  flex-grow: 1 !important;
+  min-width: 1rem;
+}
+
+.app-l-flex-column {
+  flex-direction: column !important;
+}
+
+.app-l-flex-row {
+  flex-direction: row !important;
+}
+
+.app-l-align-start {
+  align-items: flex-start !important;
+}
+
+.app-l-align-center {
+  align-items: center !important;
+}
+
+.app-l-align-end {
+  align-items: flex-end !important;
+}
+
+.app-l-justify-start {
+  justify-content: flex-start !important;
+}
+
+.app-l-justify-around {
+  justify-content: space-around !important;
+}
+
+.app-l-justify-between {
+  justify-content: space-between !important;
+}
+
+.app-l-justify-center {
+  justify-content: center !important;
+}
+
+.app-l-justify-center {
+  justify-content: flex-end !important;
+}
+
+/** Spacing **/
+
+$spacing: (
+  0: 0,
+  hr: 0.5rem,
+  1r: 1rem,
+  2r: 2rem,
+  3r: 3rem,
+  4r: 4rem,
+  5r: 5rem,
+  6r: 6rem
+);
+$directions: (
+  l: left,
+  t: top,
+  r: right,
+  b: bottom
+);
+
+@mixin spacing($prop, $short) {
+  @each $space-name, $space in $spacing {
+    .app-#{$short}-#{$space-name} {
+      #{$prop}: $space !important;
+    }
+    @each $dir-name, $dir in $directions {
+      .app-#{$short}#{$dir-name}-#{$space-name} {
+        #{$prop}-#{$dir}: $space !important;
+      }
+    }
+  }
+}
+
+@mixin flex-gap() {
+  @each $space-name, $space in $spacing {
+    .app-l-flex-gap-#{$space-name} {
+      gap: $space !important;
+    }
+  }
+}
+
+@include flex-gap();
+@include spacing(padding, p);
+@include spacing(margin, m);
+
+/** New World Assets */
 
 .nw-icon {
   background-color: #121212;
@@ -166,4 +287,9 @@ body {
   --rarity-bg-rnd: url(https://www.nw-buddy.de/assets/icons/item/itemraritybgsquareartifact.png); // has no circle variant
   --rarity-bg-head: url(https://www.nw-buddy.de/assets/icons/item/tooltip_header_bg_artifact.png);
   --rarity-bg-ani: url(https://www.nw-buddy.de/assets/icons/item/artifact_bg.webp);
+}
+
+/** Material Fixes **/
+.mat-mdc-card-title-group > div {
+  flex-grow: 1;
 }
