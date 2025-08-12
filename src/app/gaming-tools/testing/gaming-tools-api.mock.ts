@@ -22,10 +22,9 @@ export const commodities: Commodity[] = [
   { id: "ClothWeaveT5", price: 0.4 },
   { id: "ReagentConverterT5", price: 0 },
   { id: "CharcoalT1", price: 0 },
-  { id: "WoodenCoin", price: 0 },
+  { id: 'WoodenCoin', price: 10 },
   { id: "BeeswaxT1", price: 0 },
   { id: "AlchemyFireT1", price: 0 },
-  { id: 'WoodenCoin', price: 10 },
   { id: "House_HousingItem_Lighting_CandleHolder_A", price: 0 },
 ].map(item => ({ id: item.id.toLowerCase(), price: item.price }));
 
