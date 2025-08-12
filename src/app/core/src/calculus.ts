@@ -1,5 +1,5 @@
 export function smaller(a: number | null, b: number | null): boolean {
-  return a != null && b != null ? a < b : b != null ? true : false;
+  return a != null && b != null ? a < b : b != null;
 }
 
 export function greater(a: number | null, b: number | null): boolean {
