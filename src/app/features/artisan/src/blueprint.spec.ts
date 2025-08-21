@@ -36,8 +36,9 @@ describe('Blueprint', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
+
     service = TestBed.inject(Artisan);
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   it('should throw on missing artisan instance', () => {

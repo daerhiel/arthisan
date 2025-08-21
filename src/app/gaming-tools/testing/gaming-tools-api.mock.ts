@@ -1,6 +1,7 @@
-import { Observable, of } from 'rxjs';
+import { inject } from '@angular/core';
+import { firstValueFrom, Observable, of, timer } from 'rxjs';
 
-import { Commodity, GameServer } from '@app/gaming-tools';
+import { Commodity, GameServer, GamingTools } from '@app/gaming-tools';
 
 export const commodities: Commodity[] = [
   { id: "gold", price: 100 },
@@ -27,6 +28,15 @@ export const commodities: Commodity[] = [
   { id: "AlchemyFireT1", price: 0 },
   { id: "House_HousingItem_Lighting_CandleHolder_A", price: 0 },
 ].map(item => ({ id: item.id.toLowerCase(), price: item.price }));
+
+export async function initializeGamingTools() {
+  const gaming = inject(GamingTools);
+
+  gaming.select({ name: 'Server1', age: 100 });
+  while (gaming.isLoading()) {
+    await firstValueFrom(timer(100));
+  }
+}
 
 export class GamingToolsApiMock {
   getServers(): Observable<GameServer[]> {

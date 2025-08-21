@@ -24,8 +24,9 @@ describe('Artisan', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
+
     service = TestBed.inject(Artisan);
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   it('should be created', () => {

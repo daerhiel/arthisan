@@ -20,6 +20,7 @@ describe('NwBuddyApi', () => {
         provideHttpClientTesting()
       ]
     });
+
     service = TestBed.inject(NwBuddyApi);
     controller = TestBed.inject(HttpTestingController);
   });

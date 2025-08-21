@@ -1,7 +1,8 @@
-import { from, mergeMap, Observable, of, reduce } from 'rxjs';
+import { inject } from '@angular/core';
+import { firstValueFrom, from, mergeMap, Observable, of, reduce, timer } from 'rxjs';
 
 import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData, ItemType } from '@app/nw-data';
-import { Localization } from '@app/nw-buddy';
+import { Localization, NwI18n } from '@app/nw-buddy';
 import { AsyncManager } from './async-manager';
 
 function mergeData<T>(store: Record<string, T[]>, value: Record<string, T[]>): Record<string, T[]> {
@@ -178,6 +179,13 @@ type CraftingCategoryDataProps =
   | "DisplayText";
 
 type CraftingCategoryTestData = Pick<CraftingCategoryData, CraftingCategoryDataProps>;
+
+export async function initializeNwBuddy() {
+  const i18n = inject(NwI18n);
+  while (i18n.isLoading()) {
+    await firstValueFrom(timer(100));
+  }
+}
 
 export class NwBuddyApiMock {
   readonly #async = new AsyncManager();

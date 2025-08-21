@@ -16,8 +16,9 @@ describe('NwBuddy', () => {
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });
+
     service = TestBed.inject(NwBuddy);
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   it('should be created', () => {

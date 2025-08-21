@@ -21,6 +21,7 @@ describe('GamingToolsApi', () => {
         provideHttpClientTesting()
       ]
     });
+
     service = TestBed.inject(GamingToolsApi);
     controller = TestBed.inject(HttpTestingController);
   });

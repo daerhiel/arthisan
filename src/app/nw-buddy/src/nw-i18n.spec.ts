@@ -1,8 +1,7 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { ApplicationInitStatus, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
-import { NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { initializeNwBuddy, NwBuddyApiMock } from '@app/nw-buddy/testing';
 
 import { NwI18n } from './nw-i18n';
 import { NwBuddyApi } from './nw-buddy-api';
@@ -10,18 +9,20 @@ import { NwBuddyApi } from './nw-buddy-api';
 describe('NwI18n', () => {
   let i18n: NwI18n;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeNwBuddy),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });
 
     i18n = TestBed.inject(NwI18n);
-    while (i18n.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
+  });
+
+  beforeEach(async () => {
+    await TestBed.inject(ApplicationInitStatus).donePromise;
   });
 
   it('should create an instance', () => {

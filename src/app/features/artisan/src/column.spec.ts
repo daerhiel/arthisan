@@ -12,6 +12,7 @@ describe('ContentPipe', () => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()]
     });
+
     TestBed.runInInjectionContext(() => {
       pipe = new ColumnPipe();
     });

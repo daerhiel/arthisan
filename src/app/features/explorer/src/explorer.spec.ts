@@ -1,12 +1,11 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NwBuddyApiMock } from '@app/nw-buddy/testing';
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { initializeNwBuddy, NwBuddyApiMock } from '@app/nw-buddy/testing';
+import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/testing';
 
-import { NwBuddyApi, NwI18n } from '@app/nw-buddy';
-import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { NwBuddyApi } from '@app/nw-buddy';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { EXPLORE_ITEM_CLASSES, Explorer } from './explorer';
 
 describe('Explorer', () => {
@@ -18,21 +17,13 @@ describe('Explorer', () => {
       imports: [Explorer],
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeNwBuddy),
+        provideAppInitializer(initializeGamingTools),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock },
         { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource'] }
       ]
     }).compileComponents();
-
-    const i18n = TestBed.inject(NwI18n);
-    while (i18n.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
-    const gaming = TestBed.inject(GamingTools);
-    gaming.select({ name: 'Server1', age: 100 });
-    while (gaming.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
 
     fixture = TestBed.createComponent(Explorer);
     component = fixture.componentInstance;
