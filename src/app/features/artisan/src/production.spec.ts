@@ -80,4 +80,20 @@ describe('Production', () => {
       { id: 'OreT1', value: 4 }
     ]);
   });
+
+  it('should get state', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const production = new Production(craftable);
+    const state = production.getState();
+    expect(state).toEqual({ crafted: false, requested: 1 });
+  });
+
+  it('should set state', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const production = new Production(craftable);
+    production.setState({ crafted: true, requested: 2 });
+    expect(production).toBeTruthy();
+    expect(production.crafted()).toBe(true);
+    expect(production.requested()).toBe(2);
+  });
 });

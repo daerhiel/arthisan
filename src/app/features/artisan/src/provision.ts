@@ -47,6 +47,12 @@ export class Provision {
   readonly #chance = computed(() => this.purchase.bonus);
   get chance(): number | null { return this.#chance(); }
 
+  /**
+   * The actual volume of materials required for the provision based on the craft parameters.
+   */
+  readonly #volume = computed(() => product(this.projection.volume(), this.ingredient.quantity));
+  get volume(): number | null { return this.#volume(); }
+
   // readonly effectiveValue = computed(() => {
   //   const bonus = this.#parent.extraItemChance();
   //   if (bonus) {

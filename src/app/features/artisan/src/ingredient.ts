@@ -24,6 +24,7 @@ export class Ingredient implements Deferrable, Containable<Projection, Provision
   #entity!: Entity | Category;
 
   get id() { return this.#source.id; }
+  get name() { return this.#entity.name; }
   get quantity() { return this.#source.quantity; }
   get entity() { return this.#entity; }
 

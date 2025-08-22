@@ -1,4 +1,4 @@
-import { computed, Signal } from "@angular/core";
+import { computed } from "@angular/core";
 
 import { product, sum } from "@app/core";
 import { Persistent } from "./contracts";
@@ -40,9 +40,9 @@ export class Purchase implements Persistent<PurchaseState> {
   /**
    * The number of items requested by the parent provision.
    */
-  readonly requested: Signal<number | null> = computed(() => this.#owners
+  readonly requested = computed(() => this.#owners
     .filter(x => x.projection.assembly.crafted())
-    .reduce((s, x) => sum(s, product(x.projection.volume(), x.ingredient.quantity)), 0)
+    .reduce<number | null>((s, x) => sum(s, x.volume), null)
   );
 
   /**

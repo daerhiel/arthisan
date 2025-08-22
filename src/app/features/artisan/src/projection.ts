@@ -65,7 +65,7 @@ export class Projection {
   });
 
   /**
-   * The actual volume of the craft based on the assembly craft parameters.
+   * The actual volume of materials required for the projection based on the craft parameters.
    */
   readonly volume = computed(() =>
     this.assembly.boosted() ?

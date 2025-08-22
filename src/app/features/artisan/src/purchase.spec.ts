@@ -73,11 +73,11 @@ describe('Purchase', () => {
     expect(purchase.price).toBe(4);
   });
 
-  it('should have default cost of zero', () => {
+  it('should have default cost of null', () => {
     const entity = service.getEntity('OreT1')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
-    expect(purchase.cost).toBe(0);
+    expect(purchase.cost).toBe(null);
   });
 
   it('should calculate cost based on requested items', () => {
@@ -88,7 +88,7 @@ describe('Purchase', () => {
     const assembly = jasmine.createSpyObj('Assembly', { crafted: true });
     const projection = jasmine.createSpyObj('Projection', { volume: 1 }, { assembly });
     const ingredient = jasmine.createSpyObj('Ingredient', [], { 'quantity': 4 });
-    const provision = jasmine.createSpyObj<Provision>('Provision', [], { projection, ingredient });
+    const provision = jasmine.createSpyObj<Provision>('Provision', [], { projection, ingredient, volume: 4 });
     purchase.bind(provision);
 
     expect(purchase.requested()).toBe(4);
