@@ -47,7 +47,6 @@ describe('Purchase', () => {
     expect(purchase).toBeTruthy();
     expect(purchase.entity).toBe(entity);
     expect(purchase.materials).toBe(materials);
-    expect(purchase.bonus).toBeNull();
   });
 
   it('should create for existing craftable entity', () => {
@@ -56,14 +55,6 @@ describe('Purchase', () => {
     const purchase = new Purchase(entity, materials);
     expect(purchase).toBeTruthy();
     expect(purchase.entity).toBe(entity);
-    expect(purchase.bonus).toBeNull();
-  });
-
-  it('should not have a bonus by default', () => {
-    const entity = service.getEntity('OreT1')!;
-    const materials = new Materials();
-    const purchase = new Purchase(entity, materials);
-    expect(purchase.bonus).toBeNull();
   });
 
   it('should get the item price', () => {

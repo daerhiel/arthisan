@@ -4,6 +4,7 @@ import { greater, product } from '@app/core';
 import { Materials } from './materials';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
+import { Assembly } from './assembly';
 import { Projection } from './projection';
 import { Purchase } from './purchase';
 
@@ -23,6 +24,7 @@ export class Provision {
   /**
    * The assembly matching an entity or category of entities.
    */
+  get purchase(): Purchase { return this.#purchase(); }
   readonly #purchase = computed(() => {
     if (this.automatic()) {
       return this.purchases.reduce((p, c) => greater(p.price, c.price) ? p : c) ?? null;
@@ -31,21 +33,26 @@ export class Provision {
       return this.purchases.find(x => x.entity.id === selected) ?? this.purchases[0]!;
     }
   });
-  get purchase(): Purchase { return this.#purchase(); }
+
+  /**
+   * Gets the bonus items chance for the current craftable.
+   */
+  get bonus(): number | null { return this.#bonus(); }
+  readonly #bonus = computed(() => {
+    const purchase = this.#purchase();
+    if (purchase instanceof Assembly) {
+      return purchase.projection?.blueprint.bonus ?? null;
+    }
+    return null;
+  });
 
   /**
    * The purchase cost.
    */
+  get cost(): number | null { return this.#cost(); }
   readonly #cost = computed(() =>
     product(this.purchase.entity.price, this.ingredient.quantity)
   );
-  get cost(): number | null { return this.#cost(); }
-
-  /**
-   * The chance to craft additional items.
-   */
-  readonly #chance = computed(() => this.purchase.bonus);
-  get chance(): number | null { return this.#chance(); }
 
   /**
    * The actual volume of materials required for the provision based on the craft parameters.

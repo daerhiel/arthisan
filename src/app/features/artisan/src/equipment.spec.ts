@@ -9,7 +9,7 @@ describe('Equipment', () => {
 
   it('should set default properties', () => {
     expect(equipment.base).toBe(0.05);
-    expect(equipment.level).toBe(250);
+    expect(equipment.level()).toBe(250);
     expect(equipment.chance).toBe(0.3);
   });
 });

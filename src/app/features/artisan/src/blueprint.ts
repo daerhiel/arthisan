@@ -45,10 +45,10 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
   get bonus(): number { return this.recipe.BonusItemChance; }
 
   /**
-   * Gets the crafting equipment context for the current blueprint.
+   * The cumulative chance to craft additional items including the crafting equipment.
    */
   get chance(): number {
-    return sum(this.bonus, this.getContext()?.chance ?? null);
+    return sum(this.recipe.BonusItemChance, this.getContext()?.chance ?? null);
   }
 
   /**

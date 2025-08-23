@@ -41,11 +41,13 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
     this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
   );
 
-  /** @inheritdoc */
-  override get bonus(): number | null {
-    return this.#bonus();
+  /**
+   * The cumulative chance to craft additional items for the selected projection.
+   */
+  get chance(): number | null {
+    return this.#chance();
   }
-  readonly #bonus = computed(() => this.#projection()?.blueprint.bonus ?? null);
+  readonly #chance = computed(() => this.#projection()?.chance ?? null);
 
   /**
    * The effective volume of materials required for the projection based on the craft parameters.
@@ -73,6 +75,13 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
     super(entity, materials ??= new Materials());
 
     this.projections = entity.blueprints.map(blueprint => blueprint.request(this, materials));
+  }
+
+  /**
+   * Toggles the boosted state of the assembly.
+   */
+  toggle(): void {
+    this.boosted.set(!this.boosted());
   }
 
   /** @inheritdoc */

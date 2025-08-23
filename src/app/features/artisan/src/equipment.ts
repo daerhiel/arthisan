@@ -1,17 +1,19 @@
-import { computed } from "@angular/core";
+import { computed, signal } from "@angular/core";
 
 /**
  * Represents an equipment setup in the artisan system for the trading skill.
  */
 export class Equipment {
-  level = 250;
+  /**
+   * The level of the trading skill.
+   */
+  readonly level = signal(250);
 
-  readonly #chance = computed(() => {
-    return this.base + this.level / 1000;
-  });
-  get chance(): number {
-    return this.#chance();
-  }
+  /**
+   * The cumulative chance to craft additional items for the crafting equipment.
+   */
+  get chance(): number { return this.#chance(); }
+  readonly #chance = computed(() => this.base + this.level() / 1000);
 
   /**
    * Creates a new Equipment instance.

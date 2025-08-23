@@ -96,7 +96,6 @@ describe('Entity', () => {
     expect(purchase).toBeInstanceOf(Purchase);
     expect(purchase.entity).toBe(entity);
     expect(purchase.materials).toBe(materials);
-    expect(purchase.bonus).toBeNull();
   });
 
   describe('getIconInputs', () => {

@@ -31,12 +31,6 @@ export class Purchase implements Persistent<PurchaseState> {
   }
 
   /**
-   * The chance to craft additional items.
-   */
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  get bonus(): number | null { return null; }
-
-  /**
    * The market price of a unit of an entity.
    */
   get price(): number | null { return this.entity.price; }

@@ -20,13 +20,13 @@ export class Projection {
   readonly provisions: Provision[];
 
   /**
-   * The chance to craft additional items.
+   * The cumulative chance to craft additional items for the current projection.
    */
   get chance(): number | null { return this.#chance(); }
   readonly #chance = computed(() => {
     const type = this.blueprint.entity.type;
     if (!type || !unsupported.includes(type)) {
-      const chance = this.provisions.reduce((s, x) => sum(s, x.chance), this.blueprint.chance);
+      const chance = this.provisions.reduce((s, x) => sum(s, x.bonus), this.blueprint.chance);
       return Math.max(chance, 0);
     }
     return null;

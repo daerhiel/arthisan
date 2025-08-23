@@ -58,31 +58,31 @@ describe('Assembly', () => {
   it('should get preferred T2 crafting chance', () => {
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
-    expect(assembly.bonus).toBe(0);
+    expect(assembly.chance).toBe(0.3);
   });
 
   it('should get preferred T3 crafting chance', () => {
     const craftable = service.getCraftable('IngotT3');
     const assembly = new Assembly(craftable);
-    expect(assembly.bonus).toBe(-0.02);
+    expect(assembly.chance).toBeCloseTo(0.28);
   });
 
   it('should get preferred T4 crafting chance', () => {
     const craftable = service.getCraftable('IngotT4');
     const assembly = new Assembly(craftable);
-    expect(assembly.bonus).toBe(-0.05);
+    expect(assembly.chance).toBe(0.23);
   });
 
   it('should get preferred T5 crafting chance', () => {
     const craftable = service.getCraftable('IngotT5');
     const assembly = new Assembly(craftable);
-    expect(assembly.bonus).toBe(-0.07);
+    expect(assembly.chance).toBe(0.18);
   });
 
   it('should get preferred T52 crafting chance', () => {
     const craftable = service.getCraftable('IngotT52');
     const assembly = new Assembly(craftable);
-    expect(assembly.bonus).toBe(-0.2);
+    expect(assembly.chance).toBeCloseTo(0.03);
   });
 
   it('should not have effective volume by default', () => {

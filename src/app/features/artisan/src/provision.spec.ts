@@ -135,6 +135,6 @@ describe('Provision', () => {
 
     const materials = new Materials();
     const provision = new Provision(projection, ingredient, materials);
-    expect(provision.chance).toBe(0);
+    expect(provision.bonus).toBe(0);
   });
 });
