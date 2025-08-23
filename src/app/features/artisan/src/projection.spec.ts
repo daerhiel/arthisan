@@ -9,6 +9,7 @@ import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
+import { Production } from './production';
 import { Projection } from './projection';
 
 describe('Projection', () => {
@@ -60,7 +61,7 @@ describe('Projection', () => {
     expect(projection.materials).toBe(materials);
   });
 
-  it('should get the projection crafting chance', () => {
+  it('should get crafting chance', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
@@ -70,7 +71,7 @@ describe('Projection', () => {
     expect(projection.chance).toBe(0.3);
   });
 
-  it('should get the projection cost', () => {
+  it('should get crafting cost', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
@@ -80,7 +81,17 @@ describe('Projection', () => {
     expect(projection.cost).toBe(2);
   });
 
-  it('should get the projection effective value', () => {
+  it('should get effective volume', () => {
+    const assembly = jasmine.createSpyObj<Production>('Production', { requested: 4, boosted: true });
+    const craftable = service.getCraftable('IngotT2');
+    const [blueprint] = craftable.blueprints;
+
+    const materials = new Materials();
+    const projection = new Projection(assembly, blueprint, materials);
+    expect(projection.effective).toBe(3);
+  });
+
+  it('should get effective value', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
@@ -90,7 +101,7 @@ describe('Projection', () => {
     expect(projection.value).toBe(2);
   });
 
-  it('should get the projection crafting profit', () => {
+  it('should get crafting profit', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;

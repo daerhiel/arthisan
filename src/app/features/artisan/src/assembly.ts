@@ -24,25 +24,6 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   readonly projections: Projection[];
 
   /**
-   * The selected projection for this assembly.
-   */
-  readonly #projection = computed(() =>
-    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
-  );
-  get projection(): Projection | null { return this.#projection(); }
-
-  /** @inheritdoc */
-  override get bonus(): number | null {
-    return this.projection?.blueprint.bonus ?? null;
-  }
-
-  /**
-   * The effective value of the craft based on prices and extra items bonuses.
-   */
-  readonly #value = computed(() => this.projection?.value ?? null);
-  get value(): number | null { return this.#value(); }
-
-  /**
    * Indicates whether the assembly has been crafted or purchased on the market.
    */
   readonly crafted = signal(false);
@@ -51,6 +32,36 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
    * Indicates whether to evaluate crafting volume based on extra item chances.
    */
   readonly boosted = signal(true);
+
+  /**
+   * The selected projection for this assembly.
+  */
+  get projection(): Projection | null { return this.#projection(); }
+  readonly #projection = computed(() =>
+    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
+  );
+
+  /** @inheritdoc */
+  override get bonus(): number | null {
+    return this.#bonus();
+  }
+  readonly #bonus = computed(() => this.#projection()?.blueprint.bonus ?? null);
+
+  /**
+   * The effective volume of materials required for the projection based on the craft parameters.
+   */
+  get effective(): number | null {
+    return this.#effective();
+  }
+  readonly #effective = computed(() => this.#projection()?.effective ?? null);
+
+  /**
+   * The effective value of the craft based on prices and extra items bonuses.
+   */
+  get value(): number | null {
+    return this.#value();
+  }
+  readonly #value = computed(() => this.#projection()?.value ?? null);
 
   /**
    * Creates a new Assembly instance.

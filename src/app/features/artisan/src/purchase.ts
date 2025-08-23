@@ -18,7 +18,17 @@ export interface PurchaseState {
  * @remarks Purchase contains details about how many items of an entity is required in a crafting operation.
  */
 export class Purchase implements Persistent<PurchaseState> {
-  readonly #owners: Provision[] = [];
+  /**
+   * The list of provisions that the current purchase can be requested with.
+   */
+  readonly #provisions: Provision[] = [];
+
+  /**
+   * The list of provisions that the current purchase is actually crafted in.
+   */
+  protected get provided(): Provision[] {
+    return this.#provisions.filter(x => x.projection.assembly.crafted());
+  }
 
   /**
    * The chance to craft additional items.
@@ -34,15 +44,14 @@ export class Purchase implements Persistent<PurchaseState> {
   /**
    * The total cost of the purchase.
    */
-  readonly #cost = computed(() => product(this.price, this.requested()));
   get cost(): number | null { return this.#cost(); }
+  readonly #cost = computed(() => product(this.price, this.requested()));
 
   /**
    * The number of items requested by the parent provision.
    */
-  readonly requested = computed(() => this.#owners
-    .filter(x => x.projection.assembly.crafted())
-    .reduce<number | null>((s, x) => sum(s, x.volume), null)
+  readonly requested = computed(() =>
+    this.provided.reduce<number | null>((s, x) => sum(s, x.volume), null)
   );
 
   /**
@@ -75,8 +84,8 @@ export class Purchase implements Persistent<PurchaseState> {
       throw new Error('Invalid provision instance.');
     }
 
-    if (!this.#owners.includes(provision)) {
-      this.#owners.push(provision);
+    if (!this.#provisions.includes(provision)) {
+      this.#provisions.push(provision);
     }
   }
 

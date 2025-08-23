@@ -85,7 +85,13 @@ describe('Assembly', () => {
     expect(assembly.bonus).toBe(-0.2);
   });
 
-  it('should get the assembly value', () => {
+  it('should not have effective volume by default', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.effective).toBe(null);
+  });
+
+  it('should get the value', () => {
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
     expect(assembly.value).toBe(2);

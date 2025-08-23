@@ -22,6 +22,7 @@ export class Projection {
   /**
    * The chance to craft additional items.
    */
+  get chance(): number | null { return this.#chance(); }
   readonly #chance = computed(() => {
     const type = this.blueprint.entity.type;
     if (!type || !unsupported.includes(type)) {
@@ -30,38 +31,38 @@ export class Projection {
     }
     return null;
   });
-  get chance(): number | null { return this.#chance(); }
 
   /**
    * The total cost of the projection, calculated from the provisions.
    */
+  get cost(): number | null { return this.#cost(); }
   readonly #cost = computed(() =>
     this.provisions.reduce<number | null>((s, x) => sum(s, x.cost), null)
   );
-  get cost(): number | null { return this.#cost(); }
 
   /**
    * The effective value of the craft of a unit based on prices and extra items bonuses.
    */
-  readonly #value = computed(() => this.cost);
   get value(): number | null { return this.#value(); }
+  readonly #value = computed(() => this.cost);
 
   /**
    * The projected profit relative to market prices.
    */
-  readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
   get profit(): number | null { return this.#profit(); }
+  readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
 
-  readonly effective = computed(() => {
+  /**
+   * The effective volume of materials required for the projection based on the craft parameters.
+   */
+  get effective(): number | null { return this.#effective(); }
+  readonly #effective = computed(() => {;
     const bonus = this.chance;
-    const volume = this.assembly.requested();
-    if (this.assembly.boosted() && bonus && volume) {
-      const effect = Math.max(Math.floor(volume / (1 + bonus)), 1);
-      if (effect !== volume) {
-        return effect;
-      }
+    const requested = this.assembly.requested();
+    if (this.assembly.boosted() && bonus && requested) {
+      return Math.max(Math.floor(requested / (1 + bonus)), 1);
     }
-    return null;
+    return requested;
   });
 
   /**
@@ -69,7 +70,7 @@ export class Projection {
    */
   readonly volume = computed(() =>
     this.assembly.boosted() ?
-      this.effective() ?? this.assembly.requested() :
+      this.#effective() ?? this.assembly.requested() :
       this.assembly.requested()
   );
 

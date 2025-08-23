@@ -19,7 +19,7 @@ interface IndexValue<T> {
 
 type IndexValueFn<T> = (id: string) => IndexValue<T>;
 
-function extract<T>(materials: Materials, selector: GetterFn<Purchase, T>): IndexValueFn<T | null>  {
+function extract<T>(materials: Materials, selector: GetterFn<Purchase, T>): IndexValueFn<T | null> {
   return (id: string) => {
     const object = materials.get(id);
     return { id, value: object ? selector(object) : null };
@@ -79,6 +79,21 @@ describe('Production', () => {
       { id: 'IngotT2', value: 12 },
       { id: 'OreT1', value: 4 }
     ]);
+  });
+
+  it('should compute effective volume bu default', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const materials = new Materials();
+    const production = new Production(craftable, materials);
+    expect(production.effective).toBe(1);
+  });
+
+  it('should compute effective volume', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const materials = new Materials();
+    const production = new Production(craftable, materials);
+    production.requested.set(3);
+    expect(production.effective).toBe(2);
   });
 
   it('should get state', () => {
