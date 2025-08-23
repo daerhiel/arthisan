@@ -72,13 +72,13 @@ export const assemblyBlueprints = defineColumn<Assembly, number>('entity.bluepri
 
 export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
   'Cost',
-  { component: NwPrice, map: getPriceInputs(x => x.projection?.cost ?? null) },
+  { component: NwPrice, map: getPriceInputs(x => x.cost ?? null) },
   { width: '5%', align: 'right' }
 );
 
 export const assemblyProfit = defineColumn<Assembly, number>('projection.profit',
   'Profit',
-  { component: NwPrice, map: getPriceInputs(x => x.projection?.profit, getPriceState) },
+  { component: NwPrice, map: getPriceInputs(x => x.profit, getPriceState) },
   { width: '5%', align: 'right' }
 );
 
