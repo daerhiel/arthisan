@@ -10,7 +10,7 @@ import { Schematic } from "@features/schematic";
  */
 function getPriceState(assembly: Assembly): boolean | null {
   const profit = assembly.projection?.profit;
-  return profit ? profit > 0 : null;
+  return profit != null ? profit > 0 : null;
 }
 
 /**

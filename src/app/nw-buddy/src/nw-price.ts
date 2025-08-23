@@ -42,8 +42,14 @@ export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, getter?: GetterFn<T
 export class NwPrice {
   readonly #formatter = inject(DecimalPipe);
 
-  readonly value = input<number | null>(null);
+  /**
+   * The value of the price.
+   */
+  readonly value = input<number | null | undefined>();
 
+  /**
+   * The display state of the price.
+   */
   readonly state = input<boolean | null>(null);
 
   protected readonly _classes = computed(() => {
