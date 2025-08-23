@@ -102,7 +102,7 @@ describe('Projection', () => {
   });
 
   it('should get crafting profit', () => {
-    const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { crafted: true });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 

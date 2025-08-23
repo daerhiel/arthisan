@@ -66,7 +66,7 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   readonly #value = computed(() => this.#projection()?.value ?? null);
 
   /**
-   * The projected profit relative to market prices.
+   * The crafting profit of the the assembly based crafting state and parameters.
    */
   get profit(): number | null {return this.#profit();}
   readonly #profit = computed(() => this.#projection()?.profit ?? null);

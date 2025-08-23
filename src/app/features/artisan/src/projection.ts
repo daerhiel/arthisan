@@ -47,10 +47,14 @@ export class Projection {
   readonly #value = computed(() => this.cost);
 
   /**
-   * The projected profit relative to market prices.
+   * The crafting profit of the projection based crafting state and parameters.
    */
   get profit(): number | null { return this.#profit(); }
-  readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
+  readonly #profit = computed(() => {
+    const cost = this.#cost();
+    const price = this.blueprint.entity.price;
+    return this.assembly.crafted() ? subtract(price, cost) : subtract(cost, price);
+  });
 
   /**
    * The effective volume of materials required for the projection based on the craft parameters.
