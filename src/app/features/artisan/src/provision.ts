@@ -35,7 +35,7 @@ export class Provision {
   });
 
   /**
-   * Gets the bonus items chance for the current craftable.
+   * The bonus items chance for the downstream craftable entity.
    */
   get bonus(): number | null { return this.#bonus(); }
   readonly #bonus = computed(() => {
@@ -53,6 +53,18 @@ export class Provision {
   readonly #cost = computed(() =>
     product(this.purchase.entity.price, this.ingredient.quantity)
   );
+
+  /**
+   * The crafting profit for the downstream craftable entity.
+   */
+  get profit(): number | null { return this.#profit(); }
+  readonly #profit = computed(() => {
+    const purchase = this.#purchase();
+    if (purchase instanceof Assembly) {
+      return purchase.profit;
+    }
+    return null;
+  });
 
   /**
    * The actual volume of materials required for the provision based on the craft parameters.

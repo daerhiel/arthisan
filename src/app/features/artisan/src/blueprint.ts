@@ -77,6 +77,12 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
     for (const ingredient of this.ingredients) {
       ingredient.initialize();
     }
+
+    this.ingredients.sort((a, b) => {
+      const ta = a.entity instanceof Craftable;
+      const tb = b.entity instanceof Craftable;
+      return Number(tb) - Number(ta);
+    });
   }
 
   /**

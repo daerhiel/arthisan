@@ -96,9 +96,9 @@ describe('Materials', () => {
     expect(materials.ids).toEqual([
       assembly.entity.id,
       'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5'
     ]);
   });
 
@@ -153,9 +153,9 @@ describe('Materials', () => {
     expect(materials.ids).toEqual([
       assembly.entity.id,
       'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5'
     ]);
   });
 
@@ -166,11 +166,10 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT3', 'IngotT2',
+      'OreT1', 'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4'
     ]);
   });
 
@@ -181,12 +180,11 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT5', 'IngotT4',
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT4', 'IngotT3', 'IngotT2',
+      'OreT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4', 'OreT5'
     ]);
   });
 
@@ -197,13 +195,11 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT52', 'IngotT5',
-      'OreT5', 'IngotT4',
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT5', 'IngotT4', 'IngotT3', 'IngotT2',
+      'OreT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4', 'OreT5', 'OreT52'
     ]);
   });
 
