@@ -36,10 +36,15 @@ export class Purchase implements Persistent<PurchaseState> {
   get price(): number | null { return this.entity.price; }
 
   /**
-   * The total cost of the purchase.
+   * The total value of materials requested for this purchase.
    */
-  get cost(): number | null { return this.#cost(); }
-  readonly #cost = computed(() => product(this.price, this.requested()));
+  get total(): number | null { return this.#total(); }
+  readonly #total = computed(() => product(this.value, this.requested()));
+
+  /**
+   * The unit value of the current purchase.
+   */
+  get value(): number | null { return this.entity.price; }
 
   /**
    * The number of items requested by the parent provision.

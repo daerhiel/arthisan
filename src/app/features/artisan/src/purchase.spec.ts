@@ -64,14 +64,14 @@ describe('Purchase', () => {
     expect(purchase.price).toBe(4);
   });
 
-  it('should have default cost of null', () => {
+  it('should have default total of null', () => {
     const entity = service.getEntity('OreT1')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
-    expect(purchase.cost).toBe(null);
+    expect(purchase.total).toBe(null);
   });
 
-  it('should calculate cost based on requested items', () => {
+  it('should calculate total based on requested items', () => {
     const entity = service.getEntity('IngotT2')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
@@ -83,7 +83,7 @@ describe('Purchase', () => {
     purchase.bind(provision);
 
     expect(purchase.requested()).toBe(4);
-    expect(purchase.cost).toBe(16);
+    expect(purchase.total).toBe(16);
   });
 
   it('should get state', () => {

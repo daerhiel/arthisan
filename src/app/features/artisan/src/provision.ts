@@ -47,11 +47,19 @@ export class Provision {
   });
 
   /**
-   * The purchase cost.
+   * The unit value of the purchase referenced by the current provision.
    */
-  get cost(): number | null { return this.#cost(); }
-  readonly #cost = computed(() =>
-    product(this.purchase.entity.price, this.ingredient.quantity)
+  get value(): number | null { return this.#value(); }
+  readonly #value = computed(() =>
+    this.#purchase().value
+  );
+
+  /**
+   * The total value of materials required for the current provision.
+   */
+  get total(): number | null { return this.#total(); }
+  readonly #total = computed(() =>
+    product(this.value, this.ingredient.quantity)
   );
 
   /**
@@ -69,8 +77,10 @@ export class Provision {
   /**
    * The actual volume of materials required for the provision based on the craft parameters.
    */
-  readonly #volume = computed(() => product(this.projection.volume(), this.ingredient.quantity));
   get volume(): number | null { return this.#volume(); }
+  readonly #volume = computed(() =>
+    product(this.projection.volume, this.ingredient.quantity)
+  );
 
   // readonly effectiveValue = computed(() => {
   //   const bonus = this.#parent.extraItemChance();

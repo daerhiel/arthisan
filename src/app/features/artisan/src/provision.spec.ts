@@ -116,7 +116,7 @@ describe('Provision', () => {
     expect(provision.purchase?.entity.id).toBe('SolventT5');
   });
 
-  it('should get the purchase cost', () => {
+  it('should get the purchase total', () => {
     const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
     const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
     const ingredient = new Ingredient(service, data);
@@ -124,7 +124,7 @@ describe('Provision', () => {
 
     const materials = new Materials();
     const provision = new Provision(projection, ingredient, materials);
-    expect(provision.cost).toBe(4);
+    expect(provision.total).toBe(2);
   });
 
   it('should get the bonus item chance', () => {

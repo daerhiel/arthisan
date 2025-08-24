@@ -60,7 +60,7 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   /**
    * The effective value of the craft based on prices and extra items bonuses.
    */
-  get value(): number | null {
+  override get value(): number | null {
     return this.#value();
   }
   readonly #value = computed(() => this.#projection()?.value ?? null);

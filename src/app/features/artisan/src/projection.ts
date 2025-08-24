@@ -33,11 +33,11 @@ export class Projection {
   });
 
   /**
-   * The total cost of the projection, calculated from the provisions.
+   * The crafting cost of the projection unit, calculated from the provisions.
    */
   get cost(): number | null { return this.#cost(); }
   readonly #cost = computed(() =>
-    this.provisions.reduce<number | null>((s, x) => sum(s, x.cost), null)
+    this.provisions.reduce<number | null>((s, x) => sum(s, x.total), null)
   );
 
   /**
@@ -72,7 +72,8 @@ export class Projection {
   /**
    * The actual volume of materials required for the projection based on the craft parameters.
    */
-  readonly volume = computed(() =>
+  get volume(): number | null { return this.#volume(); }
+  readonly #volume = computed(() =>
     this.assembly.boosted() ?
       this.#effective() ?? this.assembly.requested() :
       this.assembly.requested()

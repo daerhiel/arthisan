@@ -12,7 +12,7 @@ export const commodities: Commodity[] = [
   { id: "OreT5", price: 0 },
   { id: "IngotT4", price: 0 },
   { id: "OreT4", price: 0 },
-  { id: "IngotT3", price: 0 },
+  { id: "IngotT3", price: 10 },
   { id: "IngotT2", price: 4 },
   { id: "OreT1", price: 0.5 },
   { id: "FluxT5", price: 0.1 },

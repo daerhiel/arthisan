@@ -75,8 +75,8 @@ describe('Production', () => {
       { id: 'IngotT2', value: 3 },
       { id: 'OreT1', value: 8 }
     ]);
-    expect(materials.ids.map(extract(materials, x => x.cost))).toEqual([
-      { id: 'IngotT2', value: 12 },
+    expect(materials.ids.map(extract(materials, x => x.total))).toEqual([
+      { id: 'IngotT2', value: 6 },
       { id: 'OreT1', value: 4 }
     ]);
   });
