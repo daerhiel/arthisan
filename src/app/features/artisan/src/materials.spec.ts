@@ -300,8 +300,8 @@ describe('Materials', () => {
     const state = materials.getState();
     expect(state).toEqual({
       entities: {
-        'IngotT2': { crafted: true },
-        'OreT1': {}
+        IngotT2: { crafted: true },
+        OreT1: {}
       }
     });
   });
@@ -326,8 +326,8 @@ describe('Materials', () => {
     const assembly = craftable.request(materials);
     materials.setState({
       entities: {
-        'IngotT2': { crafted: true },
-        'OreT1': {}
+        IngotT2: { crafted: true },
+        OreT1: {}
       }
     });
     expect(assembly.crafted()).toBeTrue();

@@ -64,7 +64,7 @@ export class NwPrice {
   });
 
   protected readonly _object = computed<Components | null>(() => {
-    const string = this.#formatter.transform(this.value(), '1.2-2');
+    const string = this.#formatter.transform(this.value(), '1.2-3');
 
     if (string) {
       const match = /^([+-]?[\d,]+)(?:\.(\d+))?$/.exec(string);

@@ -65,7 +65,7 @@ describe('NwPrice', () => {
       fixture.componentRef.setInput('value', value);
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.innerText).toBe(pipe.transform(value, '1.2-2') ?? '');
+      expect(fixture.nativeElement.innerText).toBe(pipe.transform(value, '1.2-3') ?? '');
     });
   });
 

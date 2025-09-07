@@ -9,6 +9,7 @@ import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
+import { Provision } from './provision';
 
 describe('Assembly', () => {
   let service: Artisan;
@@ -92,8 +93,16 @@ describe('Assembly', () => {
   });
 
   it('should get the value', () => {
+    const provision = jasmine.createSpyObj<Provision>('Provision', {}, {
+      projection: jasmine.createSpyObj('Projection', { volume: 1 }, {
+        assembly: jasmine.createSpyObj('Assembly', { crafted: true })
+      }),
+      ingredient: jasmine.createSpyObj('Ingredient', [], { quantity: 4 }),
+      volume: 1
+    });
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
+    assembly.bind(provision);
     expect(assembly.value).toBe(2);
   });
 

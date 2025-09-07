@@ -51,7 +51,7 @@ export class Provision {
    */
   get value(): number | null { return this.#value(); }
   readonly #value = computed(() =>
-    this.#purchase().value
+    product(this.#purchase().value, this.projection.yield)
   );
 
   /**
@@ -81,15 +81,6 @@ export class Provision {
   readonly #volume = computed(() =>
     product(this.projection.volume, this.ingredient.quantity)
   );
-
-  // readonly effectiveValue = computed(() => {
-  //   const bonus = this.#parent.extraItemChance();
-  //   if (bonus) {
-  //     const total = product(product(this.entity.requestedVolume(), this.entity.effectiveValue()), this.entity.getRatio(this.#parent));
-  //     return ratio(total, (this.#parent.requestedVolume() * this.quantity));
-  //   }
-  //   return this.entity.effectiveValue();
-  // });
 
   /**
    * Creates a new Provision instance.

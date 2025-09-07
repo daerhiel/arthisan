@@ -44,8 +44,8 @@ export class Artisan {
   readonly #entities = new ObjectMap<Entity>();
   readonly #categories = new ObjectMap<Category>();
   readonly #equipment: Partial<Record<CraftingTradeskill, Equipment>> = {
-    'Smelting': new Equipment(0.05),
-    'Jewelcrafting': new Equipment(0.05)
+    Smelting: new Equipment(0.05),
+    Jewelcrafting: new Equipment(0.05)
   };
 
   /**

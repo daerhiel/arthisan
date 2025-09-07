@@ -8,6 +8,7 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
+import { Assembly } from './assembly';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Projection } from './projection';
 import { Provision } from './provision';
@@ -117,8 +118,11 @@ describe('Provision', () => {
   });
 
   it('should get the purchase total', () => {
-    const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
-    const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
+    const projection = jasmine.createSpyObj<Projection>('Projection', {}, {
+      assembly: jasmine.createSpyObj<Assembly>('Assembly', { crafted: true, requested: 1 }),
+      yield: 1
+    });
+    const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 4 };
     const ingredient = new Ingredient(service, data);
     ingredient.initialize();
 

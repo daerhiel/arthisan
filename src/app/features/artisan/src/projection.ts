@@ -1,6 +1,6 @@
 import { computed } from '@angular/core';
 
-import { subtract, sum } from '@app/core';
+import { ratio, subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
@@ -60,7 +60,7 @@ export class Projection {
    * The effective volume of materials required for the projection based on the craft parameters.
    */
   get effective(): number | null { return this.#effective(); }
-  readonly #effective = computed(() => {;
+  readonly #effective = computed(() => {
     const bonus = this.chance;
     const requested = this.assembly.requested();
     if (this.assembly.boosted() && bonus && requested) {
@@ -68,6 +68,11 @@ export class Projection {
     }
     return requested;
   });
+
+  get yield(): number | null { return this.#yield(); }
+  readonly #yield = computed(() =>
+    ratio(this.effective, this.assembly.requested())
+  );
 
   /**
    * The actual volume of materials required for the projection based on the craft parameters.

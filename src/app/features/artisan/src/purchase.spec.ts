@@ -76,10 +76,13 @@ describe('Purchase', () => {
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
 
-    const assembly = jasmine.createSpyObj('Assembly', { crafted: true });
-    const projection = jasmine.createSpyObj('Projection', { volume: 1 }, { assembly });
-    const ingredient = jasmine.createSpyObj('Ingredient', [], { 'quantity': 4 });
-    const provision = jasmine.createSpyObj<Provision>('Provision', [], { projection, ingredient, volume: 4 });
+    const provision = jasmine.createSpyObj<Provision>('Provision', {}, {
+      projection: jasmine.createSpyObj('Projection', { volume: 1 }, {
+        assembly: jasmine.createSpyObj('Assembly', { crafted: true })
+      }),
+      ingredient: jasmine.createSpyObj('Ingredient', {}, { quantity: 4 }),
+      volume: 4
+    });
     purchase.bind(provision);
 
     expect(purchase.requested()).toBe(4);

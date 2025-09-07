@@ -9,7 +9,6 @@ import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
-import { Production } from './production';
 import { Projection } from './projection';
 
 describe('Projection', () => {
@@ -72,17 +71,17 @@ describe('Projection', () => {
   });
 
   it('should get crafting cost', () => {
-    const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { boosted: true, requested: 4 });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 
     const materials = new Materials();
     const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.cost).toBe(2);
+    expect(projection.cost).toBe(1.5);
   });
 
   it('should get effective volume', () => {
-    const assembly = jasmine.createSpyObj<Production>('Production', { requested: 4, boosted: true });
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { boosted: true, requested: 4 });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 
@@ -92,7 +91,7 @@ describe('Projection', () => {
   });
 
   it('should get effective value', () => {
-    const assembly = jasmine.createSpyObj<Assembly>('Assembly', ['entity']);
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { boosted: true, requested: 1 });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 
@@ -102,7 +101,7 @@ describe('Projection', () => {
   });
 
   it('should get crafting profit', () => {
-    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { crafted: true });
+    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { crafted: true, boosted: true, requested: 1 });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 
