@@ -1,9 +1,9 @@
 import { CraftingIngredientType } from '@app/nw-data';
 import { Containable, Deferrable } from './contracts';
-import { Materials } from './materials';
 import { Artisan } from './artisan';
 import { Entity } from './entity';
 import { Category } from './category';
+import { Materials } from './materials';
 import { Projection } from './projection';
 import { Provision } from './provision';
 

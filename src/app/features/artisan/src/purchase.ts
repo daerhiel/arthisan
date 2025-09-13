@@ -2,8 +2,8 @@ import { computed } from "@angular/core";
 
 import { product, sum } from "@app/core";
 import { Persistent } from "./contracts";
-import { Materials } from "./materials";
 import { Entity } from "./entity";
+import { Materials } from "./materials";
 import { Provision } from "./provision";
 
 /**
@@ -27,7 +27,7 @@ export class Purchase implements Persistent<PurchaseState> {
    * The list of provisions that the current purchase is actually crafted in.
    */
   protected get provided(): Provision[] {
-    return this.#provisions.filter(x => x.projection.assembly.crafted());
+    return this.#provisions;
   }
 
   /**

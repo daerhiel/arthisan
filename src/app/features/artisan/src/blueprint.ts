@@ -2,10 +2,10 @@ import { sum } from '@app/core';
 import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
 import { Containable, Deferrable } from './contracts';
-import { Materials } from './materials';
 import { Craftable } from './craftable';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
 

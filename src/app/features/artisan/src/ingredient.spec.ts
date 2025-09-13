@@ -9,11 +9,11 @@ import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { CraftingIngredientData, Ingredient } from './ingredient';
 import { Entity } from './entity';
-import { Materials } from './materials';
 import { Craftable } from './craftable';
+import { Category } from './category';
+import { Materials } from './materials';
 import { Projection } from './projection';
 import { Provision } from './provision';
-import { Category } from './category';
 
 describe('Ingredient', () => {
   let service: Artisan;

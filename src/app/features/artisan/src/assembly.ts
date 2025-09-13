@@ -1,10 +1,9 @@
 import { computed, signal } from '@angular/core';
 
-import { smaller } from '@app/core';
 import { Persistent } from './contracts';
+import { Craftable } from './craftable';
 import { Materials } from './materials';
 import { Purchase, PurchaseState } from './purchase';
-import { Craftable } from './craftable';
 import { Projection } from './projection';
 
 /**
@@ -36,9 +35,13 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   /**
    * The selected projection for this assembly.
   */
-  get projection(): Projection | null { return this.#projection(); }
+  get projection(): Projection | null {
+    return this.#projection();
+  }
   readonly #projection = computed(() =>
-    this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
+    // TODO: Strategy for selecting projection
+    // this.projections.reduce((p, c) => smaller(p.cost, c.cost) ? p : c)
+    this.projections[0]
   );
 
   /**
@@ -58,17 +61,27 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   readonly #effective = computed(() => this.#projection()?.effective ?? null);
 
   /**
-   * The effective value of the craft based on prices and extra items bonuses.
+   * The crafting cost of craft calculated from the provisions.
+   */
+  get cost(): number | null {
+    return this.#cost();
+  }
+  readonly #cost = computed(() => this.#projection()?.cost ?? null);
+
+  /**
+   * The true value of unit based on crafting state, prices and extra items bonuses.
    */
   override get value(): number | null {
     return this.#value();
   }
-  readonly #value = computed(() => this.#projection()?.value ?? null);
+  readonly #value = computed(() => this.crafted() ? this.#projection()?.cost ?? null : this.price);
 
   /**
    * The crafting profit of the the assembly based crafting state and parameters.
    */
-  get profit(): number | null {return this.#profit();}
+  get profit(): number | null {
+    return this.#profit();
+  }
   readonly #profit = computed(() => this.#projection()?.profit ?? null);
 
   /**

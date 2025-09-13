@@ -9,8 +9,8 @@ import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials } from './materials';
-import { Production } from './production';
 import { Purchase } from './purchase';
+import { Production } from './production';
 
 interface IndexValue<T> {
   id: string;
@@ -65,20 +65,43 @@ describe('Production', () => {
     expect(production.requested()).toBe(1);
   });
 
-  it('should compute requested volume', () => {
-    const craftable = service.getCraftable('IngotT2');
-    const materials = new Materials();
-    const production = new Production(craftable, materials);
-    production.crafted.set(true);
-    production.requested.set(3);
-    expect(materials.ids.map(extract(materials, x => x.requested()))).toEqual([
-      { id: 'IngotT2', value: 3 },
-      { id: 'OreT1', value: 8 }
-    ]);
-    expect(materials.ids.map(extract(materials, x => x.total))).toEqual([
-      { id: 'IngotT2', value: 4 },
-      { id: 'OreT1', value: 4 }
-    ]);
+  interface TestVolume {
+    id: string;
+    crafted: boolean;
+    requested: number;
+    expected: IndexValue<number | null>[];
+  }
+
+  const volumes: TestVolume[] = [
+    { id: 'IngotT2', crafted: false, requested: 3, expected: [{ id: 'IngotT2', value: 3 }, { id: 'OreT1', value: 8 }] },
+    { id: 'IngotT2', crafted: true, requested: 3, expected: [{ id: 'IngotT2', value: 3 }, { id: 'OreT1', value: 8 }] }
+  ];
+
+  volumes.forEach(({ id, crafted, requested, expected }) => {
+    it('should compute requested volume', () => {
+      const craftable = service.getCraftable(id);
+      const materials = new Materials();
+      const production = new Production(craftable, materials);
+      production.crafted.set(crafted);
+      production.requested.set(requested);
+      expect(materials.ids.map(extract(materials, x => x.requested()))).toEqual(expected);
+    });
+  });
+
+  const values: TestVolume[] = [
+    { id: 'IngotT2', crafted: false, requested: 3, expected: [{ id: 'IngotT2', value: 12 }, { id: 'OreT1', value: 4 }] },
+    { id: 'IngotT2', crafted: true, requested: 3, expected: [{ id: 'IngotT2', value: 4 }, { id: 'OreT1', value: 4 }] }
+  ];
+
+  values.forEach(({ id, crafted, requested, expected }) => {
+    it('should compute total value', () => {
+      const craftable = service.getCraftable(id);
+      const materials = new Materials();
+      const production = new Production(craftable, materials);
+      production.crafted.set(crafted);
+      production.requested.set(requested);
+      expect(materials.ids.map(extract(materials, x => x.total))).toEqual(expected);
+    });
   });
 
   it('should compute effective volume bu default', () => {

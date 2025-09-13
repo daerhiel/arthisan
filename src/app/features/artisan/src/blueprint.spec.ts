@@ -7,15 +7,15 @@ import { CraftingRecipeData } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials } from './materials';
-import { Equipment } from './equipment';
 import { Entity } from './entity';
 import { Craftable } from './craftable';
+import { Ingredient } from './ingredient';
 import { Category } from './category';
 import { Blueprint, getIngredients } from './blueprint';
+import { Equipment } from './equipment';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
-import { Ingredient } from './ingredient';
 
 function extractData(ingredient: Ingredient) {
   return {

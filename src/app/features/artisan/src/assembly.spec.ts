@@ -7,8 +7,10 @@ import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/tes
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Ingredient } from './ingredient';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
+import { Projection } from './projection';
 import { Provision } from './provision';
 
 describe('Assembly', () => {
@@ -92,17 +94,23 @@ describe('Assembly', () => {
     expect(assembly.effective).toBe(null);
   });
 
-  it('should get the value', () => {
+  it('should get the market value', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    assembly.crafted.set(false);
+    expect(assembly.value).toBe(4);
+  });
+
+  it('should get the crafted value', () => {
     const provision = jasmine.createSpyObj<Provision>('Provision', {}, {
-      projection: jasmine.createSpyObj('Projection', { volume: 1 }, {
-        assembly: jasmine.createSpyObj('Assembly', { crafted: true })
-      }),
-      ingredient: jasmine.createSpyObj('Ingredient', [], { quantity: 4 }),
+      projection: jasmine.createSpyObj<Projection>('Projection', { volume: 1 }),
+      ingredient: jasmine.createSpyObj<Ingredient>('Ingredient', [], { quantity: 4 }),
       volume: 1
     });
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);
     assembly.bind(provision);
+    assembly.crafted.set(true);
     expect(assembly.value).toBe(2);
   });
 

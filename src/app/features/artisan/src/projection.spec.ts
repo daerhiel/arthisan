@@ -90,16 +90,6 @@ describe('Projection', () => {
     expect(projection.effective).toBe(3);
   });
 
-  it('should get effective value', () => {
-    const assembly = jasmine.createSpyObj<Assembly>('Assembly', { boosted: true, requested: 1 });
-    const craftable = service.getCraftable('IngotT2');
-    const [blueprint] = craftable.blueprints;
-
-    const materials = new Materials();
-    const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.value).toBe(2);
-  });
-
   it('should get crafting profit', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', { crafted: true, boosted: true, requested: 1 });
     const craftable = service.getCraftable('IngotT2');

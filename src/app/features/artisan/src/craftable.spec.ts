@@ -7,8 +7,8 @@ import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/tes
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials } from './materials';
 import { Craftable } from './craftable';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 
 describe('Craftable', () => {

@@ -1,10 +1,10 @@
 import { computed } from '@angular/core';
 
-import { ratio, subtract, sum } from '@app/core';
+import { product, ratio, subtract, sum } from '@app/core';
 import { ItemType } from '@app/nw-data';
+import { Blueprint } from './blueprint';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
-import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
 const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
@@ -41,19 +41,14 @@ export class Projection {
   );
 
   /**
-   * The effective value of the craft of a unit based on prices and extra items bonuses.
-   */
-  get value(): number | null { return this.#value(); }
-  readonly #value = computed(() => this.cost);
-
-  /**
    * The crafting profit of the projection based crafting state and parameters.
    */
   get profit(): number | null { return this.#profit(); }
   readonly #profit = computed(() => {
     const cost = this.#cost();
     const price = this.blueprint.entity.price;
-    return this.assembly.crafted() ? subtract(price, cost) : subtract(cost, price);
+    const unit = this.assembly.crafted() ? subtract(price, cost) : subtract(cost, price);
+    return product(unit, this.assembly.requested());
   });
 
   /**

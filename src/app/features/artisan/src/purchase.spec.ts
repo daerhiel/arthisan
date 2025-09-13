@@ -7,8 +7,10 @@ import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/tes
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Ingredient } from './ingredient';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
+import { Projection } from './projection';
 import { Provision } from './provision';
 
 describe('Purchase', () => {
@@ -77,10 +79,8 @@ describe('Purchase', () => {
     const purchase = new Purchase(entity, materials);
 
     const provision = jasmine.createSpyObj<Provision>('Provision', {}, {
-      projection: jasmine.createSpyObj('Projection', { volume: 1 }, {
-        assembly: jasmine.createSpyObj('Assembly', { crafted: true })
-      }),
-      ingredient: jasmine.createSpyObj('Ingredient', {}, { quantity: 4 }),
+      projection: jasmine.createSpyObj<Projection>('Projection', { volume: 1 }),
+      ingredient: jasmine.createSpyObj<Ingredient>('Ingredient', {}, { quantity: 4 }),
       volume: 4
     });
     purchase.bind(provision);

@@ -8,8 +8,8 @@ import { MasterItemDefinitions } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials } from './materials';
 import { Entity, getIconInputs } from "./entity";
+import { Materials } from './materials';
 import { Purchase } from './purchase';
 
 describe('Entity', () => {

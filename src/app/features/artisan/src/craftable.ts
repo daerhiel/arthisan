@@ -1,8 +1,8 @@
 import { CraftingRecipeData, HouseItems, MasterItemDefinitions } from '@app/nw-data';
 import { Artisan } from './artisan';
-import { Materials, Material } from './materials';
 import { Entity } from './entity';
 import { Blueprint } from './blueprint';
+import { Materials, Material } from './materials';
 import { Assembly } from './assembly';
 
 /**

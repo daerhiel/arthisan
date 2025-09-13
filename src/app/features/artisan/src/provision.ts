@@ -1,9 +1,9 @@
 import { computed, signal } from '@angular/core';
 
 import { greater, product } from '@app/core';
-import { Materials } from './materials';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
 import { Purchase } from './purchase';
