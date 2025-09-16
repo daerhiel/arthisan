@@ -3,11 +3,37 @@ import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
 import { Artisan } from './artisan';
 import { Containable, Deferrable } from './contracts';
 import { Craftable } from './craftable';
-import { CraftingIngredientData, Ingredient } from './ingredient';
+import { CraftingIngredientData, CraftingIngredientDataFn, Ingredient } from './ingredient';
 import { Equipment } from './equipment';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
+
+/**
+ * Regular expression pattern to match ingredient keys in the recipe.
+ */
+const pattern = /^Ingredient(\d+)$/;
+
+/**
+ * Extracts a crafting ingredient data function from a crafting recipe.
+ * @param recipe The crafting recipe data to extract the ingredient from.
+ * @returns A function that extracts crafting ingredient data based on the provided key.
+ */
+export function getIngredient(recipe: CraftingRecipeData): CraftingIngredientDataFn {
+  return key => {
+    const match = pattern.exec(key);
+    if (match) {
+      const index = parseInt(match[1], 10);
+      const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
+      const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
+      const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
+      if (id && quantity) {
+        return { id, type: type ?? 'Item', quantity };
+      }
+    }
+    return null;
+  }
+}
 
 /**
  * Extracts ingredients from a crafting recipe.
@@ -16,20 +42,8 @@ import { Projection } from './projection';
  */
 export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientData[] {
   return Object.keys(recipe || {})
-    .filter(key => key.match(/^Ingredient\d+$/))
-    .map(key => {
-      const match = /^Ingredient(\d+)$/.exec(key);
-      if (match) {
-        const index = parseInt(match[1], 10);
-        const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
-        const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
-        const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
-        if (id && quantity) {
-          return { id, type: type ?? 'Item', quantity };
-        }
-      }
-      return null;
-    })
+    .filter(key => key.match(pattern))
+    .map(getIngredient(recipe))
     .filter(x => !!x);
 }
 

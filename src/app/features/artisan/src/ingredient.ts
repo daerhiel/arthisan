@@ -17,6 +17,11 @@ export interface CraftingIngredientData {
 }
 
 /**
+ * Function type to extract crafting ingredient data from a recipe.
+ */
+export type CraftingIngredientDataFn = (key: string) => CraftingIngredientData | null;
+
+/**
  * Represents an ingredient used in crafting recipes.
  */
 export class Ingredient implements Deferrable, Containable<Projection, Provision> {
