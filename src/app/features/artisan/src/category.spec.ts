@@ -30,16 +30,16 @@ describe('Category', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Category(null!, null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Category(null!, null!, null!)).toThrowError(/invalid artisan instance/i);
   });
 
   it('should throw on missing category data', () => {
-    expect(() => new Category(service, null!, null!)).toThrowError('Invalid category data.');
+    expect(() => new Category(service, null!, null!)).toThrowError(/invalid category data/i);
   });
 
   it('should throw on missing items data', () => {
     const data = service.data.categories.get('FluxReagentsT5')!;
-    expect(() => new Category(service, data, null!)).toThrowError('Invalid items data.');
+    expect(() => new Category(service, data, null!)).toThrowError(/invalid items data/i);
   });
 
   it('should create a regular category', () => {

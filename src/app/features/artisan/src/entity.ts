@@ -39,7 +39,7 @@ export class Entity implements Deferrable, Material<Purchase> {
    */
   constructor(protected readonly artisan: Artisan, item: MasterItemDefinitions | HouseItems) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!item) {
       throw new Error('Invalid item data.');

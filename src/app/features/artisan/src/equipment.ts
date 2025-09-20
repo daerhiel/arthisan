@@ -12,8 +12,12 @@ export class Equipment {
   /**
    * The cumulative chance to craft additional items for the crafting equipment.
    */
-  get chance(): number { return this.#chance(); }
-  readonly #chance = computed(() => this.base + this.level() / 1000);
+  get chance(): number {
+    return this.#chance();
+  }
+  readonly #chance = computed(() =>
+    this.base + this.level() / 1000
+  );
 
   /**
    * Creates a new Equipment instance.

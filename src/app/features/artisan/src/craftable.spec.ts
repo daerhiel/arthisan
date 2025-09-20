@@ -32,16 +32,16 @@ describe('Craftable', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Craftable(null!, null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Craftable(null!, null!, null!)).toThrowError(/invalid artisan instance/i);
   });
 
   it('should throw on null item', () => {
-    expect(() => new Craftable(service, null!, null!)).toThrowError('Invalid item data.');
+    expect(() => new Craftable(service, null!, null!)).toThrowError(/invalid item data/i);
   });
 
   it('should throw on null recipes', () => {
     const item = service.data.items.get('OreT1')!;
-    expect(() => new Craftable(service, item, null!)).toThrowError('Invalid recipes data.');
+    expect(() => new Craftable(service, item, null!)).toThrowError(/invalid recipes data/i);
   });
 
   it('should create a craftable entity', () => {

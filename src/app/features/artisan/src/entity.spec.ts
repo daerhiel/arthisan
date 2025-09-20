@@ -33,11 +33,11 @@ describe('Entity', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Entity(null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Entity(null!, null!)).toThrowError(/invalid artisan instance/i);
   });
 
   it('should throw on null item', () => {
-    expect(() => new Entity(service, null!)).toThrowError('Invalid item data.');
+    expect(() => new Entity(service, null!)).toThrowError(/invalid item data/i);
   });
 
   it('should create an entity', () => {

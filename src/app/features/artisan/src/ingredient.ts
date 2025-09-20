@@ -42,7 +42,7 @@ export class Ingredient implements Deferrable, Containable<Projection, Provision
    */
   constructor(private readonly artisan: Artisan, readonly source: CraftingIngredientData) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!source) {
       throw new Error('Invalid ingredient data.');

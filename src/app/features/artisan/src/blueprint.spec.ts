@@ -42,11 +42,11 @@ describe('Blueprint', () => {
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Blueprint(null!, null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Blueprint(null!, null!, null!)).toThrowError(/invalid artisan instance/i);
   });
 
   it('should throw on missing entity data', () => {
-    expect(() => new Blueprint(service, null!, null!)).toThrowError('Invalid entity data.');
+    expect(() => new Blueprint(service, null!, null!)).toThrowError(/invalid entity data/i);
   });
 
   it('should create a blueprint for T2 ingot', () => {

@@ -54,9 +54,38 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
   readonly ingredients: Ingredient[] = [];
 
   /**
+   * Gets the tier of the blueprint.
+   */
+  get tier() {
+    const id = this.entity.id;
+    switch (!!id) {
+      case /^BlockT5$/i.test(id): // HACK: Align with in-game
+        return 4;
+      case /^AlkahestT\d$/.test(id): // HACK: Alkahest has no base tier
+        return 0;
+      default:
+        return this.recipe.BaseTier ?? this.entity.tier;
+    }
+  }
+
+  /**
    * Gets the bonus items chance for the current craftable.
    */
   get bonus(): number { return this.recipe.BonusItemChance; }
+
+  /**
+   * Gets the bonus item chance increment matrix per ingredient tier difference.
+   */
+  get increments(): number[] {
+    return String(this.recipe.BonusItemChanceIncrease || '').split(',').map(Number);
+  }
+
+  /**
+   * Gets the bonus item chance decrement matrix per ingredient tier difference.
+   */
+  get decrements(): number[] {
+    return String(this.recipe.BonusItemChanceDecrease || '').split(',').map(Number);
+  }
 
   /**
    * The cumulative chance to craft additional items including the crafting equipment.
@@ -75,7 +104,7 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
    */
   constructor(private readonly artisan: Artisan, readonly entity: Craftable, private readonly recipe: CraftingRecipeData) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!entity) {
       throw new Error('Invalid entity data.');
