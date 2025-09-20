@@ -35,18 +35,6 @@ export class Provision {
   });
 
   /**
-   * The bonus items chance for the downstream craftable entity.
-   */
-  get bonus(): number | null { return this.#bonus(); }
-  readonly #bonus = computed(() => {
-    const purchase = this.#purchase();
-    if (purchase instanceof Assembly) {
-      return purchase.projection?.blueprint.bonus ?? null;
-    }
-    return null;
-  });
-
-  /**
    * The unit value of the purchase referenced by the current provision.
    */
   get value(): number | null { return this.#value(); }

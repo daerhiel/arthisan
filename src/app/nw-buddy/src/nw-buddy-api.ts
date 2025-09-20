@@ -37,6 +37,15 @@ export class NwBuddyApi {
   }
 
   /**
+   * Gets a specific data sheet by its reference.
+   * @param ref The reference to the data sheet URI.
+   * @returns The data sheet received.
+   */
+  getDataSheet<T>(ref: DataSheetUri<T>): Observable<T[]> {
+    return this.#http.get<T[]>(getUrl(this.#url, 'nw-data', ref.uri.split('/')));
+  }
+
+  /**
    * Gets the data sheets for the specified set of URIs.
    * @param set The set of data sheet URIs to retrieve data for.
    * @returns A set of data sheets received.

@@ -1,13 +1,26 @@
 import { computed } from '@angular/core';
 
 import { product, ratio, subtract, sum } from '@app/core';
-import { ItemType } from '@app/nw-data';
 import { Blueprint } from './blueprint';
+import { Category } from './category';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Provision } from './provision';
 
-const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
+type IngredientChanceFn = (ingredient: Provision) => number;
+
+function getIngredientChance(tier: number, increments: number[], decrements: number[]): IngredientChanceFn {
+  return provision => {
+    const diff = provision.purchase.entity.tier - tier;
+    if (diff < 0) {
+      return decrements[Math.abs(diff) - 1] ?? 0;
+    }
+    if (diff > 0) {
+      return increments[diff - 1] ?? 0;
+    }
+    return 0;
+  }
+}
 
 /**
  * Represents a projection of a crafting blueprint, which includes the provisions and their costs.
@@ -22,14 +35,22 @@ export class Projection {
   /**
    * The cumulative chance to craft additional items for the current projection.
    */
-  get chance(): number | null { return this.#chance(); }
-  readonly #chance = computed(() => {
-    const type = this.blueprint.entity.type;
-    if (!type || !unsupported.includes(type)) {
-      const chance = this.provisions.reduce((s, x) => sum(s, x.bonus), this.blueprint.chance);
-      return Math.max(chance, 0);
+  get yieldBonusChance(): number | null { return this.#yieldBonusChance(); }
+  readonly #yieldBonusChance = computed(() => {
+    let value = this.blueprint.yieldBonusChance;
+    if (value == null) {
+      return null;
     }
-    return null;
+
+    const { tier, increments, decrements } = this.blueprint;
+    if (!increments.length && !decrements.length && this.provisions.length > 1) { // HACK: Charcoal recipes
+      value += this.provisions
+        .filter(x => x.ingredient.entity instanceof Category)
+        .map(getIngredientChance(tier, increments, decrements))
+        .reduce((a, b) => a + b, 0);
+    }
+
+    return Math.max(0, value);
   });
 
   /**
@@ -56,10 +77,10 @@ export class Projection {
    */
   get effective(): number | null { return this.#effective(); }
   readonly #effective = computed(() => {
-    const bonus = this.chance;
+    const chance = this.yieldBonusChance;
     const requested = this.assembly.requested();
-    if (this.assembly.boosted() && bonus && requested) {
-      return Math.max(Math.floor(requested / (1 + bonus)), 1);
+    if (this.assembly.boosted() && chance && requested) {
+      return Math.max(Math.floor(requested / (1 + chance)), 1);
     }
     return requested;
   });

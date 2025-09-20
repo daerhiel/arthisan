@@ -84,7 +84,7 @@ export const assemblyProfit = defineColumn<Assembly, number>('projection.profit'
 
 export const assemblyChance = defineColumn<Assembly, number | null>('projection.chance',
   'Chance',
-  { fit: x => x.projection?.chance ?? null },
+  { fit: x => x.projection?.yieldBonusChance ?? null },
   { width: '5%', align: 'right' }
 );
 

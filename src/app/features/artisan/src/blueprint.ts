@@ -1,10 +1,11 @@
-import { sum } from '@app/core';
-import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
+import { computed } from '@angular/core';
+
+import { max, sum } from '@app/core';
+import { CraftingIngredientType, CraftingRecipeData, CraftingTradeskill } from '@app/nw-data';
 import { Artisan } from './artisan';
 import { Containable, Deferrable } from './contracts';
 import { Craftable } from './craftable';
 import { CraftingIngredientData, CraftingIngredientDataFn, Ingredient } from './ingredient';
-import { Equipment } from './equipment';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
@@ -13,6 +14,14 @@ import { Projection } from './projection';
  * Regular expression pattern to match ingredient keys in the recipe.
  */
 const pattern = /^Ingredient(\d+)$/;
+
+export const refiningTradeskills: CraftingTradeskill[] = [
+  'Woodworking',
+  'Weaving',
+  'Smelting',
+  'Stonecutting',
+  'Leatherworking'
+];
 
 /**
  * Extracts a crafting ingredient data function from a crafting recipe.
@@ -54,7 +63,7 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
   readonly ingredients: Ingredient[] = [];
 
   /**
-   * Gets the tier of the blueprint.
+   * The tier of the blueprint.
    */
   get tier() {
     const id = this.entity.id;
@@ -69,30 +78,55 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
   }
 
   /**
-   * Gets the bonus items chance for the current craftable.
+   * The tradeskill required for the blueprint.
    */
-  get bonus(): number { return this.recipe.BonusItemChance; }
+  get tradeskill() {
+    return this.recipe.Tradeskill;
+  }
 
   /**
-   * Gets the bonus item chance increment matrix per ingredient tier difference.
+   * Indicates whether the blueprint required refining tradeskill.
+   */
+  get isRefining(): boolean {
+    return refiningTradeskills.includes(this.recipe.Tradeskill);
+  }
+
+  /**
+   * The bonus item chance increment matrix per ingredient tier difference.
    */
   get increments(): number[] {
     return String(this.recipe.BonusItemChanceIncrease || '').split(',').map(Number);
   }
 
   /**
-   * Gets the bonus item chance decrement matrix per ingredient tier difference.
+   * The bonus item chance decrement matrix per ingredient tier difference.
    */
   get decrements(): number[] {
     return String(this.recipe.BonusItemChanceDecrease || '').split(',').map(Number);
   }
 
   /**
+   * Indicates whether the blueprint has a yield bonus.
+   */
+  get hasYieldBonus(): boolean {
+    return !!this.recipe.CraftAll && !this.recipe.SkipGrantItems && !!this.recipe.Tradeskill;
+  }
+
+  /**
    * The cumulative chance to craft additional items including the crafting equipment.
    */
-  get chance(): number {
-    return sum(this.recipe.BonusItemChance, this.getContext()?.chance ?? null);
+  get yieldBonusChance(): number | null {
+    return this.#yieldBonusChance();
   }
+  readonly #yieldBonusChance = computed(() => {
+    if (!this.hasYieldBonus) {
+      return null;
+    }
+
+    let value = this.recipe.BonusItemChance ?? null; // Base yield bonus chance
+    value = sum(value, this.artisan.character.getYieldBonusChance(this)); // Character yield bonus chance
+    return max(0, value);
+  });
 
   /**
    * Creates a new Blueprint instance.
@@ -126,14 +160,6 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
       const tb = b.entity instanceof Craftable;
       return Number(tb) - Number(ta);
     });
-  }
-
-  /**
-   * Gets the crafting equipment context for the current blueprint.
-   * @returns The equipment context if available; otherwise, null.
-   */
-  getContext(): Equipment | null {
-    return this.artisan.getContext(this.recipe?.Tradeskill);
   }
 
   /** @inheritdoc */

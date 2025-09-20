@@ -12,7 +12,6 @@ import { Craftable } from './craftable';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
 import { Blueprint, getIngredients } from './blueprint';
-import { Equipment } from './equipment';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
@@ -59,11 +58,13 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Smelting');
+    expect(blueprint.isRefining).toBe(true);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'OreT1', type: Entity, quantity: 4 }
     ]);
-    expect(blueprint.bonus).toBe(0);
-    expect(blueprint.chance).toBe(0.3);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.4, 5);
   });
 
   it('should create a blueprint for T3 ingot', () => {
@@ -76,13 +77,15 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Smelting');
+    expect(blueprint.isRefining).toBe(true);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT2', type: Craftable, quantity: 3 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 },
       { id: 'FluxT5', type: Entity, quantity: 1 }
     ]);
-    expect(blueprint.bonus).toBe(-0.02);
-    expect(blueprint.chance).toBeCloseTo(0.28);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.38, 5);
   });
 
   it('should create a blueprint with T4 ingot', () => {
@@ -95,14 +98,16 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Smelting');
+    expect(blueprint.isRefining).toBe(true);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT3', type: Craftable, quantity: 2 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 },
       { id: 'OreT4', type: Entity, quantity: 6 },
       { id: 'FluxT5', type: Entity, quantity: 1 }
     ]);
-    expect(blueprint.bonus).toBe(-0.05);
-    expect(blueprint.chance).toBe(0.25);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.35, 5);
   });
 
   it('should create a blueprint with T5 ingot', () => {
@@ -115,14 +120,16 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Smelting');
+    expect(blueprint.isRefining).toBe(true);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT4', type: Craftable, quantity: 2 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 },
       { id: 'OreT5', type: Entity, quantity: 8 },
       { id: 'FluxT5', type: Entity, quantity: 1 }
     ]);
-    expect(blueprint.bonus).toBe(-0.07);
-    expect(blueprint.chance).toBeCloseTo(0.23);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.33, 5);
   });
 
   it('should create a blueprint with T52 ingot', () => {
@@ -135,14 +142,16 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Smelting');
+    expect(blueprint.isRefining).toBe(true);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'IngotT5', type: Craftable, quantity: 2 },
       { id: 'CharcoalT1', type: Craftable, quantity: 2 },
       { id: 'OreT52', type: Entity, quantity: 12 },
       { id: 'FluxT5', type: Entity, quantity: 1 }
     ]);
-    expect(blueprint.bonus).toBe(-0.2);
-    expect(blueprint.chance).toBeCloseTo(0.1);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.2, 5);
   });
 
   it('should create a blueprint with category', () => {
@@ -155,35 +164,15 @@ describe('Blueprint', () => {
 
     expect(blueprint).toBeTruthy();
     expect(blueprint.entity).toBe(entity);
+    expect(blueprint.tradeskill).toBe('Jewelcrafting');
+    expect(blueprint.isRefining).toBe(false);
     expect(blueprint.ingredients.map(extractData)).toEqual([
       { id: 'AlchemyFireT2', type: Craftable, quantity: 1 },
       { id: 'RubyT1', type: Entity, quantity: 3 },
       { id: 'Solvent', type: Category, quantity: 2 }
     ]);
-  });
-
-  it('should not get context for raw resource', () => {
-    const id = 'OreT1';
-    const entity = service.getEntity(id) as Craftable;
-    const [recipe] = service.data.recipes.get(id) ?? [];
-
-    const blueprint = new Blueprint(service, entity, recipe);
-    blueprint.initialize();
-
-    const context = blueprint.getContext();
-    expect(context).toBeNull();
-  });
-
-  it('should get context for refined resource', () => {
-    const id = 'IngotT2';
-    const entity = service.getCraftable(id);
-    const [recipe] = service.data.recipes.get(id) ?? [];
-
-    const blueprint = new Blueprint(service, entity, recipe);
-    blueprint.initialize();
-
-    const context = blueprint.getContext();
-    expect(context).toBeInstanceOf(Equipment);
+    expect(blueprint.hasYieldBonus).toBe(true);
+    expect(blueprint.yieldBonusChance).toBeCloseTo(0.1, 5);
   });
 
   it('should request a projection', () => {

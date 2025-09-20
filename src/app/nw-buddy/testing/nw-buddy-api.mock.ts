@@ -1,7 +1,13 @@
 import { inject } from '@angular/core';
 import { firstValueFrom, from, mergeMap, Observable, of, reduce, timer } from 'rxjs';
 
-import { DATASHEETS, DataSheetUri, MasterItemDefinitions, HouseItems, CraftingRecipeData, CraftingCategoryData, ItemType } from '@app/nw-data';
+import {
+  DATASHEETS, DataSheetUri,
+  ItemType,
+  MasterItemDefinitions, HouseItems,
+  CraftingRecipeData, CraftingCategoryData,
+  TradeskillRankData
+} from '@app/nw-data';
 import { Localization, NwI18n } from '@app/nw-buddy';
 import { AsyncManager } from './async-manager';
 
@@ -179,6 +185,12 @@ type CraftingCategoryDataProps =
   | "DisplayText";
 
 type CraftingCategoryTestData = Pick<CraftingCategoryData, CraftingCategoryDataProps>;
+
+type TradeskillRankDataProps =
+  | "Level"
+  | "RollBonus";
+
+type TradeskillRankTestData = Pick<TradeskillRankData, TradeskillRankDataProps>;
 
 export async function initializeNwBuddy() {
   const i18n = inject(NwI18n);
@@ -2357,7 +2369,57 @@ export class NwBuddyApiMock {
         "ImagePath": "lyshineui/images/icons/crafting/icon_crafting_category_utilities.webp",
         "DisplayText": "@CategoryData_Utilities"
       }
-    ] satisfies Partial<CraftingCategoryTestData>[]
+    ] satisfies Partial<CraftingCategoryTestData>[],
+    [DATASHEETS.TradeskillRankData.Woodworking.uri]: [
+      {
+        "Level": 0,
+        "RollBonus": 0
+      },
+      {
+        "Level": 250,
+        "RollBonus": 3000
+      },
+    ] satisfies Partial<TradeskillRankTestData>[],
+    [DATASHEETS.TradeskillRankData.Weaving.uri]: [
+      {
+        "Level": 0,
+        "RollBonus": 0
+      },
+      {
+        "Level": 250,
+        "RollBonus": 3000
+      },
+    ] satisfies Partial<TradeskillRankTestData>[],
+    [DATASHEETS.TradeskillRankData.Smelting.uri]: [
+      {
+        "Level": 0,
+        "RollBonus": 0
+      },
+      {
+        "Level": 250,
+        "RollBonus": 3000
+      },
+    ] satisfies Partial<TradeskillRankTestData>[],
+    [DATASHEETS.TradeskillRankData.Stonecutting.uri]: [
+      {
+        "Level": 0,
+        "RollBonus": 0
+      },
+      {
+        "Level": 250,
+        "RollBonus": 3000
+      },
+    ] satisfies Partial<TradeskillRankTestData>[],
+    [DATASHEETS.TradeskillRankData.Leatherworking.uri]: [
+      {
+        "Level": 0,
+        "RollBonus": 0
+      },
+      {
+        "Level": 250,
+        "RollBonus": 3000
+      },
+    ] satisfies Partial<TradeskillRankTestData>[],
   };
 
   private readonly _getDataSheet = <T>([key, value]: [string, DataSheetUri<T>]): Observable<Record<string, T[]>> => {
@@ -2366,6 +2428,10 @@ export class NwBuddyApiMock {
 
   getTranslations(locale: string): Observable<Localization> {
     return this.#async.invoke(locale, of(locale === 'en-us' ? translationsEn : {}));
+  }
+
+  getDataSheet<T>(uri: DataSheetUri<T>): Observable<T[]> {
+    return this.#async.invoke(uri.uri, of(this.data[uri.uri] as T[]));
   }
 
   getDataSheets<T>(set: Record<string, DataSheetUri<T>>): Observable<Record<string, T[]>> {

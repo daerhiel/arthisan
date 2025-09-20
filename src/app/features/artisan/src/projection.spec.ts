@@ -67,7 +67,7 @@ describe('Projection', () => {
 
     const materials = new Materials();
     const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.chance).toBe(0.3);
+    expect(projection.yieldBonusChance).toBeCloseTo(0.4, 5);
   });
 
   it('should get crafting cost', () => {
@@ -77,7 +77,7 @@ describe('Projection', () => {
 
     const materials = new Materials();
     const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.cost).toBe(1.5);
+    expect(projection.cost).toBe(1);
   });
 
   it('should get effective volume', () => {
@@ -87,7 +87,7 @@ describe('Projection', () => {
 
     const materials = new Materials();
     const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.effective).toBe(3);
+    expect(projection.effective).toBe(2);
   });
 
   it('should get crafting profit', () => {

@@ -38,6 +38,15 @@ describe('NwBuddyApi', () => {
     expect(await localization).toEqual({ data: '12345' });
   });
 
+  it('should get data sheet', async () => {
+    const ref = { uri: 'item.json' }
+    const dataSheet = firstValueFrom(service.getDataSheet(ref));
+
+    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/item.json`).flush([{ data: 'item' }]);
+
+    expect(await dataSheet).toEqual([{ data: 'item' }]);
+  });
+
   it('should get data sheets', async () => {
     const set = {
       item: { uri: 'item.json' },

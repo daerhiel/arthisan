@@ -47,10 +47,12 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   /**
    * The cumulative chance to craft additional items for the selected projection.
    */
-  get chance(): number | null {
-    return this.#chance();
+  get yieldBonusChance(): number | null {
+    return this.#yieldBonusChance();
   }
-  readonly #chance = computed(() => this.#projection()?.chance ?? null);
+  readonly #yieldBonusChance = computed(() =>
+    this.#projection()?.yieldBonusChance ?? null
+  );
 
   /**
    * The effective volume of materials required for the projection based on the craft parameters.
@@ -58,7 +60,9 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   get effective(): number | null {
     return this.#effective();
   }
-  readonly #effective = computed(() => this.#projection()?.effective ?? null);
+  readonly #effective = computed(() =>
+    this.#projection()?.effective ?? null
+  );
 
   /**
    * The crafting cost of craft calculated from the provisions.
@@ -66,7 +70,9 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   get cost(): number | null {
     return this.#cost();
   }
-  readonly #cost = computed(() => this.#projection()?.cost ?? null);
+  readonly #cost = computed(() =>
+    this.#projection()?.cost ?? null
+  );
 
   /**
    * The true value of unit based on crafting state, prices and extra items bonuses.
@@ -74,7 +80,9 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   override get value(): number | null {
     return this.#value();
   }
-  readonly #value = computed(() => this.crafted() ? this.#projection()?.cost ?? null : this.price);
+  readonly #value = computed(() =>
+    this.crafted() ? this.#projection()?.cost ?? null : this.price
+  );
 
   /**
    * The crafting profit of the the assembly based crafting state and parameters.
@@ -82,7 +90,9 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   get profit(): number | null {
     return this.#profit();
   }
-  readonly #profit = computed(() => this.#projection()?.profit ?? null);
+  readonly #profit = computed(() =>
+    this.#projection()?.profit ?? null
+  );
 
   /**
    * Creates a new Assembly instance.

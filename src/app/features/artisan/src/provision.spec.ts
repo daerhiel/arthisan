@@ -126,15 +126,4 @@ describe('Provision', () => {
     const provision = new Provision(projection, ingredient, materials);
     expect(provision.total).toBe(2);
   });
-
-  it('should get the bonus item chance', () => {
-    const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
-    const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
-    const ingredient = new Ingredient(service, data);
-    ingredient.initialize();
-
-    const materials = new Materials();
-    const provision = new Provision(projection, ingredient, materials);
-    expect(provision.bonus).toBe(0);
-  });
 });
