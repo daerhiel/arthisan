@@ -18,7 +18,7 @@ function getPriceState(assembly: Assembly): boolean | null {
  */
 const dialog: MatDialogConfig<Assembly> = {
   enterAnimationDuration: 0, exitAnimationDuration: 0,
-  position: { top: '9rem' }, maxWidth: '95vw', maxHeight: '84vh'
+  maxWidth: '95vw', maxHeight: '94vh'
 };
 
 export const assemblyIcon = defineColumn<Assembly>('entity.icon',
@@ -54,14 +54,7 @@ export const assemblyType = defineColumn<Assembly, string>('entity.type',
 export const assemblyTier = defineColumn<Assembly, number>('entity.tier',
   'Tier',
   { fit: x => x.entity.tier },
-  { width: '5%', align: 'right', }
-);
-
-
-export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
-  'Price',
-  { component: NwPrice, map: getPriceInputs(x => x.entity.price) },
-  { width: '5%', align: 'right' }
+  { width: '5%' }
 );
 
 export const assemblyBlueprints = defineColumn<Assembly, number>('entity.blueprints',
@@ -70,9 +63,15 @@ export const assemblyBlueprints = defineColumn<Assembly, number>('entity.bluepri
   { width: '2%' }
 );
 
+export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
+  'Price',
+  { component: NwPrice, map: getPriceInputs(x => x.entity.price) },
+  { width: '5%', align: 'right' }
+);
+
 export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
-  'Value',
-  { component: NwPrice, map: getPriceInputs(x => x.value ?? null) },
+  'Cost',
+  { component: NwPrice, map: getPriceInputs(x => x.cost ?? null) },
   { width: '5%', align: 'right' }
 );
 
@@ -91,7 +90,7 @@ export const assemblyChance = defineColumn<Assembly, number | null>('projection.
 export const assemblyTable = defineTable<Assembly>('assemblies',
   assemblyIcon, assemblyName,
   assemblyCategory, assemblyFamily,
-  assemblyType, assemblyTier,
-  assemblyPrice, assemblyBlueprints,
-  assemblyCost, assemblyProfit, assemblyChance
+  assemblyType, assemblyTier, assemblyBlueprints,
+  assemblyPrice, assemblyCost,
+  assemblyProfit, assemblyChance
 );
