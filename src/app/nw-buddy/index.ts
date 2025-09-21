@@ -6,3 +6,4 @@ export * from './src/nw-buddy-api';
 export * from './src/nw-buddy';
 export * from './src/nw-icon';
 export * from './src/nw-price';
+export * from './src/nw-ratio';

@@ -81,9 +81,9 @@ export const assemblyMargin = defineColumn<Assembly, number>('projection.margin'
   { width: '5%', align: 'right' }
 );
 
-export const assemblyChance = defineColumn<Assembly, number | null>('projection.chance',
+export const assemblyChance = defineColumn<Assembly, number | null>('projection.yieldBonusChance',
   'Chance',
-  { fit: x => x.projection?.yieldBonusChance ?? null },
+  { component: NwRatio, map: getRatioInputs(x => x.yieldBonusChance, { format: '1.0-2' }) },
   { width: '5%', align: 'right' }
 );
 
