@@ -1,0 +1,166 @@
+@use "@angular/material" as mat;
+
+:host {
+  display: block;
+
+  --icon-size: 40px;
+  --card-title-text-color: var(--mat-sys-on-background);
+  --label-action-color: color-mix(in srgb, var(--mat-sys-on-surface), #666 100%);
+  --label-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #666 100%);
+  --active-label-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #888 0%);
+  --value-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #888 100%);
+  --active-value-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #888 0%);
+  --detail-value-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #888 40%);
+  --boost-text-color: color-mix(in srgb, var(--mat-sys-on-surface), #666 100%);
+  --active-boost-text-color: #69f0ae;
+
+  .app-action {
+    color: var(--label-action-color);
+  }
+
+  .app-labels {
+    color: var(--label-text-color);
+  }
+
+  .app-values {
+    color: var(--value-text-color);
+  }
+
+  .app-active {
+    .app-labels {
+      color: var(--active-label-text-color);
+    }
+
+    .app-values {
+      color: var(--active-value-text-color);
+    }
+  }
+
+  mat-card {
+    @include mat.card-overrides((
+      elevated-container-color: var(--mat-sys-surface-container-high),
+    ));
+  }
+
+  mat-card-header {
+    text-wrap: nowrap;
+  }
+
+  mat-card-title-group {
+    flex-direction: row-reverse;
+    justify-content: stretch;
+
+    picture[nw-icon] {
+      overflow: visible;
+      width: calc(var(--icon-size) + 2px);
+      height: calc(var(--icon-size) + 2px);
+      margin-right: 16px;
+    }
+  }
+
+  mat-card-title {
+    line-height: 1.2rem;
+    color: var(--card-title-text-color);
+
+    mat-slide-toggle {
+      margin: -0.1rem 0;
+    }
+  }
+
+  mat-card-subtitle {
+    gap: 1rem;
+    margin-top: 0.3rem;
+
+    button {
+      min-width: 54px;
+
+      @include mat.button-overrides((
+        text-horizontal-padding: 0,
+        text-container-height: auto,
+        text-container-shape: 4px,
+        text-label-text-color: var(--boost-text-color)
+      ));
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.app-boosted {
+        color: var(--active-boost-text-color);
+      }
+    }
+  }
+
+  mat-card-content {
+    text-wrap: nowrap;
+    font-family: var(--mat-table-row-item-label-text-font, Roboto, sans-serif);
+    --input-background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  input {
+    color: var(--active-value-text-color);
+    background-color: var(--input-background-color);
+    border: none;
+    border-bottom: 1px solid var(--label-text-color);
+    padding: 0px 0px 0px 6px;
+    width: 50px;
+    margin: -4px 0;
+    line-height: 26px;
+
+    &:focus {
+      border: none;
+      outline: none;
+    }
+  }
+
+  table[mat-table] {
+    min-width: auto;
+    border-left: 1px solid var(--label-text-color);
+
+    @include mat.table-overrides((
+      background-color: var(--mat-sys-surface-container-high),
+      row-item-label-text-size: var(--mat-sys-body-small-size),
+      row-item-outline-color: var(--mat-sys-outline-variant)
+    ));
+
+    tr.mat-mdc-row {
+      height: auto;
+
+      td.mat-mdc-cell {
+        padding: 0;
+      }
+
+      td.mat-column-header {
+        border-bottom-width: 0;
+        color: var(--label-text-color);
+      }
+
+      td.mat-column-quantity {
+        color: var(--detail-value-text-color);
+      }
+
+      td.mat-column-action,
+      td.mat-column-sign {
+        padding: 0 4px;
+        color: var(--label-action-color);
+      }
+
+      td.mat-column-price,
+      td.mat-column-total {
+        text-align: right;
+        color: var(--detail-value-text-color);
+      }
+    }
+  }
+
+  button {
+    margin: 0 -8px;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+  }
+
+  b {
+    font-weight: var(--mat-table-header-headline-weight, 500);
+  }
+}

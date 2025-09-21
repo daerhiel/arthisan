@@ -1,0 +1,14 @@
+:host {
+  --connector-color: gray;
+
+  mat-dialog-content {
+    max-height: none;
+    margin: 1rem;
+    padding: 1rem !important;
+    background-color: var(--mat-sys-background);
+  }
+
+  mat-dialog-actions {
+    padding: 0 1rem 1rem 1rem;
+  }
+}

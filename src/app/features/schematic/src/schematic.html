@@ -1,1 +1,16 @@
-<p>schematic works!</p>
+<h2 mat-dialog-title>Crafting schematic</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="app-l-flex app-l-flex-row app-l-flex-gap-6r">
+    @for (stage of stages(); track stage.id) {
+    <div #stage class="app-l-flex app-l-flex-column app-l-justify-around app-l-flex-gap-1r">
+      @for (purchase of stage.materials; track purchase.entity.id) {
+      <app-resource component [data]="purchase"></app-resource>
+      }
+    </div>
+    }
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton mat-dialog-close>Cancel</button>
+  <button matButton [mat-dialog-close]="true" cdkFocusInitial>Save</button>
+</mat-dialog-actions>

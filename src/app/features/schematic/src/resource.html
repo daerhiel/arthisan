@@ -1,0 +1,119 @@
+<mat-card>
+  @let purchase = data();
+  @let assembly = purchase | instance: Assembly;
+
+  <mat-card-header>
+    <mat-card-title-group>
+
+      @if (purchase) {
+      <mat-card-title class="app-l-flex app-l-flex-row">
+        <div>{{purchase.entity.name | localize}}</div>
+        <div class="app-l-flex-spacer-1"></div>
+        @if (assembly) {
+        <mat-slide-toggle [(ngModel)]="purchase.crafted" [matTooltip]="tooltips.crafted" matTooltipPosition="right"></mat-slide-toggle>
+        }
+      </mat-card-title>
+      }
+
+      @if (purchase) {
+      <mat-card-subtitle class="app-l-flex app-l-flex-row">
+        <div class="app-l-flex-spacer-1">
+          {{purchase.requested()}}
+          <span class="app-action"> x </span>
+          @if (assembly && purchase.crafted()) {
+          <span nw-price [value]="purchase.value"></span>
+          }
+          @else {
+          <span nw-price [value]="purchase.price"></span>
+          }
+          <span class="app-action"> = </span>
+          @if (assembly) {
+          <span nw-price [value]="purchase.total" [state]="purchase.profit | state"></span>
+          }
+          @else {
+          <span nw-price [value]="purchase.total"></span>
+          }
+        </div>
+        @if (assembly && purchase.yieldBonusChance && purchase.crafted()) {
+        <button matButton [class.app-boosted]="purchase.boosted()" [matTooltip]="tooltips.chance" matTooltipPosition="right" (click)="purchase.toggle()">
+          +{{purchase.yieldBonusChance * 100 | number: '1.0'}}%
+        </button>
+        }
+      </mat-card-subtitle>
+      }
+
+      @if (purchase?.entity; as entity) {
+      <picture nw-icon [path]="entity.icon" [name]="entity.name" [rarity]="entity.rarity" [named]="entity.named" [size]="12" loading="lazy" alt="icon"></picture>
+      }
+
+    </mat-card-title-group>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-align-start app-l-flex-gap-1r app-mt-hr">
+      @if (purchase) {
+      <div class="app-l-flex app-l-flex-column app-l-flex-gap-hr app-l-flex-spacer-1">
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="app-labels">{{assembly && purchase.crafted() ? 'Make' : 'Buy'}}</div>
+          <div class="app-values">
+            @if (purchase | instance: Production) {
+            <input matInput type="number" [(ngModel)]="purchase.requested">
+            }
+            @else{
+            <b [matTooltip]="tooltips.requested">{{purchase.requested()}}</b>
+            }
+            @if (assembly && purchase.crafted() && purchase.boosted()) {
+            / <b [matTooltip]="tooltips.effective">{{purchase.effective}}</b>
+            }
+          </div>
+        </div>
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r" [class.app-active]="!assembly || !purchase.crafted()">
+          <div class="app-labels">Market</div>
+          <div class="app-values"> <span nw-price [value]="purchase.price"></span> </div>
+        </div>
+        @if (assembly) {
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r" [class.app-active]="purchase.crafted()">
+          <div class="app-labels">Cost</div>
+          <div class="app-values"> <span nw-price [value]="purchase.cost"></span> </div>
+        </div>
+        }
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="app-labels">Total</div>
+          <div class="app-values"> <span nw-price [value]="purchase.total"></span> </div>
+        </div>
+        @if (assembly) {
+        <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
+          <div class="app-labels">Profit</div>
+          <div class="app-values"> <span nw-price [value]="purchase.profit" [state]="purchase.profit | state"></span></div>
+        </div>
+        }
+      </div>
+      }
+      @if (assembly && purchase.projection?.provisions; as provisions) {
+      <table mat-table class="app-pl-1r mat-elevation-z0" [dataSource]="provisions" multiTemplateDataRows>
+        <ng-container matColumnDef="header">
+          <td mat-cell *matCellDef="let provision" [attr.colspan]="columns.length"> {{provision.ingredient.name | localize}} </td>
+        </ng-container>
+        <ng-container matColumnDef="quantity">
+          <td mat-cell *matCellDef="let provision"> {{provision.ingredient.quantity}} </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <td mat-cell *matCellDef="let provision"> x </td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+          <td mat-cell *matCellDef="let provision"> <span nw-price [value]="provision.value"></span> </td>
+        </ng-container>
+        <ng-container matColumnDef="sign">
+          <td mat-cell *matCellDef="let provision"> = </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <td mat-cell *matCellDef="let provision"> <span nw-price [value]="provision.total" [state]="provision.profit | state"></span> </td>
+        </ng-container>
+
+        <tr mat-row *matRowDef="let row; columns: ['header']" header></tr>
+        <tr mat-row *matRowDef="let ingredient; columns: columns;"></tr>
+      </table>
+      }
+    </div>
+  </mat-card-content>
+</mat-card>
