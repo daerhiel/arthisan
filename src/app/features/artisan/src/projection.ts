@@ -72,8 +72,9 @@ export class Projection {
     return this.#margin();
   }
   readonly #margin = computed(() => {
-    return subtract(this.blueprint.entity.price, this.#cost());
-  })
+    const price = this.blueprint.entity.price;
+    return price && subtract(price, this.#cost());
+  });
 
   /**
    * The crafting profit of the projection based crafting state and parameters.
