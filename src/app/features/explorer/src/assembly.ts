@@ -1,7 +1,7 @@
 import { MatDialogConfig } from "@angular/material/dialog";
 
 import { defineColumn, defineTable } from "@app/core";
-import { getPriceInputs, NwIcon, NwPrice } from "@app/nw-buddy";
+import { getPriceInputs, getRatioInputs, NwIcon, NwPrice, NwRatio } from "@app/nw-buddy";
 import { Assembly, getIconInputs, getOpenerInputs, Opener } from "@features/artisan";
 import { Schematic } from "@features/schematic";
 
@@ -65,19 +65,19 @@ export const assemblyBlueprints = defineColumn<Assembly, number>('entity.bluepri
 
 export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
   'Price',
-  { component: NwPrice, map: getPriceInputs(x => x.entity.price) },
+  { component: NwPrice, map: getPriceInputs(x => x.entity.price, { format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
 export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
   'Cost',
-  { component: NwPrice, map: getPriceInputs(x => x.cost ?? null) },
+  { component: NwPrice, map: getPriceInputs(x => x.cost ?? null, { format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
 export const assemblyMargin = defineColumn<Assembly, number>('projection.margin',
   'Margin',
-  { component: NwPrice, map: getPriceInputs(x => x.margin, getMarginState) },
+  { component: NwPrice, map: getPriceInputs(x => x.margin, { getter: getMarginState, format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 

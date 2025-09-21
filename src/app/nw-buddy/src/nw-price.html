@@ -1,5 +1,7 @@
 @if (_object(); as object) {
 <span [style.opacity]="object.integerOp">{{object.integer}}</span>
+@if (object.decimal) {
 <span [style.opacity]="object.pointOp">.</span>
 <span [style.opacity]="object.decimalOp">{{object.decimal}}</span>
+}
 }

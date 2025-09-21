@@ -63,9 +63,10 @@ describe('NwPrice', () => {
       const pipe = new DecimalPipe('en-US');
 
       fixture.componentRef.setInput('value', value);
+      fixture.componentRef.setInput('format', '1.2');
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.innerText).toBe(pipe.transform(value, '1.2-3') ?? '');
+      expect(fixture.nativeElement.innerText).toBe(pipe.transform(value, '1.2') ?? '');
     });
   });
 
@@ -89,6 +90,14 @@ describe('NwPrice', () => {
     expect(fixture.nativeElement).not.toHaveClass('nw-positive');
     expect(fixture.nativeElement).toHaveClass('nw-negative');
   });
+
+  it('should render format', () => {
+    fixture.componentRef.setInput('value', 42.12345);
+    fixture.componentRef.setInput('format', '1.0-0');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.innerText).toBe('42');
+  });
 });
 
 describe('getPriceInputs', () => {
@@ -100,18 +109,24 @@ describe('getPriceInputs', () => {
   it('should return price inputs', () => {
     const object = { value: 42 };
     const inputs = getPriceInputs<Inputs, number>(x => x.value)(object);
-    expect(inputs).toEqual({ value: 42, state: null });
+    expect(inputs).toEqual({ value: 42, state: null, format: undefined });
   });
 
   it('should return price inputs with positive state', () => {
     const object = { value: 42, state: true };
-    const inputs = getPriceInputs<Inputs, number>(x => x.value, x => x.state ?? null)(object);
-    expect(inputs).toEqual({ value: 42, state: true });
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    expect(inputs).toEqual({ value: 42, state: true, format: undefined });
   });
 
   it('should return price inputs with negative state', () => {
     const object = { value: 42, state: false };
-    const inputs = getPriceInputs<Inputs, number>(x => x.value, x => x.state ?? null)(object);
-    expect(inputs).toEqual({ value: 42, state: false });
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    expect(inputs).toEqual({ value: 42, state: false, format: undefined });
+  });
+
+  it('should set price format', () => {
+    const object = { value: 42.05 };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, { format: '1.0-0' })(object);
+    expect(inputs).toEqual({ value: 42.05, state: null, format: '1.0-0' });
   });
 });

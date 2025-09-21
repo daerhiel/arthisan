@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { GetterFn } from '@app/core';
+import { GetterFn } from './object-cache';
 
 const OPACITY_FULL = 1;
 const OPACITY_FAINT = 0.25;
@@ -15,16 +15,20 @@ interface Components {
   decimalOp: number | null;
 }
 
+interface InputOptions<T> {
+  getter?: GetterFn<T, boolean | null>;
+  format?: string | null;
+}
+
 /**
  * Get the price inputs from a given item.
  * @param fitter A function that gets a value from an item to display.
  * @param getter A function that gets a state from an item to display.
- * @param item The item to get the inputs from.
- * @returns A function that returns an object with a component input value set.
+ * @returns A function that maps an item to its price inputs.
  */
-export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, getter?: GetterFn<T, boolean | null>) {
+export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, { getter, format }: InputOptions<T> = {}) {
   return (item: T) => {
-    return { value: fitter(item), state: getter ? getter(item) : null };
+    return { value: fitter(item), state: getter ? getter(item) : null, format };
   }
 }
 
@@ -43,7 +47,7 @@ export class NwPrice {
   readonly #formatter = inject(DecimalPipe);
 
   /**
-   * The value of the price.
+   * The value of a price.
    */
   readonly value = input<number | null | undefined>();
 
@@ -51,6 +55,11 @@ export class NwPrice {
    * The display state of the price.
    */
   readonly state = input<boolean | null>(null);
+
+  /**
+   * The number format to use for display.
+   */
+  readonly format = input<string>('1.2-3');
 
   protected readonly _classes = computed(() => {
     const classes = [];
@@ -64,7 +73,7 @@ export class NwPrice {
   });
 
   protected readonly _object = computed<Components | null>(() => {
-    const string = this.#formatter.transform(this.value(), '1.2-3');
+    const string = this.#formatter.transform(this.value(), this.format());
 
     if (string) {
       const match = /^([+-]?[\d,]+)(?:\.(\d+))?$/.exec(string);
