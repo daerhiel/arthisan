@@ -104,7 +104,7 @@ describe('Production', () => {
     });
   });
 
-  it('should compute effective volume bu default', () => {
+  it('should compute effective volume by default', () => {
     const craftable = service.getCraftable('IngotT2');
     const materials = new Materials();
     const production = new Production(craftable, materials);
