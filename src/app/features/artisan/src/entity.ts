@@ -13,22 +13,85 @@ export class Entity implements Deferrable, Material<Purchase> {
   readonly #item: MasterItemDefinitions | HouseItems;
   readonly #id: string;
 
-  get id() { return this.#id; }
-  get name() { return this.#item.Name; }
-  get icon() { return this.#item.IconPath; }
-  get rarity() { return getItemRarity(this.#item); }
-  get named() { return isMasterItem(this.#item) && isItemNamed(this.#item); }
-
-  get category() { return this.#item.TradingCategory; }
-  get family() { return this.#item.TradingFamily; }
-  get type() { return this.#item.ItemType; }
-  get tier() { return this.#item.Tier; }
+  /**
+   * A unique identifier.
+   */
+  get id() {
+    return this.#id;
+  }
 
   /**
-   * The market price of a unit of an entity.
+   * The display name resource id.
    */
-  readonly #price = computed(() => this.artisan.gaming.get(this.id));
-  get price(): number | null { return this.#price(); }
+  get name() {
+    return this.#item.Name;
+  }
+
+  /**
+   * The icon path.
+   */
+  get icon() {
+    return this.#item.IconPath;
+  }
+
+  /**
+   * The rarity class.
+   */
+  get rarity() {
+    return getItemRarity(this.#item);
+  }
+
+  /**
+   * Indicates whether the item is a named item.
+   */
+  get named() {
+    return isMasterItem(this.#item) && isItemNamed(this.#item);
+  }
+
+  /**
+   * The trading category.
+   */
+  get category() {
+    return this.#item.TradingCategory;
+  }
+
+  /**
+   * The trading family.
+   */
+  get family() {
+    return this.#item.TradingFamily;
+  }
+
+  /**
+   * The item type.
+   */
+  get type() {
+    return this.#item.ItemType;
+  }
+
+  /**
+   * The item tier.
+   */
+  get tier() {
+    return this.#item.Tier;
+  }
+
+  /**
+   * Indicates whether the item is bind on pickup.
+   */
+  get bindOnPickup() {
+    return !!this.#item.BindOnPickup;
+  }
+
+  /**
+   * The market price of a unit.
+   */
+  get price(): number | null {
+    return this.#price();
+  }
+  readonly #price = computed(() =>
+    !this.#item.BindOnPickup ? this.artisan.gaming.get(this.id) : null
+  );
 
   /**
    * Creates a new Entity instance.
@@ -39,7 +102,7 @@ export class Entity implements Deferrable, Material<Purchase> {
    */
   constructor(protected readonly artisan: Artisan, item: MasterItemDefinitions | HouseItems) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!item) {
       throw new Error('Invalid item data.');

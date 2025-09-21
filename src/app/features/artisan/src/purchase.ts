@@ -1,9 +1,9 @@
-import { computed, Signal } from "@angular/core";
+import { computed } from "@angular/core";
 
 import { product, sum } from "@app/core";
 import { Persistent } from "./contracts";
-import { Materials } from "./materials";
 import { Entity } from "./entity";
+import { Materials } from "./materials";
 import { Provision } from "./provision";
 
 /**
@@ -18,13 +18,17 @@ export interface PurchaseState {
  * @remarks Purchase contains details about how many items of an entity is required in a crafting operation.
  */
 export class Purchase implements Persistent<PurchaseState> {
-  readonly #owners: Provision[] = [];
+  /**
+   * The list of provisions that the current purchase can be requested with.
+   */
+  readonly #provisions: Provision[] = [];
 
   /**
-   * The chance to craft additional items.
+   * The list of provisions that the current purchase is actually crafted in.
    */
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  get bonus(): number | null { return null; }
+  protected get provided(): Provision[] {
+    return this.#provisions;
+  }
 
   /**
    * The market price of a unit of an entity.
@@ -32,17 +36,21 @@ export class Purchase implements Persistent<PurchaseState> {
   get price(): number | null { return this.entity.price; }
 
   /**
-   * The total cost of the purchase.
+   * The total value of materials requested for this purchase.
    */
-  readonly #cost = computed(() => product(this.price, this.requested()));
-  get cost(): number | null { return this.#cost(); }
+  get total(): number | null { return this.#total(); }
+  readonly #total = computed(() => product(this.value, this.requested()));
+
+  /**
+   * The unit value of the current purchase.
+   */
+  get value(): number | null { return this.entity.price; }
 
   /**
    * The number of items requested by the parent provision.
    */
-  readonly requested: Signal<number | null> = computed(() => this.#owners
-    .filter(x => x.projection.assembly.crafted())
-    .reduce((s, x) => sum(s, product(x.projection.volume(), x.ingredient.quantity)), 0)
+  readonly requested = computed(() =>
+    this.provided.reduce<number | null>((s, x) => sum(s, x.volume), null)
   );
 
   /**
@@ -75,8 +83,8 @@ export class Purchase implements Persistent<PurchaseState> {
       throw new Error('Invalid provision instance.');
     }
 
-    if (!this.#owners.includes(provision)) {
-      this.#owners.push(provision);
+    if (!this.#provisions.includes(provision)) {
+      this.#provisions.push(provision);
     }
   }
 

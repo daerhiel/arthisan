@@ -1,15 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 
 import { ObjectMap } from '@app/core';
-import {
-  CraftingRecipeData,
-  CraftingCategory, CraftingIngredientType, CraftingTradeskill
-} from '@app/nw-data';
+import { CraftingRecipeData, CraftingCategory, CraftingIngredientType } from '@app/nw-data';
 import { NwBuddy } from '@app/nw-buddy';
 import { GamingTools } from '@app/gaming-tools';
+import { Character } from './character';
 import { Craftable } from './craftable';
 import { Category } from './category';
-import { Equipment } from './equipment';
 import { Entity } from './entity';
 
 /**
@@ -43,10 +40,11 @@ export class Artisan {
 
   readonly #entities = new ObjectMap<Entity>();
   readonly #categories = new ObjectMap<Category>();
-  readonly #equipment: Partial<Record<CraftingTradeskill, Equipment>> = {
-    'Smelting': new Equipment(0.05),
-    'Jewelcrafting': new Equipment(0.05)
-  };
+
+  /**
+   * The character context for crafting calculations.
+   */
+  readonly character = new Character(this.data);
 
   /**
    * Gets an entity from cache; creates a new one if not found.
@@ -164,14 +162,5 @@ export class Artisan {
       default:
         throw new Error(`Ingredient type is not supported: ${type}`);
     }
-  }
-
-  /**
-   * Gets the equipment context for a specific tradeskill.
-   * @param tradeskill The tradeskill to get the equipment context for.
-   * @returns The equipment context if found; otherwise, null.
-   */
-  getContext(tradeskill: CraftingTradeskill): Equipment | null {
-    return this.#equipment[tradeskill] ?? null;
   }
 }

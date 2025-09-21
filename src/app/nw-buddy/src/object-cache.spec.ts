@@ -4,10 +4,15 @@ import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 
 import { NwBuddyApi } from './nw-buddy-api';
-import { CollectionCache, ObjectCache } from './object-cache';
+import { ArrayCache, CollectionCache, ObjectCache } from './object-cache';
 
 interface Item {
   id: string;
+  name: string;
+}
+
+interface Rank {
+  id: number;
   name: string;
 }
 
@@ -26,6 +31,10 @@ describe('ObjectCache', () => {
 
     beforeEach(() => {
       cache = new ObjectCache(of(data), item => item.id);
+    });
+
+    afterEach(() => {
+      cache.destroy();
     });
 
     it('should create an instance', () => {
@@ -67,6 +76,10 @@ describe('ObjectCache', () => {
       cache = new ObjectCache(of(data), obj => obj.id);
     });
 
+    afterEach(() => {
+      cache.destroy();
+    });
+
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
     });
@@ -92,6 +105,10 @@ describe('ObjectCache', () => {
 
     beforeEach(() => {
       cache = new ObjectCache(of(data), obj => obj.id);
+    });
+
+    afterEach(() => {
+      cache.destroy();
     });
 
     it('should create an instance', () => {
@@ -134,6 +151,10 @@ describe('CollectionCache', () => {
       cache = new CollectionCache(of(data), item => item.id);
     });
 
+    afterEach(() => {
+      cache.destroy();
+    });
+
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
     });
@@ -173,6 +194,10 @@ describe('CollectionCache', () => {
       cache = new CollectionCache(of(data), obj => obj.id);
     });
 
+    afterEach(() => {
+      cache.destroy();
+    });
+
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
     });
@@ -200,6 +225,10 @@ describe('CollectionCache', () => {
       cache = new CollectionCache(of(data), obj => obj.id);
     });
 
+    afterEach(() => {
+      cache.destroy();
+    });
+
     it('should create an instance', () => {
       expect(cache).toBeTruthy();
     });
@@ -213,6 +242,66 @@ describe('CollectionCache', () => {
       expect(cache.get('1')).toEqual([{ id: '1', name: 'Item 1' }, { id: '1', name: 'Item 2' }]);
       expect(cache.get(undefined!)).toEqual(null);
       expect(cache.get('4')).toEqual([{ id: '4', name: 'Item 4' }]);
+    });
+  });
+});
+
+describe('ArrayCache', () => {
+  let cache: ArrayCache<Rank>;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: NwBuddyApi, useClass: NwBuddyApiMock }
+      ]
+    });
+  });
+
+  describe('regular data', () => {
+    const data: Rank[] = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+      { id: 3, name: 'Item 3' }
+    ];
+
+    beforeEach(() => {
+      cache = new ArrayCache(of(data), item => item.id);
+    });
+
+    afterEach(() => {
+      cache.destroy();
+    });
+
+    it('should create an instance', () => {
+      expect(cache).toBeTruthy();
+    });
+
+    it('should get allocated items', () => {
+      expect(cache.get(1)).toEqual({ id: 1, name: 'Item 1' });
+      expect(cache.get(2)).toEqual({ id: 2, name: 'Item 2' });
+      expect(cache.get(3)).toEqual({ id: 3, name: 'Item 3' });
+    });
+  });
+
+  describe ('missing data', () => {
+    const data: Rank[] = null!;
+
+    beforeEach(() => {
+      cache = new ArrayCache(of(data), item => item.id);
+    });
+
+    afterEach(() => {
+      cache.destroy();
+    });
+
+    it('should create an instance', () => {
+      expect(cache).toBeTruthy();
+    });
+
+    it('should not get any items', () => {
+      expect(cache.get(1)).toBe(null);
+      expect(cache.get(2)).toBe(null);
+      expect(cache.get(3)).toBe(null);
     });
   });
 });

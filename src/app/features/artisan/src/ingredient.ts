@@ -1,9 +1,9 @@
 import { CraftingIngredientType } from '@app/nw-data';
 import { Containable, Deferrable } from './contracts';
-import { Materials } from './materials';
 import { Artisan } from './artisan';
 import { Entity } from './entity';
 import { Category } from './category';
+import { Materials } from './materials';
 import { Projection } from './projection';
 import { Provision } from './provision';
 
@@ -17,6 +17,11 @@ export interface CraftingIngredientData {
 }
 
 /**
+ * Function type to extract crafting ingredient data from a recipe.
+ */
+export type CraftingIngredientDataFn = (key: string) => CraftingIngredientData | null;
+
+/**
  * Represents an ingredient used in crafting recipes.
  */
 export class Ingredient implements Deferrable, Containable<Projection, Provision> {
@@ -24,6 +29,7 @@ export class Ingredient implements Deferrable, Containable<Projection, Provision
   #entity!: Entity | Category;
 
   get id() { return this.#source.id; }
+  get name() { return this.#entity.name; }
   get quantity() { return this.#source.quantity; }
   get entity() { return this.#entity; }
 
@@ -36,7 +42,7 @@ export class Ingredient implements Deferrable, Containable<Projection, Provision
    */
   constructor(private readonly artisan: Artisan, readonly source: CraftingIngredientData) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!source) {
       throw new Error('Invalid ingredient data.');

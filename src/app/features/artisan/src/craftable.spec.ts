@@ -1,48 +1,47 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { ApplicationInitStatus, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
-import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials } from './materials';
 import { Craftable } from './craftable';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 
 describe('Craftable', () => {
   let service: Artisan;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeGamingTools),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
-    service = TestBed.inject(Artisan);
 
-    const gaming = TestBed.inject(GamingTools);
-    gaming.select({ name: 'Server1', age: 100 });
-    while (gaming.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
+    service = TestBed.inject(Artisan);
+  });
+
+  beforeEach(async () => {
+    await TestBed.inject(ApplicationInitStatus).donePromise;
   });
 
   it('should throw on missing artisan instance', () => {
-    expect(() => new Craftable(null!, null!, null!)).toThrowError('Invalid artisan instance.');
+    expect(() => new Craftable(null!, null!, null!)).toThrowError(/invalid artisan instance/i);
   });
 
   it('should throw on null item', () => {
-    expect(() => new Craftable(service, null!, null!)).toThrowError('Invalid item data.');
+    expect(() => new Craftable(service, null!, null!)).toThrowError(/invalid item data/i);
   });
 
   it('should throw on null recipes', () => {
     const item = service.data.items.get('OreT1')!;
-    expect(() => new Craftable(service, item, null!)).toThrowError('Invalid recipes data.');
+    expect(() => new Craftable(service, item, null!)).toThrowError(/invalid recipes data/i);
   });
 
   it('should create a craftable entity', () => {

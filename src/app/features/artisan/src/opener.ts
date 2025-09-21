@@ -37,9 +37,9 @@ export class Opener<C, T> implements OnDestroy {
   readonly #dialog = inject(MatDialog);
   readonly #refs: MatDialogRef<C>[] = [];
 
-  readonly value = input<string | null>();
   readonly component = input.required<Type<C>>();
   readonly config = input<MatDialogConfig<T>>({});
+  readonly value = input<string | null>();
 
   /** @inheritdoc */
   ngOnDestroy(): void {

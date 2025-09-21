@@ -1,12 +1,11 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { ApplicationInitStatus, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
-import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
 import { Materials, OptimizationMode, Stage } from './materials';
 import { Purchase } from './purchase';
@@ -19,21 +18,21 @@ function extractStage(stage: Stage): { id: string; items: string[] } {
 describe('Materials', () => {
   let service: Artisan;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeGamingTools),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
-    service = TestBed.inject(Artisan);
 
-    const gaming = TestBed.inject(GamingTools);
-    gaming.select({ name: 'Server1', age: 100 });
-    while (gaming.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
+    service = TestBed.inject(Artisan);
+  });
+
+  beforeEach(async () => {
+    await TestBed.inject(ApplicationInitStatus).donePromise;
   });
 
   it('should create material index', () => {
@@ -97,9 +96,9 @@ describe('Materials', () => {
     expect(materials.ids).toEqual([
       assembly.entity.id,
       'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5'
     ]);
   });
 
@@ -154,9 +153,9 @@ describe('Materials', () => {
     expect(materials.ids).toEqual([
       assembly.entity.id,
       'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5'
     ]);
   });
 
@@ -167,11 +166,10 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT3', 'IngotT2',
+      'OreT1', 'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4'
     ]);
   });
 
@@ -182,12 +180,11 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT5', 'IngotT4',
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT4', 'IngotT3', 'IngotT2',
+      'OreT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4', 'OreT5'
     ]);
   });
 
@@ -198,13 +195,11 @@ describe('Materials', () => {
     materials.optimize(OptimizationMode.CraftAll);
     expect(materials.ids).toEqual([
       assembly.entity.id,
-      'OreT52', 'IngotT5',
-      'OreT5', 'IngotT4',
-      'OreT4', 'IngotT3',
-      'IngotT2', 'OreT1',
-      'FluxT5', 'CharcoalT1',
+      'IngotT5', 'IngotT4', 'IngotT3', 'IngotT2',
+      'OreT1',
+      'CharcoalT1',
       'WoodT1', 'WoodT2', 'WoodT4', 'WoodT5', 'WoodT52',
-      'WoodenCoin'
+      'WoodenCoin', 'FluxT5', 'OreT4', 'OreT5', 'OreT52'
     ]);
   });
 
@@ -305,8 +300,8 @@ describe('Materials', () => {
     const state = materials.getState();
     expect(state).toEqual({
       entities: {
-        'IngotT2': { crafted: true },
-        'OreT1': {}
+        IngotT2: { crafted: true },
+        OreT1: {}
       }
     });
   });
@@ -331,8 +326,8 @@ describe('Materials', () => {
     const assembly = craftable.request(materials);
     materials.setState({
       entities: {
-        'IngotT2': { crafted: true },
-        'OreT1': {}
+        IngotT2: { crafted: true },
+        OreT1: {}
       }
     });
     expect(assembly.crafted()).toBeTrue();

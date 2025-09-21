@@ -1,13 +1,48 @@
-import { sum } from '@app/core';
-import { CraftingIngredientType, CraftingRecipeData } from '@app/nw-data';
+import { computed } from '@angular/core';
+
+import { max, sum } from '@app/core';
+import { CraftingIngredientType, CraftingRecipeData, CraftingTradeskill } from '@app/nw-data';
 import { Artisan } from './artisan';
 import { Containable, Deferrable } from './contracts';
-import { Materials } from './materials';
 import { Craftable } from './craftable';
-import { CraftingIngredientData, Ingredient } from './ingredient';
-import { Equipment } from './equipment';
+import { CraftingIngredientData, CraftingIngredientDataFn, Ingredient } from './ingredient';
+import { Materials } from './materials';
 import { Assembly } from './assembly';
 import { Projection } from './projection';
+
+/**
+ * Regular expression pattern to match ingredient keys in the recipe.
+ */
+const pattern = /^Ingredient(\d+)$/;
+
+export const refiningTradeskills: CraftingTradeskill[] = [
+  'Woodworking',
+  'Weaving',
+  'Smelting',
+  'Stonecutting',
+  'Leatherworking'
+];
+
+/**
+ * Extracts a crafting ingredient data function from a crafting recipe.
+ * @param recipe The crafting recipe data to extract the ingredient from.
+ * @returns A function that extracts crafting ingredient data based on the provided key.
+ */
+export function getIngredient(recipe: CraftingRecipeData): CraftingIngredientDataFn {
+  return key => {
+    const match = pattern.exec(key);
+    if (match) {
+      const index = parseInt(match[1], 10);
+      const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
+      const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
+      const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
+      if (id && quantity) {
+        return { id, type: type ?? 'Item', quantity };
+      }
+    }
+    return null;
+  }
+}
 
 /**
  * Extracts ingredients from a crafting recipe.
@@ -16,20 +51,8 @@ import { Projection } from './projection';
  */
 export function getIngredients(recipe: CraftingRecipeData): CraftingIngredientData[] {
   return Object.keys(recipe || {})
-    .filter(key => key.match(/^Ingredient\d+$/))
-    .map(key => {
-      const match = /^Ingredient(\d+)$/.exec(key);
-      if (match) {
-        const index = parseInt(match[1], 10);
-        const id = recipe[`Ingredient${index}` as keyof CraftingRecipeData] as string;
-        const type = recipe[`Type${index}` as keyof CraftingRecipeData] as CraftingIngredientType;
-        const quantity = recipe[`Qty${index}` as keyof CraftingRecipeData] as number;
-        if (id && quantity) {
-          return { id, type: type ?? 'Item', quantity };
-        }
-      }
-      return null;
-    })
+    .filter(key => key.match(pattern))
+    .map(getIngredient(recipe))
     .filter(x => !!x);
 }
 
@@ -40,16 +63,70 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
   readonly ingredients: Ingredient[] = [];
 
   /**
-   * Gets the bonus items chance for the current craftable.
+   * The tier of the blueprint.
    */
-  get bonus(): number { return this.recipe.BonusItemChance; }
+  get tier() {
+    const id = this.entity.id;
+    switch (!!id) {
+      case /^BlockT5$/i.test(id): // HACK: Align with in-game
+        return 4;
+      case /^AlkahestT\d$/.test(id): // HACK: Alkahest has no base tier
+        return 0;
+      default:
+        return this.recipe.BaseTier ?? this.entity.tier;
+    }
+  }
 
   /**
-   * Gets the crafting equipment context for the current blueprint.
+   * The tradeskill required for the blueprint.
    */
-  get chance(): number {
-    return sum(this.bonus, this.getContext()?.chance ?? null);
+  get tradeskill() {
+    return this.recipe.Tradeskill;
   }
+
+  /**
+   * Indicates whether the blueprint required refining tradeskill.
+   */
+  get isRefining(): boolean {
+    return refiningTradeskills.includes(this.recipe.Tradeskill);
+  }
+
+  /**
+   * The bonus item chance increment matrix per ingredient tier difference.
+   */
+  get increments(): number[] {
+    return String(this.recipe.BonusItemChanceIncrease || '').split(',').map(Number);
+  }
+
+  /**
+   * The bonus item chance decrement matrix per ingredient tier difference.
+   */
+  get decrements(): number[] {
+    return String(this.recipe.BonusItemChanceDecrease || '').split(',').map(Number);
+  }
+
+  /**
+   * Indicates whether the blueprint has a yield bonus.
+   */
+  get hasYieldBonus(): boolean {
+    return !!this.recipe.CraftAll && !this.recipe.SkipGrantItems && !!this.recipe.Tradeskill;
+  }
+
+  /**
+   * The cumulative chance to craft additional items including the crafting equipment.
+   */
+  get yieldBonusChance(): number | null {
+    return this.#yieldBonusChance();
+  }
+  readonly #yieldBonusChance = computed(() => {
+    if (!this.hasYieldBonus) {
+      return null;
+    }
+
+    let value = this.recipe.BonusItemChance ?? null; // Base yield bonus chance
+    value = sum(value, this.artisan.character.getYieldBonusChance(this)); // Character yield bonus chance
+    return max(0, value);
+  });
 
   /**
    * Creates a new Blueprint instance.
@@ -61,7 +138,7 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
    */
   constructor(private readonly artisan: Artisan, readonly entity: Craftable, private readonly recipe: CraftingRecipeData) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!entity) {
       throw new Error('Invalid entity data.');
@@ -77,14 +154,12 @@ export class Blueprint implements Deferrable, Containable<Assembly, Projection> 
     for (const ingredient of this.ingredients) {
       ingredient.initialize();
     }
-  }
 
-  /**
-   * Gets the crafting equipment context for the current blueprint.
-   * @returns The equipment context if available; otherwise, null.
-   */
-  getContext(): Equipment | null {
-    return this.artisan.getContext(this.recipe?.Tradeskill);
+    this.ingredients.sort((a, b) => {
+      const ta = a.entity instanceof Craftable;
+      const tb = b.entity instanceof Craftable;
+      return Number(tb) - Number(ta);
+    });
   }
 
   /** @inheritdoc */

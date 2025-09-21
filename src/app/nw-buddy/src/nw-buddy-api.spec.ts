@@ -20,6 +20,7 @@ describe('NwBuddyApi', () => {
         provideHttpClientTesting()
       ]
     });
+
     service = TestBed.inject(NwBuddyApi);
     controller = TestBed.inject(HttpTestingController);
   });
@@ -35,6 +36,15 @@ describe('NwBuddyApi', () => {
     controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/localization/en-us.json`).flush({ data: '12345' });
 
     expect(await localization).toEqual({ data: '12345' });
+  });
+
+  it('should get data sheet', async () => {
+    const ref = { uri: 'item.json' }
+    const dataSheet = firstValueFrom(service.getDataSheet(ref));
+
+    controller.expectOne(`${environment.apiNwBuddyUrl}/nw-data/item.json`).flush([{ data: 'item' }]);
+
+    expect(await dataSheet).toEqual([{ data: 'item' }]);
   });
 
   it('should get data sheets', async () => {

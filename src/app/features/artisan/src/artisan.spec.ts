@@ -4,11 +4,11 @@ import { TestBed } from '@angular/core/testing';
 import { getDatasheetIds, NwBuddyApiMock } from '@app/nw-buddy/testing';
 import { GamingToolsApiMock } from '@app/gaming-tools/testing';
 
-import { CraftingIngredientType, CraftingTradeskill, DATASHEETS } from '@app/nw-data';
+import { CraftingIngredientType, DATASHEETS } from '@app/nw-data';
 import { NwBuddyApi } from '@app/nw-buddy';
 import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Equipment } from './equipment';
+import { Character } from './character';
 import { Entity } from './entity';
 import { Craftable } from './craftable';
 
@@ -24,12 +24,18 @@ describe('Artisan', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
+
     service = TestBed.inject(Artisan);
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should have a character context', () => {
+    expect(service.character).toBeTruthy();
+    expect(service.character).toBeInstanceOf(Character);
   });
 
   it('should get an entity', () => {
@@ -152,18 +158,6 @@ describe('Artisan', () => {
   it('should throw error for unsupported ingredient type', () => {
     const type = 'Unsupported' as CraftingIngredientType;
     expect(() => service.getIngredient('OreT1', type)).toThrowError(/ingredient type is not supported/i);
-  });
-
-  it('should get equipment context', () => {
-    const tradeskill = 'Jewelcrafting';
-    const equipment = service.getContext(tradeskill);
-    expect(equipment).toBeInstanceOf(Equipment);
-  });
-
-  it('should return null for non-existing tradeskill', () => {
-    const tradeskill = 'Unknown';
-    const equipment = service.getContext(tradeskill as CraftingTradeskill);
-    expect(equipment).toBeNull();
   });
 });
 

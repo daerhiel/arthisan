@@ -1,9 +1,10 @@
 import { computed, signal } from '@angular/core';
 
 import { greater, product } from '@app/core';
-import { Materials } from './materials';
 import { Ingredient } from './ingredient';
 import { Category } from './category';
+import { Materials } from './materials';
+import { Assembly } from './assembly';
 import { Projection } from './projection';
 import { Purchase } from './purchase';
 
@@ -23,6 +24,7 @@ export class Provision {
   /**
    * The assembly matching an entity or category of entities.
    */
+  get purchase(): Purchase { return this.#purchase(); }
   readonly #purchase = computed(() => {
     if (this.automatic()) {
       return this.purchases.reduce((p, c) => greater(p.price, c.price) ? p : c) ?? null;
@@ -31,30 +33,42 @@ export class Provision {
       return this.purchases.find(x => x.entity.id === selected) ?? this.purchases[0]!;
     }
   });
-  get purchase(): Purchase { return this.#purchase(); }
 
   /**
-   * The purchase cost.
+   * The unit value of the purchase referenced by the current provision.
    */
-  readonly #cost = computed(() =>
-    product(this.purchase.entity.price, this.ingredient.quantity)
+  get value(): number | null { return this.#value(); }
+  readonly #value = computed(() =>
+    product(this.#purchase().value, this.projection.yieldFactor)
   );
-  get cost(): number | null { return this.#cost(); }
 
   /**
-   * The chance to craft additional items.
+   * The total value of materials required for the current provision.
    */
-  readonly #chance = computed(() => this.purchase.bonus);
-  get chance(): number | null { return this.#chance(); }
+  get total(): number | null { return this.#total(); }
+  readonly #total = computed(() =>
+    product(this.value, this.ingredient.quantity)
+  );
 
-  // readonly effectiveValue = computed(() => {
-  //   const bonus = this.#parent.extraItemChance();
-  //   if (bonus) {
-  //     const total = product(product(this.entity.requestedVolume(), this.entity.effectiveValue()), this.entity.getRatio(this.#parent));
-  //     return ratio(total, (this.#parent.requestedVolume() * this.quantity));
-  //   }
-  //   return this.entity.effectiveValue();
-  // });
+  /**
+   * The crafting profit for the downstream craftable entity.
+   */
+  get profit(): number | null { return this.#profit(); }
+  readonly #profit = computed(() => {
+    const purchase = this.#purchase();
+    if (purchase instanceof Assembly) {
+      return purchase.profit;
+    }
+    return null;
+  });
+
+  /**
+   * The actual volume of materials required for the provision based on the craft parameters.
+   */
+  get volume(): number | null { return this.#volume(); }
+  readonly #volume = computed(() =>
+    product(this.projection.volume, this.ingredient.quantity)
+  );
 
   /**
    * Creates a new Provision instance.

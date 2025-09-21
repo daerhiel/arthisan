@@ -3,6 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 
+import { refiningTradeskills } from '@features/artisan';
 import { NwBuddy } from './nw-buddy';
 import { NwBuddyApi } from './nw-buddy-api';
 
@@ -16,8 +17,9 @@ describe('NwBuddy', () => {
         { provide: NwBuddyApi, useClass: NwBuddyApiMock }
       ]
     });
+
     service = TestBed.inject(NwBuddy);
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   it('should be created', () => {
@@ -47,5 +49,12 @@ describe('NwBuddy', () => {
   it('should get ingredients', () => {
     const ingredients = service.ingredients.get('AlchemyFire');
     expect(ingredients).toBeTruthy();
+  });
+
+  refiningTradeskills.forEach(id => {
+    it(`should get tradeskills for ${id}`, () => {
+      const tradeskill = service.tradeskills[id];
+      expect(tradeskill).toBeTruthy();
+    });
   });
 });

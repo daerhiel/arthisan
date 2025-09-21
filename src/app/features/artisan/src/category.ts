@@ -24,7 +24,7 @@ export class Category {
    */
   constructor(private readonly artisan: Artisan, category: CraftingCategoryData, items: MasterItemDefinitions[]) {
     if (!artisan) {
-      throw new Error('Invalid artisan instance.');
+      throw new Error('Invalid Artisan instance.');
     }
     if (!category) {
       throw new Error('Invalid category data.');

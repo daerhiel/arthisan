@@ -1,36 +1,35 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { ApplicationInitStatus, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
-import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
-import { Materials } from './materials';
 import { CraftingIngredientData, Ingredient } from './ingredient';
+import { Materials } from './materials';
 import { Projection } from './projection';
 import { Provision } from './provision';
 
 describe('Provision', () => {
   let service: Artisan;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeGamingTools),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
-    service = TestBed.inject(Artisan);
 
-    const gaming = TestBed.inject(GamingTools);
-    gaming.select({ name: 'Server1', age: 100 });
-    while (gaming.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
+    service = TestBed.inject(Artisan);
+  });
+
+  beforeEach(async () => {
+    await TestBed.inject(ApplicationInitStatus).donePromise;
   });
 
   it('should throw for non-existing projection', () => {
@@ -117,25 +116,14 @@ describe('Provision', () => {
     expect(provision.purchase?.entity.id).toBe('SolventT5');
   });
 
-  it('should get the purchase cost', () => {
-    const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
-    const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
+  it('should get the purchase total', () => {
+    const projection = jasmine.createSpyObj<Projection>('Projection', {}, { yieldFactor: 1 });
+    const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 4 };
     const ingredient = new Ingredient(service, data);
     ingredient.initialize();
 
     const materials = new Materials();
     const provision = new Provision(projection, ingredient, materials);
-    expect(provision.cost).toBe(4);
-  });
-
-  it('should get the bonus item chance', () => {
-    const projection = jasmine.createSpyObj<Projection>('Projection', ['blueprint']);
-    const data: CraftingIngredientData = { id: 'IngotT2', type: 'Item', quantity: 1 };
-    const ingredient = new Ingredient(service, data);
-    ingredient.initialize();
-
-    const materials = new Materials();
-    const provision = new Provision(projection, ingredient, materials);
-    expect(provision.chance).toBe(0);
+    expect(provision.total).toBe(2);
   });
 });

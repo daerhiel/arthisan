@@ -21,6 +21,7 @@ describe('ThemeManager', () => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()]
     });
+
     service = TestBed.inject(ThemeManager);
   });
 

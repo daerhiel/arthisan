@@ -19,6 +19,7 @@ describe('GamingTools', () => {
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
+
     service = TestBed.inject(GamingTools);
   });
 

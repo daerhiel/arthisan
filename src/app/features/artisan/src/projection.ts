@@ -1,13 +1,26 @@
 import { computed } from '@angular/core';
 
-import { subtract, sum } from '@app/core';
-import { ItemType } from '@app/nw-data';
+import { product, ratio, subtract, sum } from '@app/core';
+import { Blueprint } from './blueprint';
+import { Category } from './category';
 import { Materials } from './materials';
 import { Assembly } from './assembly';
-import { Blueprint } from './blueprint';
 import { Provision } from './provision';
 
-const unsupported: ItemType[] = ['Weapon', 'Armor', 'HousingItem'];
+type IngredientChanceFn = (ingredient: Provision) => number;
+
+function getIngredientChance(tier: number, increments: number[], decrements: number[]): IngredientChanceFn {
+  return provision => {
+    const diff = provision.purchase.entity.tier - tier;
+    if (diff < 0) {
+      return decrements[Math.abs(diff) - 1] ?? 0;
+    }
+    if (diff > 0) {
+      return increments[diff - 1] ?? 0;
+    }
+    return 0;
+  }
+}
 
 /**
  * Represents a projection of a crafting blueprint, which includes the provisions and their costs.
@@ -20,56 +33,95 @@ export class Projection {
   readonly provisions: Provision[];
 
   /**
-   * The chance to craft additional items.
+   * The cumulative chance to craft additional items for the current projection.
    */
-  readonly #chance = computed(() => {
-    const type = this.blueprint.entity.type;
-    if (!type || !unsupported.includes(type)) {
-      const chance = this.provisions.reduce((s, x) => sum(s, x.chance), this.blueprint.chance);
-      return Math.max(chance, 0);
+  get yieldBonusChance(): number | null {
+    return this.#yieldBonusChance();
+  }
+  readonly #yieldBonusChance = computed(() => {
+    let value = this.blueprint.yieldBonusChance;
+    if (value == null) {
+      return null;
     }
-    return null;
+
+    const { tier, increments, decrements } = this.blueprint;
+    if (!increments.length && !decrements.length && this.provisions.length > 1) { // HACK: Charcoal recipes
+      value += this.provisions
+        .filter(x => x.ingredient.entity instanceof Category)
+        .map(getIngredientChance(tier, increments, decrements))
+        .reduce((a, b) => a + b, 0);
+    }
+
+    return Math.max(0, value);
   });
-  get chance(): number | null { return this.#chance(); }
 
   /**
-   * The total cost of the projection, calculated from the provisions.
+   * The crafting cost of the projection unit, calculated from the provisions.
    */
+  get cost(): number | null {
+    return this.#cost();
+  }
   readonly #cost = computed(() =>
-    this.provisions.reduce<number | null>((s, x) => sum(s, x.cost), null)
+    this.provisions.reduce<number | null>((s, x) => sum(s, x.total), null)
   );
-  get cost(): number | null { return this.#cost(); }
 
   /**
-   * The effective value of the craft of a unit based on prices and extra items bonuses.
+   * The unit differential between the crafting cost and the market price.
    */
-  readonly #value = computed(() => this.cost);
-  get value(): number | null { return this.#value(); }
-
-  /**
-   * The projected profit relative to market prices.
-   */
-  readonly #profit = computed(() => subtract(this.blueprint.entity.price, this.cost));
-  get profit(): number | null { return this.#profit(); }
-
-  readonly effective = computed(() => {
-    const bonus = this.chance;
-    const volume = this.assembly.requested();
-    if (this.assembly.boosted() && bonus && volume) {
-      const effect = Math.max(Math.floor(volume / (1 + bonus)), 1);
-      if (effect !== volume) {
-        return effect;
-      }
-    }
-    return null;
+  get margin(): number | null {
+    return this.#margin();
+  }
+  readonly #margin = computed(() => {
+    const price = this.blueprint.entity.price;
+    return price && subtract(price, this.#cost());
   });
 
   /**
-   * The actual volume of the craft based on the assembly craft parameters.
+   * The crafting profit of the projection based crafting state and parameters.
    */
-  readonly volume = computed(() =>
+  get profit(): number | null {
+    return this.#profit();
+  }
+  readonly #profit = computed(() => {
+    const margin = this.#margin();
+    const sign = this.assembly.crafted() ? 1 : -1;
+    return product(product(margin, sign), this.assembly.requested());
+  });
+
+  /**
+   * The effective volume of materials required for the projection based on the craft parameters.
+   */
+  get effective(): number | null {
+    return this.#effective();
+  }
+  readonly #effective = computed(() => {
+    const chance = this.yieldBonusChance;
+    const requested = this.assembly.requested();
+    if (this.assembly.boosted() && chance && requested) {
+      return Math.max(Math.floor(requested / (1 + chance)), 1);
+    }
+    return requested;
+  });
+
+  /**
+   * The yield ratio of the projection based on the effective and requested volumes.
+   */
+  get yieldFactor(): number | null {
+    return this.#yield();
+  }
+  readonly #yield = computed(() =>
+    ratio(this.effective, this.assembly.requested())
+  );
+
+  /**
+   * The actual volume of materials required for the projection based on the craft parameters.
+   */
+  get volume(): number | null {
+    return this.#volume();
+  }
+  readonly #volume = computed(() =>
     this.assembly.boosted() ?
-      this.effective() ?? this.assembly.requested() :
+      this.#effective() ?? this.assembly.requested() :
       this.assembly.requested()
   );
 

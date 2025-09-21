@@ -27,11 +27,12 @@ describe('ObjectIndex', () => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()]
     });
+
     TestBed.runInInjectionContext(() => {
       cache = new ObjectCache(of(data), item => item.id);
       index = new ObjectIndex(cache, item => item.categories);
     });
-    TestBed.flushEffects();
+    TestBed.tick();
   });
 
   afterEach(() => {

@@ -1,8 +1,8 @@
 import { inject, Injectable, OnDestroy } from '@angular/core';
 
-import { DATASHEETS } from '@app/nw-data';
+import { CraftingTradeskill, DATASHEETS, TradeskillRankData } from '@app/nw-data';
 import { NwBuddyApi } from './nw-buddy-api';
-import { ObjectCache, CollectionCache } from './object-cache';
+import { ObjectCache, CollectionCache, ArrayCache } from './object-cache';
 import { ObjectIndex } from './object-index';
 
 // import { effect } from '@angular/core';
@@ -53,6 +53,30 @@ export class NwBuddy implements OnDestroy {
    * The index of items by crafting categories.
    */
   readonly ingredients = new ObjectIndex(this.items, item => item.IngredientCategories);
+
+  /**
+   * The tradeskill rank data.
+   */
+  readonly tradeskills: Record<CraftingTradeskill, ArrayCache<TradeskillRankData>> = {
+    Arcana: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Arcana), item => item.Level),
+    Armoring: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Armoring), item => item.Level),
+    Cooking: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Cooking), item => item.Level),
+    Engineering: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Engineering), item => item.Level),
+    Fishing: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Fishing), item => item.Level),
+    Furnishing: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Furnishing), item => item.Level),
+    Harvesting: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Harvesting), item => item.Level),
+    Jewelcrafting: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Jewelcrafting), item => item.Level),
+    Leatherworking: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Leatherworking), item => item.Level),
+    Logging: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Logging), item => item.Level),
+    Mining: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Mining), item => item.Level),
+    Musician: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Musician), item => item.Level),
+    Skinning: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Skinning), item => item.Level),
+    Smelting: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Smelting), item => item.Level),
+    Stonecutting: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Stonecutting), item => item.Level),
+    Weaponsmithing: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Weaponsmithing), item => item.Level),
+    Weaving: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Weaving), item => item.Level),
+    Woodworking: new ArrayCache(this.#api.getDataSheet(DATASHEETS.TradeskillRankData.Woodworking), item => item.Level)
+  } as const;
 
   // test = effect(() => {
   //   this.dump('House_HousingItem_Lighting_CandleHolder_A')
@@ -112,7 +136,13 @@ export class NwBuddy implements OnDestroy {
 
   /** @inheritdoc */
   ngOnDestroy(): void {
-    this.items.destroy();
+    for (const key in this.tradeskills) {
+      this.tradeskills[key as keyof typeof this.tradeskills]?.destroy();
+    }
+    this.ingredients.destroy();
     this.recipes.destroy();
+    this.categories.destroy();
+    this.housing.destroy();
+    this.items.destroy();
   }
 }

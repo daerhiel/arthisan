@@ -14,6 +14,7 @@ describe('Broadcast', () => {
     TestBed.configureTestingModule({
       providers: [provideZonelessChangeDetection()]
     });
+
     service = TestBed.inject(Broadcast);
   });
 

@@ -1,35 +1,36 @@
-import { provideZonelessChangeDetection } from '@angular/core';
-import { firstValueFrom, timer } from 'rxjs';
+import { ApplicationInitStatus, provideAppInitializer, provideZonelessChangeDetection } from '@angular/core';
 
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
-import { GamingToolsApiMock } from '@app/gaming-tools/testing';
+import { GamingToolsApiMock, initializeGamingTools } from '@app/gaming-tools/testing';
 
 import { NwBuddyApi } from '@app/nw-buddy';
-import { GamingTools, GamingToolsApi } from '@app/gaming-tools';
+import { GamingToolsApi } from '@app/gaming-tools';
 import { Artisan } from './artisan';
+import { Ingredient } from './ingredient';
 import { Materials } from './materials';
 import { Purchase } from './purchase';
+import { Projection } from './projection';
 import { Provision } from './provision';
 
 describe('Purchase', () => {
   let service: Artisan;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
+        provideAppInitializer(initializeGamingTools),
         { provide: NwBuddyApi, useClass: NwBuddyApiMock },
         { provide: GamingToolsApi, useClass: GamingToolsApiMock }
       ]
     });
-    service = TestBed.inject(Artisan);
 
-    const gaming = TestBed.inject(GamingTools);
-    gaming.select({ name: 'Server1', age: 100 });
-    while (gaming.isLoading()) {
-      await firstValueFrom(timer(100));
-    }
+    service = TestBed.inject(Artisan);
+  });
+
+  beforeEach(async () => {
+    await TestBed.inject(ApplicationInitStatus).donePromise;
   });
 
   it('should throw on missing entity', () => {
@@ -48,7 +49,6 @@ describe('Purchase', () => {
     expect(purchase).toBeTruthy();
     expect(purchase.entity).toBe(entity);
     expect(purchase.materials).toBe(materials);
-    expect(purchase.bonus).toBeNull();
   });
 
   it('should create for existing craftable entity', () => {
@@ -57,14 +57,6 @@ describe('Purchase', () => {
     const purchase = new Purchase(entity, materials);
     expect(purchase).toBeTruthy();
     expect(purchase.entity).toBe(entity);
-    expect(purchase.bonus).toBeNull();
-  });
-
-  it('should not have a bonus by default', () => {
-    const entity = service.getEntity('OreT1')!;
-    const materials = new Materials();
-    const purchase = new Purchase(entity, materials);
-    expect(purchase.bonus).toBeNull();
   });
 
   it('should get the item price', () => {
@@ -74,26 +66,27 @@ describe('Purchase', () => {
     expect(purchase.price).toBe(4);
   });
 
-  it('should have default cost of zero', () => {
+  it('should have default total of null', () => {
     const entity = service.getEntity('OreT1')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
-    expect(purchase.cost).toBe(0);
+    expect(purchase.total).toBe(null);
   });
 
-  it('should calculate cost based on requested items', () => {
+  it('should calculate total based on requested items', () => {
     const entity = service.getEntity('IngotT2')!;
     const materials = new Materials();
     const purchase = new Purchase(entity, materials);
 
-    const assembly = jasmine.createSpyObj('Assembly', { crafted: true });
-    const projection = jasmine.createSpyObj('Projection', { volume: 1 }, { assembly });
-    const ingredient = jasmine.createSpyObj('Ingredient', [], { 'quantity': 4 });
-    const provision = jasmine.createSpyObj<Provision>('Provision', [], { projection, ingredient });
+    const provision = jasmine.createSpyObj<Provision>('Provision', {}, {
+      projection: jasmine.createSpyObj<Projection>('Projection', { volume: 1 }),
+      ingredient: jasmine.createSpyObj<Ingredient>('Ingredient', {}, { quantity: 4 }),
+      volume: 4
+    });
     purchase.bind(provision);
 
     expect(purchase.requested()).toBe(4);
-    expect(purchase.cost).toBe(16);
+    expect(purchase.total).toBe(16);
   });
 
   it('should get state', () => {
