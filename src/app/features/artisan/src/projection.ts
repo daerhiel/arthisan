@@ -35,7 +35,9 @@ export class Projection {
   /**
    * The cumulative chance to craft additional items for the current projection.
    */
-  get yieldBonusChance(): number | null { return this.#yieldBonusChance(); }
+  get yieldBonusChance(): number | null {
+    return this.#yieldBonusChance();
+  }
   readonly #yieldBonusChance = computed(() => {
     let value = this.blueprint.yieldBonusChance;
     if (value == null) {
@@ -56,26 +58,41 @@ export class Projection {
   /**
    * The crafting cost of the projection unit, calculated from the provisions.
    */
-  get cost(): number | null { return this.#cost(); }
+  get cost(): number | null {
+    return this.#cost();
+  }
   readonly #cost = computed(() =>
     this.provisions.reduce<number | null>((s, x) => sum(s, x.total), null)
   );
 
   /**
+   * The unit differential between the crafting cost and the market price.
+   */
+  get margin(): number | null {
+    return this.#margin();
+  }
+  readonly #margin = computed(() => {
+    return subtract(this.blueprint.entity.price, this.#cost());
+  })
+
+  /**
    * The crafting profit of the projection based crafting state and parameters.
    */
-  get profit(): number | null { return this.#profit(); }
+  get profit(): number | null {
+    return this.#profit();
+  }
   readonly #profit = computed(() => {
-    const cost = this.#cost();
-    const price = this.blueprint.entity.price;
-    const unit = this.assembly.crafted() ? subtract(price, cost) : subtract(cost, price);
-    return product(unit, this.assembly.requested());
+    const margin = this.#margin();
+    const sign = this.assembly.crafted() ? 1 : -1;
+    return product(product(margin, sign), this.assembly.requested());
   });
 
   /**
    * The effective volume of materials required for the projection based on the craft parameters.
    */
-  get effective(): number | null { return this.#effective(); }
+  get effective(): number | null {
+    return this.#effective();
+  }
   readonly #effective = computed(() => {
     const chance = this.yieldBonusChance;
     const requested = this.assembly.requested();
@@ -85,7 +102,12 @@ export class Projection {
     return requested;
   });
 
-  get yield(): number | null { return this.#yield(); }
+  /**
+   * The yield ratio of the projection based on the effective and requested volumes.
+   */
+  get yieldFactor(): number | null {
+    return this.#yield();
+  }
   readonly #yield = computed(() =>
     ratio(this.effective, this.assembly.requested())
   );
@@ -93,7 +115,9 @@ export class Projection {
   /**
    * The actual volume of materials required for the projection based on the craft parameters.
    */
-  get volume(): number | null { return this.#volume(); }
+  get volume(): number | null {
+    return this.#volume();
+  }
   readonly #volume = computed(() =>
     this.assembly.boosted() ?
       this.#effective() ?? this.assembly.requested() :

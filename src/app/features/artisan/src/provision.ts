@@ -39,7 +39,7 @@ export class Provision {
    */
   get value(): number | null { return this.#value(); }
   readonly #value = computed(() =>
-    product(this.#purchase().value, this.projection.yield)
+    product(this.#purchase().value, this.projection.yieldFactor)
   );
 
   /**

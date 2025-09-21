@@ -34,7 +34,7 @@ export class Explorer implements OnDestroy {
     for (const key of this.#artisan.data.recipes.keys() ?? []) {
       const item = this.#artisan.data.items.get(key);
       const recipes = supported(this.#artisan.data.recipes.get(key));
-      if (item && recipes?.length && this._isIncluded(item, recipes)) {
+      if (item && recipes?.length && !this._isExcluded(recipes) && this._isIncluded(item)) {
         const craftable = this.#artisan.getCraftable(key);
         craftable && objects.push(new Production(craftable));
       }
@@ -68,8 +68,11 @@ export class Explorer implements OnDestroy {
     this.#refresh.destroy();
   }
 
-  private _isIncluded(item: MasterItemDefinitions, recipes: CraftingRecipeData[]): boolean {
-    return !recipes.every(x => this.#categories.includes(x.CraftingCategory)) &&
-      this.#classes.every(name => item.ItemClass.includes(name));
+  private _isExcluded(recipes: CraftingRecipeData[]): boolean {
+    return recipes.every(x => this.#categories.includes(x.CraftingCategory));
+  }
+
+  private _isIncluded(item: MasterItemDefinitions): boolean {
+    return this.#classes.every(name => item.ItemClass.includes(name));
   }
 }

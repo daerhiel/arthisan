@@ -117,7 +117,7 @@ describe('Provision', () => {
   });
 
   it('should get the purchase total', () => {
-    const projection = jasmine.createSpyObj<Projection>('Projection', {}, { yield: 1 });
+    const projection = jasmine.createSpyObj<Projection>('Projection', {}, { yieldFactor: 1 });
     const data: CraftingIngredientData = { id: 'OreT1', type: 'Item', quantity: 4 };
     const ingredient = new Ingredient(service, data);
     ingredient.initialize();

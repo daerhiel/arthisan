@@ -85,6 +85,16 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
   );
 
   /**
+   * The unit differential between the crafting cost and the market price.
+   */
+  get margin(): number | null {
+    return this.#margin();
+  }
+  readonly #margin = computed(() => {
+    return this.#projection()?.margin ?? null;
+  });
+
+  /**
    * The crafting profit of the the assembly based crafting state and parameters.
    */
   get profit(): number | null {

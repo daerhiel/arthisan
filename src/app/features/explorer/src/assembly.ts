@@ -8,9 +8,9 @@ import { Schematic } from "@features/schematic";
 /**
  * Table definition for assemblies, which includes columns for various attributes of the assembly.
  */
-function getPriceState(assembly: Assembly): boolean | null {
-  const profit = assembly.projection?.profit;
-  return profit != null ? profit > 0 : null;
+function getMarginState(assembly: Assembly): boolean | null {
+  const margin = assembly.margin;
+  return margin != null ? margin > 0 : null;
 }
 
 /**
@@ -75,9 +75,9 @@ export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
   { width: '5%', align: 'right' }
 );
 
-export const assemblyProfit = defineColumn<Assembly, number>('projection.profit',
-  'Profit',
-  { component: NwPrice, map: getPriceInputs(x => x.profit, getPriceState) },
+export const assemblyMargin = defineColumn<Assembly, number>('projection.margin',
+  'Margin',
+  { component: NwPrice, map: getPriceInputs(x => x.margin, getMarginState) },
   { width: '5%', align: 'right' }
 );
 
@@ -92,5 +92,5 @@ export const assemblyTable = defineTable<Assembly>('assemblies',
   assemblyCategory, assemblyFamily,
   assemblyType, assemblyTier, assemblyBlueprints,
   assemblyPrice, assemblyCost,
-  assemblyProfit, assemblyChance
+  assemblyMargin, assemblyChance
 );
