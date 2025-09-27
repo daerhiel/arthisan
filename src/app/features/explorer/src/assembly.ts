@@ -57,7 +57,7 @@ export const assemblyTier = defineColumn<Assembly, number>('entity.tier',
   { width: '5%' }
 );
 
-export const assemblyBlueprints = defineColumn<Assembly, number>('entity.blueprints',
+export const assemblyBlueprints = defineColumn<Assembly, number>('entity.blueprints.length',
   'Recipes',
   { fit: x => x.entity.blueprints.length },
   { width: '2%' }
@@ -69,19 +69,19 @@ export const assemblyPrice = defineColumn<Assembly, number>('entity.price',
   { width: '5%', align: 'right' }
 );
 
-export const assemblyCost = defineColumn<Assembly, number>('projection.cost',
+export const assemblyCost = defineColumn<Assembly, number>('cost',
   'Cost',
   { component: NwPrice, map: getPriceInputs(x => x.cost ?? null, { format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
-export const assemblyMargin = defineColumn<Assembly, number>('projection.margin',
+export const assemblyMargin = defineColumn<Assembly, number>('margin',
   'Margin',
   { component: NwPrice, map: getPriceInputs(x => x.margin, { getter: getMarginState, format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
-export const assemblyChance = defineColumn<Assembly, number | null>('projection.yieldBonusChance',
+export const assemblyChance = defineColumn<Assembly, number | null>('yieldBonusChance',
   'Chance',
   { component: NwRatio, map: getRatioInputs(x => x.yieldBonusChance, { format: '1.0-2' }) },
   { width: '5%', align: 'right' }

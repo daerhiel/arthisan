@@ -9,7 +9,7 @@ type HydrateFn<T> = (name: string, value: T) => void;
 type IteratorFn<T> = (data: Record<string, T[]>) => void;
 
 export abstract class CacheBase<T> {
-  readonly #subscription: Subscription[] = [];
+  readonly #subscriptions: Subscription[] = [];
   readonly #version = signal(0);
 
   readonly version = this.#version.asReadonly();
@@ -30,12 +30,12 @@ export abstract class CacheBase<T> {
   }
 
   protected _subscribe<T>(source: Observable<T>): void {
-    this.#subscription.push(source.subscribe());
+    this.#subscriptions.push(source.subscribe());
   }
 
   destroy(): void {
-    while (this.#subscription.length) {
-      this.#subscription.shift()?.unsubscribe();
+    while (this.#subscriptions.length) {
+      this.#subscriptions.shift()?.unsubscribe();
     }
   }
 }
@@ -109,19 +109,19 @@ export class CollectionCache<T> extends CacheBase<T> {
 }
 
 export class ArrayCache<T> {
-  readonly #subscription: Subscription[] = [];
+  readonly #subscriptions: Subscription[] = [];
   readonly #version = signal(0);
   readonly #objects = new Map<number, T>();
 
   readonly version = this.#version.asReadonly();
 
   protected _subscribe<T>(source: Observable<T>): void {
-    this.#subscription.push(source.subscribe());
+    this.#subscriptions.push(source.subscribe());
   }
 
   destroy(): void {
-    while (this.#subscription.length) {
-      this.#subscription.shift()?.unsubscribe();
+    while (this.#subscriptions.length) {
+      this.#subscriptions.shift()?.unsubscribe();
     }
   }
 
