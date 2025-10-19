@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, OnDestroy, signal, ViewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
-import { getStorageItem, TableDefinition } from '@app/core';
+import { getStorageItem, SyncDataSource, TableDefinition } from '@app/core';
 import { CraftingCategory, CraftingRecipeData, ItemClass, MasterItemDefinitions } from '@app/nw-data';
-import { NwI18n } from '@app/nw-buddy';
+import { getAccessor, NwI18n } from '@app/nw-buddy';
 import { Artisan, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, Production, supported } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
@@ -16,7 +17,7 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
   selector: 'app-explorer',
   imports: [
     NgComponentOutlet,
-    MatTableModule, MatSortModule,
+    MatTableModule, MatSortModule, MatPaginatorModule,
     ColumnsPipe, ColumnPipe
   ],
   templateUrl: './explorer.html',
@@ -28,6 +29,22 @@ export class Explorer implements OnDestroy {
   readonly #categories = inject(EXPLORE_ITEM_CATEGORIES, { optional: true }) ?? [];
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
   protected readonly _i18n = inject(NwI18n);
+
+  readonly #fields: Record<string, (id: string) => string> = {
+    'entity.name': id => this._i18n.get(id),
+    'entity.category': id => this._i18n.get(id, 'CategoryData'),
+    'entity.family': id => this._i18n.get(id, 'CategoryData'),
+    'entity.type': id => this._i18n.get(id, 'UI', 'UI_ItemTypeDescription'),
+  };
+
+  protected readonly _pages = signal([15, 50, 100]);
+  protected readonly _data = new SyncDataSource<Production>();
+  protected readonly _craftables: TableDefinition<Production> = assemblyTable;
+
+  constructor() {
+    this._data.traverser = () => assemblyTable.columns.map(column => column.id.split('.'));
+    this._data.accessor = getAccessor(this._data.accessor, this.#fields);
+  }
 
   readonly #data = computed(() => {
     const objects: Production[] = [];
@@ -42,9 +59,6 @@ export class Explorer implements OnDestroy {
     return objects;
   });
 
-  readonly data = new MatTableDataSource<Production>();
-  readonly craftables: TableDefinition<Production> = assemblyTable;
-
   readonly #recover = effect(() => {
     const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
     const objects = this.#data();
@@ -54,12 +68,17 @@ export class Explorer implements OnDestroy {
     }
   });
   readonly #refresh = effect(() => {
-    this.data.data = this.#data();
+    this._data.data = this.#data();
   });
 
   @ViewChild(MatSort)
   set sort(sort: MatSort) {
-    this.data.sort = sort;
+    this._data.sort = sort;
+  }
+
+  @ViewChild(MatPaginator)
+  set paginator(paginator: MatPaginator) {
+    this._data.paginator = paginator;
   }
 
   /** @inheritdoc */

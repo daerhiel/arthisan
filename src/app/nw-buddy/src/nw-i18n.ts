@@ -1,9 +1,37 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 
+import { AccessorFn } from '@app/core';
 import { NwBuddyApi } from './nw-buddy-api';
 
+/**
+ * A mapping of localization keys to their corresponding translated strings.
+ */
 export type Localization = Record<string, string>;
+
+/**
+ * A mapping of property paths to translation functions.
+ */
+export type I18nMap = Record<string, (id: string) => string>;
+
+/**
+ * Creates an accessor function that translates string values based on the provided fields map.
+ * @param accessor The original accessor function.
+ * @param fields The mapping of property paths to translation functions.
+ * @returns A new accessor function that applies translations.
+ */
+export function getAccessor<T>(accessor: AccessorFn<T>, fields: I18nMap): AccessorFn<T> {
+  return (item, segments) => {
+    const value = accessor(item, segments);
+    if (typeof value === 'string') {
+      const translate = fields[segments.join('.')];
+      if (translate) {
+        return translate(value);
+      }
+    }
+    return value;
+  };
+};
 
 @Injectable({
   providedIn: 'root'

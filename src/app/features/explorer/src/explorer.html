@@ -1,6 +1,6 @@
-<table mat-table [dataSource]="data" matSort class="mat-elevation-z8">
+<table mat-table [dataSource]="_data" matSort class="mat-elevation-z8">
 
-  @for (column of craftables.columns; track column.id) {
+  @for (column of _craftables.columns; track column.id) {
   <ng-container [matColumnDef]="column.id">
     <th mat-header-cell [mat-sort-header]="column.id" *matHeaderCellDef [width]="column.width">
       {{column.displayName}}
@@ -16,6 +16,7 @@
   </ng-container>
   }
 
-  <tr mat-header-row *matHeaderRowDef="craftables | columns"></tr>
-  <tr mat-row *matRowDef="let row; columns: craftables | columns;"></tr>
+  <tr mat-header-row *matHeaderRowDef="_craftables | columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: _craftables | columns;"></tr>
 </table>
+<mat-paginator [length]="50" [pageSizeOptions]="_pages()" aria-label="Select page"></mat-paginator>
