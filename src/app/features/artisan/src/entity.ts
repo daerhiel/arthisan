@@ -10,8 +10,9 @@ import { Purchase } from './purchase';
  * Represents an entity in the artisan system, which can be a master item or housing.
  */
 export class Entity implements Deferrable, Material<Purchase> {
-  readonly #item: MasterItemDefinitions | HouseItems;
+  readonly #artisan: Artisan;
   readonly #id: string;
+  readonly #item: MasterItemDefinitions | HouseItems;
 
   /**
    * A unique identifier.
@@ -90,7 +91,7 @@ export class Entity implements Deferrable, Material<Purchase> {
     return this.#price();
   }
   readonly #price = computed(() =>
-    !this.#item.BindOnPickup ? this.artisan.gaming.get(this.id) : null
+    !this.#item.BindOnPickup ? this.#artisan.gaming.get(this.id) : null
   );
 
   /**
@@ -100,7 +101,7 @@ export class Entity implements Deferrable, Material<Purchase> {
    * @throws Will throw an error if the artisan instance is invalid.
    * @throws Will throw an error if the item data is invalid.
    */
-  constructor(protected readonly artisan: Artisan, item: MasterItemDefinitions | HouseItems) {
+  constructor(artisan: Artisan, item: MasterItemDefinitions | HouseItems) {
     if (!artisan) {
       throw new Error('Invalid Artisan instance.');
     }
@@ -108,6 +109,7 @@ export class Entity implements Deferrable, Material<Purchase> {
       throw new Error('Invalid item data.');
     }
 
+    this.#artisan = artisan;
     this.#item = item;
     if (isMasterItem(item)) {
       this.#id = item.ItemID;
