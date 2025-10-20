@@ -1,6 +1,6 @@
 import { MatDialogConfig } from "@angular/material/dialog";
 
-import { defineColumn, defineTable } from "@app/core";
+import { defineColumn, defineTable, GetterFn } from "@app/core";
 import { getPriceInputs, getRatioInputs, NwIcon, NwPrice, NwRatio } from "@app/nw-buddy";
 import { Assembly, getIconInputs, getOpenerInputs, Opener } from "@features/artisan";
 import { Schematic } from "@features/schematic";
@@ -8,9 +8,11 @@ import { Schematic } from "@features/schematic";
 /**
  * Table definition for assemblies, which includes columns for various attributes of the assembly.
  */
-function getMarginState(assembly: Assembly): boolean | null {
-  const margin = assembly.margin;
-  return margin != null ? margin > 0 : null;
+function getValueState(getter: GetterFn<Assembly, number | null>): (assembly: Assembly) => boolean | null {
+  return assembly => {
+    const value = getter(assembly);
+    return value != null ? value > 0 : null;
+  }
 }
 
 /**
@@ -30,7 +32,7 @@ export const assemblyIcon = defineColumn<Assembly>('entity.icon',
 export const assemblyName = defineColumn<Assembly, string>('entity.name',
   'Name',
   { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, dialog) },
-  { width: '48%' }
+  { width: '43%' }
 );
 
 export const assemblyCategory = defineColumn<Assembly, string>('entity.category',
@@ -75,9 +77,21 @@ export const assemblyCost = defineColumn<Assembly, number>('cost',
   { width: '5%', align: 'right' }
 );
 
+export const assemblySpread = defineColumn<Assembly, number>('spread',
+  'Spread',
+  { component: NwPrice, map: getPriceInputs(x => x.spread, { getter: getValueState(x => x.spread), format: '1.2-2' }) },
+  { width: '5%', align: 'right' }
+);
+
 export const assemblyMargin = defineColumn<Assembly, number>('margin',
   'Margin',
-  { component: NwPrice, map: getPriceInputs(x => x.margin, { getter: getMarginState, format: '1.2-2' }) },
+  { component: NwRatio, map: getRatioInputs(x => x.margin, { getter: getValueState(x => x.margin), format: '1.2-2' }) },
+  { width: '5%', align: 'right' }
+);
+
+export const assemblyProfit = defineColumn<Assembly, number>('profit',
+  'Profit',
+  { component: NwPrice, map: getPriceInputs(x => x.profit, { getter: getValueState(x => x.profit), format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
@@ -92,5 +106,5 @@ export const assemblyTable = defineTable<Assembly>('assemblies',
   assemblyCategory, assemblyFamily,
   assemblyType, assemblyTier, assemblyBlueprints,
   assemblyPrice, assemblyCost,
-  assemblyMargin, assemblyChance
+  assemblySpread, assemblyMargin, assemblyChance
 );
