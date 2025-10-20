@@ -68,13 +68,23 @@ export class Projection {
   /**
    * The unit differential between the crafting cost and the market price.
    */
-  get margin(): number | null {
-    return this.#margin();
+  get spread(): number | null {
+    return this.#spread();
   }
-  readonly #margin = computed(() => {
+  readonly #spread = computed(() => {
     const price = this.blueprint.entity.price;
     return price && subtract(price, this.#cost());
   });
+
+  /**
+   * The margin percentage between the crafting cost and the market price.
+   */
+  get margin(): number | null {
+    return this.#margin();
+  }
+  readonly #margin = computed(() =>
+    ratio(this.#spread(), this.blueprint.entity.price)
+  );
 
   /**
    * The crafting profit of the projection based crafting state and parameters.
@@ -83,10 +93,12 @@ export class Projection {
     return this.#profit();
   }
   readonly #profit = computed(() => {
-    const margin = this.#margin();
+    const spread = this.#spread();
     const sign = this.assembly.crafted() ? 1 : -1;
-    return product(product(margin, sign), this.assembly.requested());
+    return product(product(spread, sign), this.assembly.requested());
   });
+
+  // get
 
   /**
    * The effective volume of materials required for the projection based on the craft parameters.

@@ -90,14 +90,14 @@ describe('Projection', () => {
     expect(projection.effective).toBe(2);
   });
 
-  it('should get crafting margin', () => {
+  it('should get crafting spread', () => {
     const assembly = jasmine.createSpyObj<Assembly>('Assembly', { boosted: true, requested: 1 });
     const craftable = service.getCraftable('IngotT2');
     const [blueprint] = craftable.blueprints;
 
     const materials = new Materials();
     const projection = new Projection(assembly, blueprint, materials);
-    expect(projection.margin).toBe(2);
+    expect(projection.spread).toBe(2);
   });
 
   it('should get crafting profit', () => {
