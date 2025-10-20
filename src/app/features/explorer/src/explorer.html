@@ -1,3 +1,9 @@
+<form>
+  <mat-form-field>
+    <input matInput placeholder="Search..." [formControl]="_search" />
+  </mat-form-field>
+</form>
+
 <table mat-table [dataSource]="_data" matSort class="mat-elevation-z8">
 
   @for (column of _craftables.columns; track column.id) {

@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, InjectionToken, OnDestroy, signal, ViewChild } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { debounceTime, distinctUntilChanged, Subscription, tap } from 'rxjs';
 
 import { getStorageItem, SyncDataSource, TableDefinition } from '@app/core';
 import { CraftingCategory, CraftingRecipeData, ItemClass, MasterItemDefinitions } from '@app/nw-data';
@@ -16,9 +20,13 @@ export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITE
 @Component({
   selector: 'app-explorer',
   imports: [
-    NgComponentOutlet,
+    NgComponentOutlet, ReactiveFormsModule,
     MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormField, MatInput,
     ColumnsPipe, ColumnPipe
+  ],
+  providers: [
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } }
   ],
   templateUrl: './explorer.html',
   styleUrl: './explorer.scss',
@@ -29,6 +37,7 @@ export class Explorer implements OnDestroy {
   readonly #categories = inject(EXPLORE_ITEM_CATEGORIES, { optional: true }) ?? [];
   readonly #classes = inject(EXPLORE_ITEM_CLASSES, { optional: true }) ?? [];
   protected readonly _i18n = inject(NwI18n);
+  readonly #subscriptions: Subscription[] = [];
 
   readonly #fields: Record<string, (id: string) => string> = {
     'entity.name': id => this._i18n.get(id),
@@ -37,6 +46,7 @@ export class Explorer implements OnDestroy {
     'entity.type': id => this._i18n.get(id, 'UI', 'UI_ItemTypeDescription'),
   };
 
+  protected readonly _search = new FormControl<string | null>(null);
   protected readonly _pages = signal([15, 50, 100]);
   protected readonly _data = new SyncDataSource<Production>();
   protected readonly _craftables: TableDefinition<Production> = assemblyTable;
@@ -44,6 +54,13 @@ export class Explorer implements OnDestroy {
   constructor() {
     this._data.traverser = () => assemblyTable.columns.map(column => column.id.split('.'));
     this._data.accessor = getAccessor(this._data.accessor, this.#fields);
+    this.#subscriptions.push(this._search.valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(200),
+      tap(value => {
+        this._data.query = value;
+      })
+    ).subscribe());
   }
 
   readonly #data = computed(() => {
@@ -83,6 +100,9 @@ export class Explorer implements OnDestroy {
 
   /** @inheritdoc */
   ngOnDestroy(): void {
+    while (this.#subscriptions.length) {
+      this.#subscriptions.shift()?.unsubscribe();
+    }
     this.#recover.destroy();
     this.#refresh.destroy();
   }
