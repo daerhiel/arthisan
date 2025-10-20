@@ -6,7 +6,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { provideThemes } from '@app/theme';
-import { EXPLORE_ITEM_CATEGORIES, EXPLORE_ITEM_CLASSES } from '@features/explorer';
+import { EXPLORE_ITEM_CATEGORIES } from '@features/explorer';
 import { routes } from './app.routes';
 
 /**
@@ -28,6 +28,5 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideThemes(themes),
     { provide: EXPLORE_ITEM_CATEGORIES, useValue: ['Faction'] },
-    // { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource', 'Gem'] }
   ]
 };
