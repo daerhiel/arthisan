@@ -28,6 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideThemes(themes),
     { provide: EXPLORE_ITEM_CATEGORIES, useValue: ['Faction'] },
-    { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource', 'Gem'] }
+    // { provide: EXPLORE_ITEM_CLASSES, useValue: ['Resource', 'Gem'] }
   ]
 };

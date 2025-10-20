@@ -7,3 +7,6 @@ export * from './src/settings';
 export * from './src/tables';
 export * from './src/calculus';
 export * from './src/instance-pipe';
+export * from './src/data-source-base';
+export * from './src/sync-data-source';
+export * from './src/odata-source';

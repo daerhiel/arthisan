@@ -3,6 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
+import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltip } from '@angular/material/tooltip';
@@ -16,7 +17,7 @@ import { NwIcon, LocalizePipe, NwPrice, StatePipe } from '@app/nw-buddy';
   imports: [
     DecimalPipe, FormsModule,
     MatCardModule, MatTableModule,
-    MatButton, MatSlideToggle, MatTooltip,
+    MatInput, MatButton, MatSlideToggle, MatTooltip,
     NwIcon, NwPrice, InstancePipe, LocalizePipe,
     StatePipe
 ],

@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 import { GetterFn } from './object-cache';
 
-interface InputOptions {
+interface InputOptions<T> {
+  getter?: GetterFn<T, boolean | null>;
   format?: string | null;
 }
 
@@ -13,15 +14,18 @@ interface InputOptions {
  * @param format The format to use for the value.
  * @returns A function that maps an item to its ratio inputs.
  */
-export function getRatioInputs<T, R>(fitter: GetterFn<T, R>, { format }: InputOptions = {}) {
+export function getRatioInputs<T, R>(fitter: GetterFn<T, R>, { getter, format }: InputOptions<T> = {}) {
   return (item: T) => {
-    return { value: fitter(item), format };
+    return { value: fitter(item), state: getter ? getter(item) : null, format };
   }
 }
 
 @Component({
   selector: 'span[nw-ratio]',
   imports: [],
+  host: {
+    '[class]': '_classes()',
+  },
   providers: [DecimalPipe],
   templateUrl: './nw-ratio.html',
   styleUrl: './nw-ratio.scss',
@@ -36,9 +40,25 @@ export class NwRatio {
   readonly value = input<number | null | undefined>();
 
   /**
+   * The display state of the price.
+   */
+  readonly state = input<boolean | null>(null);
+
+  /**
    * The number format to use for display.
    */
   readonly format = input<string>('1.0-2');
+
+  protected readonly _classes = computed(() => {
+    const classes = [];
+
+    const state = this.state();
+    if (state != null) {
+      classes.push(state ? 'nw-positive' : 'nw-negative');
+    }
+
+    return classes;
+  });
 
   protected readonly _value = () => {
     const value = this.value();

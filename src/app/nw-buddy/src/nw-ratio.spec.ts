@@ -81,12 +81,24 @@ describe('getRatioInputs', () => {
   it('should return ratio inputs', () => {
     const object = { value: 42 };
     const inputs = getRatioInputs<Inputs, number>(x => x.value)(object);
-    expect(inputs).toEqual({ value: 42, format: undefined });
+    expect(inputs).toEqual({ value: 42, state: null, format: undefined });
+  });
+
+  it('should return price inputs with positive state', () => {
+    const object = { value: 42, state: true };
+    const inputs = getRatioInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    expect(inputs).toEqual({ value: 42, state: true, format: undefined });
+  });
+
+  it('should return price inputs with negative state', () => {
+    const object = { value: 42, state: false };
+    const inputs = getRatioInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    expect(inputs).toEqual({ value: 42, state: false, format: undefined });
   });
 
   it('should set ratio format', () => {
     const object = { value: 42.05 };
     const inputs = getRatioInputs<Inputs, number>(x => x.value, { format: '1.0-0' })(object);
-    expect(inputs).toEqual({ value: 42.05, format: '1.0-0' });
+    expect(inputs).toEqual({ value: 42.05, state: null, format: '1.0-0' });
   });
 });
