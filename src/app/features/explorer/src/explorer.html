@@ -25,4 +25,4 @@
   <tr mat-header-row *matHeaderRowDef="_craftables | columns"></tr>
   <tr mat-row *matRowDef="let row; columns: _craftables | columns;"></tr>
 </table>
-<mat-paginator [length]="50" [pageSizeOptions]="_pages()" aria-label="Select page"></mat-paginator>
+<mat-paginator [pageSizeOptions]="_pages()" aria-label="Select page"></mat-paginator>

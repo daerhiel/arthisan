@@ -98,8 +98,6 @@ export class Projection {
     return product(product(spread, sign), this.assembly.requested());
   });
 
-  // get
-
   /**
    * The effective volume of materials required for the projection based on the craft parameters.
    */
