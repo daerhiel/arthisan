@@ -8,7 +8,7 @@
       @if (purchase) {
       <mat-card-title class="app-l-flex app-l-flex-row">
         <div>{{purchase.entity.name | localize}}</div>
-        <div class="app-l-flex-spacer-1"></div>
+        <div class="app-l-flex-spacer-1r"></div>
         @if (assembly) {
         <mat-slide-toggle [(ngModel)]="purchase.crafted" [matTooltip]="tooltips.crafted" matTooltipPosition="right"></mat-slide-toggle>
         }
@@ -17,7 +17,7 @@
 
       @if (purchase) {
       <mat-card-subtitle class="app-l-flex app-l-flex-row">
-        <div class="app-l-flex-spacer-1">
+        <div class="app-l-flex-spacer-1r">
           {{purchase.requested()}}
           <span class="app-action"> x </span>
           @if (assembly && purchase.crafted()) {
@@ -35,7 +35,7 @@
           }
         </div>
         @if (assembly && purchase.yieldBonusChance && purchase.crafted()) {
-        <button matButton [class.app-boosted]="purchase.boosted()" [matTooltip]="tooltips.chance" matTooltipPosition="right" (click)="purchase.toggle()">
+        <button mat-button [class.app-boosted]="purchase.boosted()" [matTooltip]="tooltips.chance" matTooltipPosition="right" (click)="purchase.toggle()">
           +{{purchase.yieldBonusChance * 100 | number: '1.0'}}%
         </button>
         }
@@ -52,7 +52,7 @@
   <mat-card-content>
     <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-align-start app-l-flex-gap-1r app-mt-hr">
       @if (purchase) {
-      <div class="app-l-flex app-l-flex-column app-l-flex-gap-hr app-l-flex-spacer-1">
+      <div class="app-l-flex app-l-flex-column app-l-flex-gap-hr app-l-flex-spacer-1r">
         <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
           <div class="app-labels">{{assembly && purchase.crafted() ? 'Make' : 'Buy'}}</div>
           <div class="app-values">
