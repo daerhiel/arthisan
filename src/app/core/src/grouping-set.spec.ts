@@ -189,4 +189,20 @@ describe('GroupingSet', () => {
     expect(groups.map(group => group.id)).toEqual(['2', '1']);
     set.destroy();
   });
+
+  it('should get grouping by id', () => {
+    const items = signal<Item[]>([
+      { id: '1', name: 'Item 1', value: signal(10) },
+      { id: '2', name: 'Item 2', value: signal(20) }
+    ]);
+    const set = TestBed.runInInjectionContext(() =>
+      new GroupingSet<Item>(items, indexer, translator, evaluator)
+    );
+    TestBed.tick();
+
+    const group = set.get('2');
+    expect(group).toBeTruthy();
+    expect(group?.name).toBe('Name for 2');
+    set.destroy();
+  });
 });

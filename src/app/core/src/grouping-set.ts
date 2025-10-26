@@ -138,6 +138,16 @@ export class GroupingSet<T> {
   }
 
   /**
+   * Gets a grouping by its identifier.
+   * @param id The identifier of the grouping.
+   * @returns The grouping if found; otherwise, null.
+   */
+  get(id: string): Grouping<T> | null {
+    this.#version();
+    return this.#groups.get(id) ?? null;
+  }
+
+  /**
    * Destroys the index and releases any resources it holds.
    */
   destroy(): void {
