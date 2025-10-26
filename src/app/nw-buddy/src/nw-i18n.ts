@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { AccessorFn } from '@app/core';
+import { AccessorFn, TranslateFn } from '@app/core';
 import { NwBuddyApi } from './nw-buddy-api';
 
 /**
@@ -12,7 +12,7 @@ export type Localization = Record<string, string>;
 /**
  * A mapping of property paths to translation functions.
  */
-export type I18nMap = Record<string, (id: string) => string>;
+export type I18nMap = Record<string, TranslateFn<string>>;
 
 /**
  * Creates an accessor function that translates string values based on the provided fields map.

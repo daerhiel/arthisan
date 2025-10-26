@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { GetterFn } from './object-cache';
+import { GetterFn } from '@app/core';
 
 interface InputOptions<T> {
   getter?: GetterFn<T, boolean | null>;

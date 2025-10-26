@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { NwBuddyApiMock } from '@app/nw-buddy/testing';
 
-import { NwBuddyApi } from './nw-buddy-api';
+import { NwBuddyApi } from '../../nw-buddy/src/nw-buddy-api';
 import { ArrayCache, CollectionCache, ObjectCache } from './object-cache';
 
 interface Item {

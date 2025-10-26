@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { GetterFn } from './object-cache';
+import { GetterFn } from '@app/core';
 
 const OPACITY_FULL = 1;
 const OPACITY_FAINT = 0.25;

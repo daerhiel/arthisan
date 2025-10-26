@@ -40,16 +40,16 @@ export class Explorer implements OnDestroy {
   readonly #subscriptions: Subscription[] = [];
 
   readonly #fields: Record<string, (id: string) => string> = {
-    'entity.name': id => this._i18n.get(id),
-    'entity.category': id => this._i18n.get(id, 'CategoryData'),
-    'entity.family': id => this._i18n.get(id, 'CategoryData'),
-    'entity.type': id => this._i18n.get(id, 'UI', 'UI_ItemTypeDescription'),
+    'entity.name': key => this._i18n.get(key),
+    'entity.category': key => this._i18n.get(key, 'CategoryData'),
+    'entity.family': key => this._i18n.get(key, 'CategoryData'),
+    'entity.type': key => this._i18n.get(key, 'UI', 'UI_ItemTypeDescription'),
   };
 
   protected readonly _search = new FormControl<string | null>(null);
   protected readonly _pages = signal([15, 50, 100]);
   protected readonly _data = new SyncDataSource<Production>();
-  protected readonly _craftables: TableDefinition<Production> = assemblyTable;
+  protected readonly _craftables = assemblyTable;
 
   constructor() {
     this._data.traverser = () => assemblyTable.columns.map(column => column.id.split('.'));
@@ -57,9 +57,7 @@ export class Explorer implements OnDestroy {
     this.#subscriptions.push(this._search.valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(200),
-      tap(value => {
-        this._data.query = value;
-      })
+      tap(value => this._data.query = value)
     ).subscribe());
   }
 
@@ -88,11 +86,17 @@ export class Explorer implements OnDestroy {
     this._data.data = this.#data();
   });
 
+  /**
+   * Sets the MatSort instance for the data table.
+   */
   @ViewChild(MatSort)
   set sort(sort: MatSort) {
     this._data.sort = sort;
   }
 
+  /**
+   * Sets the MatPaginator instance for the data table.
+   */
   @ViewChild(MatPaginator)
   set paginator(paginator: MatPaginator) {
     this._data.paginator = paginator;
@@ -107,10 +111,20 @@ export class Explorer implements OnDestroy {
     this.#refresh.destroy();
   }
 
+  /**
+   * Determines if the given recipes are excluded based on the current category filters.
+   * @param recipes The list of crafting recipes to check.
+   * @returns True if all recipes are excluded; otherwise, false.
+   */
   private _isExcluded(recipes: CraftingRecipeData[]): boolean {
     return recipes.every(x => this.#categories.includes(x.CraftingCategory));
   }
 
+  /**
+   * Determines if the given item is included based on the current class filters.
+   * @param item The crafting item to check.
+   * @returns True if the item is included; otherwise, false.
+   */
   private _isIncluded(item: MasterItemDefinitions): boolean {
     return this.#classes.every(name => item.ItemClass.includes(name));
   }
