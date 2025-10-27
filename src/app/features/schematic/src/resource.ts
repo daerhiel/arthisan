@@ -10,7 +10,7 @@ import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltip } from '@angular/material/toolt
 
 import { InstancePipe } from '@app/core';
 import { Assembly, Production, Purchase } from '@features/artisan';
-import { NwIcon, LocalizePipe, NwPrice, StatePipe } from '@app/nw-buddy';
+import { NwIcon, LocalizePipe, NwPrice } from '@app/nw-buddy';
 
 @Component({
   selector: 'app-resource',
@@ -18,8 +18,7 @@ import { NwIcon, LocalizePipe, NwPrice, StatePipe } from '@app/nw-buddy';
     DecimalPipe, FormsModule,
     MatCardModule, MatTableModule,
     MatInput, MatButton, MatSlideToggle, MatTooltip,
-    NwIcon, NwPrice, InstancePipe, LocalizePipe,
-    StatePipe
+    NwIcon, NwPrice, InstancePipe, LocalizePipe
 ],
   templateUrl: './resource.html',
   styleUrl: './resource.scss',

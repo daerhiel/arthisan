@@ -1,19 +1,9 @@
 import { MatDialogConfig } from "@angular/material/dialog";
 
-import { defineColumn, defineTable, GetterFn } from "@app/core";
+import { defineColumn, defineTable } from "@app/core";
 import { getPriceInputs, getRatioInputs, NwIcon, NwPrice, NwRatio } from "@app/nw-buddy";
 import { Assembly, getIconInputs, getOpenerInputs, Opener } from "@features/artisan";
 import { Schematic } from "@features/schematic";
-
-/**
- * Table definition for assemblies, which includes columns for various attributes of the assembly.
- */
-function getValueState(getter: GetterFn<Assembly, number | null>): (assembly: Assembly) => boolean | null {
-  return assembly => {
-    const value = getter(assembly);
-    return value != null ? value > 0 : null;
-  }
-}
 
 /**
  * Dialog configuration for the Schematic component.
@@ -79,19 +69,19 @@ export const assemblyCost = defineColumn<Assembly, number>('cost',
 
 export const assemblySpread = defineColumn<Assembly, number>('spread',
   'Spread',
-  { component: NwPrice, map: getPriceInputs(x => x.spread, { getter: getValueState(x => x.spread), format: '1.2-2' }) },
+  { component: NwPrice, map: getPriceInputs(x => x.spread, { state: true, format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
 export const assemblyMargin = defineColumn<Assembly, number>('margin',
   'Margin',
-  { component: NwRatio, map: getRatioInputs(x => x.margin, { getter: getValueState(x => x.margin), format: '1.2-2' }) },
+  { component: NwRatio, map: getRatioInputs(x => x.margin, { state: true, format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 
 export const assemblyProfit = defineColumn<Assembly, number>('profit',
   'Profit',
-  { component: NwPrice, map: getPriceInputs(x => x.profit, { getter: getValueState(x => x.profit), format: '1.2-2' }) },
+  { component: NwPrice, map: getPriceInputs(x => x.profit, { state: true, format: '1.2-2' }) },
   { width: '5%', align: 'right' }
 );
 

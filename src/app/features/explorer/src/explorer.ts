@@ -8,9 +8,9 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormField } from '@angular/material/
 import { MatInput } from '@angular/material/input';
 import { debounceTime, distinctUntilChanged, Subscription, tap } from 'rxjs';
 
-import { getStorageItem, SyncDataSource, TableDefinition } from '@app/core';
-import { CraftingCategory, CraftingRecipeData, ItemClass, MasterItemDefinitions } from '@app/nw-data';
-import { getAccessor, NwI18n } from '@app/nw-buddy';
+import { getStorageItem, GroupingSet, SyncDataSource, TranslateFn } from '@app/core';
+import { CraftingCategory, CraftingRecipeData, ItemClass, ItemType, MasterItemDefinitions, TradingFamily } from '@app/nw-data';
+import { getAccessor, NwI18n, NwRatio } from '@app/nw-buddy';
 import { Artisan, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, Production, supported } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
@@ -39,7 +39,7 @@ export class Explorer implements OnDestroy {
   protected readonly _i18n = inject(NwI18n);
   readonly #subscriptions: Subscription[] = [];
 
-  readonly #fields: Record<string, (id: string) => string> = {
+  readonly #fields: Record<string, TranslateFn<string>> = {
     'entity.name': key => this._i18n.get(key),
     'entity.category': key => this._i18n.get(key, 'CategoryData'),
     'entity.family': key => this._i18n.get(key, 'CategoryData'),

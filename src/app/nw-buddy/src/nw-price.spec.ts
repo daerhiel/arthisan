@@ -75,7 +75,25 @@ describe('NwPrice', () => {
     expect(fixture.nativeElement).not.toHaveClass('nw-negative');
   });
 
+  it('should have neutral state by default', () => {
+    fixture.componentRef.setInput('state', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement).not.toHaveClass('nw-positive');
+    expect(fixture.nativeElement).not.toHaveClass('nw-negative');
+  });
+
+  it('should render neutral state', () => {
+    fixture.componentRef.setInput('value', 0);
+    fixture.componentRef.setInput('state', true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement).not.toHaveClass('nw-positive');
+    expect(fixture.nativeElement).not.toHaveClass('nw-negative');
+  });
+
   it('should render positive state', () => {
+    fixture.componentRef.setInput('value', 42);
     fixture.componentRef.setInput('state', true);
     fixture.detectChanges();
 
@@ -84,7 +102,8 @@ describe('NwPrice', () => {
   });
 
   it('should render negative state', () => {
-    fixture.componentRef.setInput('state', false);
+    fixture.componentRef.setInput('value', -42);
+    fixture.componentRef.setInput('state', true);
     fixture.detectChanges();
 
     expect(fixture.nativeElement).not.toHaveClass('nw-positive');
@@ -109,24 +128,24 @@ describe('getPriceInputs', () => {
   it('should return price inputs', () => {
     const object = { value: 42 };
     const inputs = getPriceInputs<Inputs, number>(x => x.value)(object);
-    expect(inputs).toEqual({ value: 42, state: null, format: undefined });
+    expect(inputs).toEqual({ value: 42, state: undefined, format: undefined });
   });
 
   it('should return price inputs with positive state', () => {
     const object = { value: 42, state: true };
-    const inputs = getPriceInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, { state: true })(object);
     expect(inputs).toEqual({ value: 42, state: true, format: undefined });
   });
 
   it('should return price inputs with negative state', () => {
-    const object = { value: 42, state: false };
-    const inputs = getPriceInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
-    expect(inputs).toEqual({ value: 42, state: false, format: undefined });
+    const object = { value: -42, state: false };
+    const inputs = getPriceInputs<Inputs, number>(x => x.value, { state: true })(object);
+    expect(inputs).toEqual({ value: -42, state: true, format: undefined });
   });
 
   it('should set price format', () => {
     const object = { value: 42.05 };
     const inputs = getPriceInputs<Inputs, number>(x => x.value, { format: '1.0-0' })(object);
-    expect(inputs).toEqual({ value: 42.05, state: null, format: '1.0-0' });
+    expect(inputs).toEqual({ value: 42.05, state: undefined, format: '1.0-0' });
   });
 });

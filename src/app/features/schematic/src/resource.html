@@ -28,7 +28,7 @@
           }
           <span class="app-action"> = </span>
           @if (assembly) {
-          <span nw-price [value]="purchase.total" [state]="purchase.profit | state"></span>
+          <span nw-price [value]="purchase.total" [state]="purchase.profit"></span>
           }
           @else {
           <span nw-price [value]="purchase.total"></span>
@@ -84,7 +84,7 @@
         @if (assembly) {
         <div class="app-l-flex app-l-flex-row app-l-justify-between app-l-flex-gap-1r">
           <div class="app-labels">Profit</div>
-          <div class="app-values"> <span nw-price [value]="purchase.profit" [state]="purchase.profit | state"></span></div>
+          <div class="app-values"> <span nw-price [value]="purchase.profit" state></span></div>
         </div>
         }
       </div>
@@ -107,7 +107,7 @@
           <td mat-cell *matCellDef="let provision"> = </td>
         </ng-container>
         <ng-container matColumnDef="total">
-          <td mat-cell *matCellDef="let provision"> <span nw-price [value]="provision.total" [state]="provision.profit | state"></span> </td>
+          <td mat-cell *matCellDef="let provision"> <span nw-price [value]="provision.total" [state]="provision.profit"></span> </td>
         </ng-container>
 
         <tr mat-row *matRowDef="let row; columns: ['header']" header></tr>
