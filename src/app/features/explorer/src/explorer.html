@@ -1,5 +1,24 @@
 <div class="app-l-flex app-l-flex-gap-1r app-ml-1r app-mr-1r">
+
+  <ng-container *ngTemplateOutlet="dropdown; context: { control: _category, set: _categories, placeholder: 'Category' }">
+  </ng-container>
+  <ng-container *ngTemplateOutlet="dropdown; context: { control: _family, set: _families, placeholder: 'Family' }">
+  </ng-container>
+  <ng-container *ngTemplateOutlet="dropdown; context: { control: _type, set: _types, placeholder: 'Type' }">
+  </ng-container>
+
   <div class="app-l-flex-spacer-1r"></div>
+  <div class="app-mt-1r">
+    <mat-slide-toggle class="example-margin" [formControl]="_tradeable">
+      Tradeable
+    </mat-slide-toggle>
+  </div>
+  <div class="app-mt-hr">
+    <button mat-icon-button (click)="_reset()" matTooltip="Reset Filters" matTooltipPosition="above">
+      <mat-icon>filter_alt_off</mat-icon>
+    </button>
+  </div>
+
   <mat-form-field>
     <input matInput placeholder="Search..." [formControl]="_search" />
   </mat-form-field>
@@ -27,3 +46,28 @@
   <tr mat-row *matRowDef="let row; columns: _craftables | columns;"></tr>
 </table>
 <mat-paginator [pageSizeOptions]="_pages()" aria-label="Select page"></mat-paginator>
+
+<ng-template #dropdown let-control="control" let-set="set" let-placeholder="placeholder">
+  <mat-form-field>
+    <mat-select [formControl]="control" panelClass="app-option-panel" multiple [placeholder]="placeholder">
+      <mat-select-trigger>
+        @let value = control.value;
+        @let count = value?.length || 0;
+        {{set.get(value?.[0])?.name}}
+        @if (count > 1) {
+        <span class="app-option-suffix">
+          (+{{count - 1}} {{(count === 2 ? 'other' : 'others')}})
+        </span>
+        }
+      </mat-select-trigger>
+      @for (group of set.groups(); track group.id) {
+      <mat-option [value]="group.id">
+        <span class="app-dropdown-item">
+          <span>{{group.name}}</span>
+          <span nw-ratio [value]="group.value()" state></span>
+        </span>
+      </mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</ng-template>

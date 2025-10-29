@@ -295,3 +295,12 @@ $directions: (
 .mat-mdc-card-title-group > div {
   flex-grow: 1;
 }
+
+/** FIX: Mat Option Item Layout **/
+.mat-mdc-option .mdc-list-item__primary-text {
+  flex-grow: 1;
+}
+
+.app-option-panel.mat-mdc-select-panel {
+  min-width: fit-content;
+}

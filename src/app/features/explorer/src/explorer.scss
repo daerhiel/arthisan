@@ -1,0 +1,12 @@
+.app-dropdown-item {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+
+.app-option-suffix {
+  opacity: 0.75;
+  font-size: 0.75em;
+  line-height: 1;
+}
