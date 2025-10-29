@@ -8,22 +8,22 @@
 
 :root {
   @include mat.table-overrides((
-    row-item-outline-color: var(--mat-sys-surface-container-high),
+    row-item-outline-color: var(--mat-sys-surface-container-high)
   ));
 
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-primary-container),
-    container-text-color: var(--mat-sys-primary),
+    container-text-color: var(--mat-sys-primary)
   ));
 
   @include mat.menu-overrides((
     item-label-text-color: var(--mat-sys-on-surface),
-    item-icon-color: var(--mat-sys-secondary),
+    item-icon-color: var(--mat-sys-secondary)
   ));
 
   @include mat.button-overrides((
     filled-container-color: var(--mat-sys-primary-container),
-    filled-label-text-color: var(--mat-sys-primary),
+    filled-label-text-color: var(--mat-sys-primary)
   ));
 
   @include mat.slide-toggle-overrides((
@@ -32,24 +32,24 @@
     selected-pressed-handle-horizontal-margin: 0 16px,
     selected-with-icon-handle-horizontal-margin: 0 16px,
     unselected-pressed-handle-horizontal-margin: 0 -8px,
-    unselected-with-icon-handle-horizontal-margin: 0 -6px,
+    unselected-with-icon-handle-horizontal-margin: 0 -6px
   ));
 
   @include mat.icon-overrides((
-    color: var(--mat-sys-primary),
+    color: var(--mat-sys-primary)
   ));
 
   @include mat.dialog-overrides((
     container-color: var(--mat-sys-surface-container-high),
     subhead-color: var(--mat-sys-on-surface),
-    container-shape: 0.5rem,
+    container-shape: 0.5rem
   ));
 
   @include mat.card-overrides((
     title-text-size: calc(var(--mat-sys-title-medium-size) * 1.2),
     subtitle-text-size: calc(var(--mat-sys-title-medium-size) * 0.875),
     subtitle-text-color: color-mix(in srgb, var(--mat-sys-on-background), #666 20%),
-    elevated-container-shape: 0.25rem,
+    elevated-container-shape: 0.25rem
   ));
 }
 
@@ -80,7 +80,7 @@ body {
   display: inline-flex !important;
 }
 
-.app-l-flex-spacer-1 {
+.app-l-flex-spacer-1r {
   flex-grow: 1 !important;
   min-width: 1rem;
 }
@@ -294,4 +294,13 @@ $directions: (
 /** Material Fixes **/
 .mat-mdc-card-title-group > div {
   flex-grow: 1;
+}
+
+/** FIX: Mat Option Item Layout **/
+.mat-mdc-option .mdc-list-item__primary-text {
+  flex-grow: 1;
+}
+
+.app-option-panel.mat-mdc-select-panel {
+  min-width: fit-content;
 }

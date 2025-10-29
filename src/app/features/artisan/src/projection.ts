@@ -72,8 +72,9 @@ export class Projection {
     return this.#spread();
   }
   readonly #spread = computed(() => {
+    const cost = this.#cost();
     const price = this.blueprint.entity.price;
-    return price && subtract(price, this.#cost());
+    return cost && price && subtract(price, cost);
   });
 
   /**

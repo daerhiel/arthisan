@@ -1,7 +1,15 @@
+/**
+ * Transforms a string key to a lower case string.
+ * @param key The key to transform.
+ * @returns The transformed key.
+ */
 function transform(key: string): string {
   return key?.toLowerCase();
 }
 
+/**
+ * A function that gets a value from an object.
+ */
 export type GetterFn<T, R> = (object: T) => R;
 
 export class ObjectMap<T> extends Map<string, T> {

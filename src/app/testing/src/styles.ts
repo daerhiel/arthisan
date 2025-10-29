@@ -9,7 +9,7 @@ export const MAT_ICONS = 'https://fonts.googleapis.com/icon?family=Material+Icon
  */
 export function injectStyleSheet(style: string): void {
   if (!style) {
-    throw new Error('Style is required');
+    throw new Error('Style is required.');
   }
 
   const link = document.createElement('link');

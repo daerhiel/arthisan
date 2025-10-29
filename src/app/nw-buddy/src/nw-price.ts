@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { GetterFn } from './object-cache';
+import { GetterFn } from '@app/core';
+import { stateAttribute } from './state-pipe';
 
 const OPACITY_FULL = 1;
 const OPACITY_FAINT = 0.25;
@@ -15,8 +16,8 @@ interface Components {
   decimalOp: number | null;
 }
 
-interface InputOptions<T> {
-  getter?: GetterFn<T, boolean | null>;
+interface InputOptions {
+  state?: boolean | null;
   format?: string | null;
 }
 
@@ -26,9 +27,9 @@ interface InputOptions<T> {
  * @param getter A function that gets a state from an item to display.
  * @returns A function that maps an item to its price inputs.
  */
-export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, { getter, format }: InputOptions<T> = {}) {
+export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, { state, format }: InputOptions = {}) {
   return (item: T) => {
-    return { value: fitter(item), state: getter ? getter(item) : null, format };
+    return { value: fitter(item), state, format };
   }
 }
 
@@ -54,7 +55,7 @@ export class NwPrice {
   /**
    * The display state of the price.
    */
-  readonly state = input<boolean | null>(null);
+  readonly state = input(false, { transform: stateAttribute });
 
   /**
    * The number format to use for display.
@@ -64,9 +65,13 @@ export class NwPrice {
   protected readonly _classes = computed(() => {
     const classes = [];
 
-    const state = this.state();
-    if (state != null) {
-      classes.push(state ? 'nw-positive' : 'nw-negative');
+    let value = this.state();
+    if (typeof value === 'boolean' && value) {
+      value = this.value() ?? 0;
+    }
+    if (value) {
+      value > 0 && classes.push('nw-positive');
+      value < 0 && classes.push('nw-negative');
     }
 
     return classes;

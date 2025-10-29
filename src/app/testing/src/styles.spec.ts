@@ -13,7 +13,7 @@ describe('injectStyleSheet', () => {
   });
 
   it('throws if style is not provided', () => {
-    expect(() => injectStyleSheet('')).toThrowError('Style is required');
+    expect(() => injectStyleSheet('')).toThrowError(/style is required/i);
   });
 });
 

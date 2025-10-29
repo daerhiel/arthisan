@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { GetterFn } from './object-cache';
+import { GetterFn } from '@app/core';
+import { stateAttribute } from './state-pipe';
 
-interface InputOptions<T> {
-  getter?: GetterFn<T, boolean | null>;
+interface InputOptions {
+  state?: boolean | null;
   format?: string | null;
 }
 
@@ -14,9 +15,9 @@ interface InputOptions<T> {
  * @param format The format to use for the value.
  * @returns A function that maps an item to its ratio inputs.
  */
-export function getRatioInputs<T, R>(fitter: GetterFn<T, R>, { getter, format }: InputOptions<T> = {}) {
+export function getRatioInputs<T, R>(fitter: GetterFn<T, R>, { state, format }: InputOptions = {}) {
   return (item: T) => {
-    return { value: fitter(item), state: getter ? getter(item) : null, format };
+    return { value: fitter(item), state, format };
   }
 }
 
@@ -42,7 +43,7 @@ export class NwRatio {
   /**
    * The display state of the price.
    */
-  readonly state = input<boolean | null>(null);
+  readonly state = input(false, { transform: stateAttribute });
 
   /**
    * The number format to use for display.
@@ -52,9 +53,13 @@ export class NwRatio {
   protected readonly _classes = computed(() => {
     const classes = [];
 
-    const state = this.state();
-    if (state != null) {
-      classes.push(state ? 'nw-positive' : 'nw-negative');
+    let value = this.state();
+    if (typeof value === 'boolean' && value) {
+      value = this.value() ?? 0;
+    }
+    if (value) {
+      value > 0 && classes.push('nw-positive');
+      value < 0 && classes.push('nw-negative');
     }
 
     return classes;

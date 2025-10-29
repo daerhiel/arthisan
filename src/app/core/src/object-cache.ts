@@ -1,9 +1,7 @@
 import { signal, untracked } from '@angular/core';
 import { Observable, Subscription, tap } from 'rxjs';
 
-import { ObjectMap } from '@app/core';
-
-export type GetterFn<T, R> = (object: T) => R;
+import { GetterFn, ObjectMap } from './object-map';
 
 type HydrateFn<T> = (name: string, value: T) => void;
 type IteratorFn<T> = (data: Record<string, T[]>) => void;

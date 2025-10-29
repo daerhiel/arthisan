@@ -70,6 +70,31 @@ describe('NwRatio', () => {
 
     expect(fixture.nativeElement.innerText).toBe('42%');
   });
+
+  const tests = [
+    { value: 42, state: false, classes: [] },
+    { value: 0, state: false, classes: [] },
+    { value: -42, state: false, classes: [] },
+    { value: 42, state: true, classes: ['nw-positive'] },
+    { value: 0, state: true, classes: [] },
+    { value: -42, state: true, classes: ['nw-negative'] },
+    { value: 42, state: 5, classes: ['nw-positive'] },
+    { value: 42, state: 0, classes: [] },
+    { value: 42, state: -5, classes: ['nw-negative'] },
+    { value: -42, state: 5, classes: ['nw-positive'] },
+    { value: -42, state: 0, classes: [] },
+    { value: -42, state: -5, classes: ['nw-negative'] },
+  ];
+
+  tests.forEach(({ value, state, classes }) => {
+    it(`should apply ${classes.join(' ')} class`, () => {
+      fixture.componentRef.setInput('value', value);
+      fixture.componentRef.setInput('state', state);
+      fixture.detectChanges();
+
+      expect([...fixture.nativeElement.classList]).toEqual(jasmine.arrayContaining(classes));
+    });
+  });
 });
 
 describe('getRatioInputs', () => {
@@ -81,24 +106,24 @@ describe('getRatioInputs', () => {
   it('should return ratio inputs', () => {
     const object = { value: 42 };
     const inputs = getRatioInputs<Inputs, number>(x => x.value)(object);
-    expect(inputs).toEqual({ value: 42, state: null, format: undefined });
+    expect(inputs).toEqual({ value: 42, state: undefined, format: undefined });
   });
 
   it('should return price inputs with positive state', () => {
     const object = { value: 42, state: true };
-    const inputs = getRatioInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
+    const inputs = getRatioInputs<Inputs, number>(x => x.value, { state: true })(object);
     expect(inputs).toEqual({ value: 42, state: true, format: undefined });
   });
 
   it('should return price inputs with negative state', () => {
-    const object = { value: 42, state: false };
-    const inputs = getRatioInputs<Inputs, number>(x => x.value, { getter: x => x.state ?? null })(object);
-    expect(inputs).toEqual({ value: 42, state: false, format: undefined });
+    const object = { value: -42, state: false };
+    const inputs = getRatioInputs<Inputs, number>(x => x.value, { state: true })(object);
+    expect(inputs).toEqual({ value: -42, state: true, format: undefined });
   });
 
   it('should set ratio format', () => {
     const object = { value: 42.05 };
     const inputs = getRatioInputs<Inputs, number>(x => x.value, { format: '1.0-0' })(object);
-    expect(inputs).toEqual({ value: 42.05, state: null, format: '1.0-0' });
+    expect(inputs).toEqual({ value: 42.05, state: undefined, format: '1.0-0' });
   });
 });
