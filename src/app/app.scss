@@ -8,3 +8,10 @@
     flex: 1 1 auto;
   }
 }
+
+.app-dropdown-item {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  white-space: nowrap;
+}

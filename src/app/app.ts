@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -11,7 +12,7 @@ import { GamingTools } from '@app/gaming-tools';
 @Component({
   selector: 'app-root',
   imports: [
-    RouterOutlet, RouterLink,
+    RouterOutlet, RouterLink, DecimalPipe,
     MatToolbarModule, MatMenuModule,
     MatButtonModule, MatIconModule
   ],
