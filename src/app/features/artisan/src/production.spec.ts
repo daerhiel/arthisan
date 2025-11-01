@@ -80,8 +80,8 @@ describe('Production', () => {
   volumes.forEach(({ id, crafted, requested, expected }) => {
     it('should compute requested volume', () => {
       const craftable = service.getCraftable(id);
-      const materials = new Materials();
-      const production = new Production(craftable, materials);
+      const production = new Production(craftable);
+      const materials = production.materials;
       production.crafted.set(crafted);
       production.requested.set(requested);
       expect(materials.ids.map(extract(materials, x => x.requested()))).toEqual(expected);
@@ -96,8 +96,8 @@ describe('Production', () => {
   values.forEach(({ id, crafted, requested, expected }) => {
     it('should compute total value', () => {
       const craftable = service.getCraftable(id);
-      const materials = new Materials();
-      const production = new Production(craftable, materials);
+      const production = new Production(craftable);
+      const materials = production.materials;
       production.crafted.set(crafted);
       production.requested.set(requested);
       expect(materials.ids.map(extract(materials, x => x.total))).toEqual(expected);
@@ -106,15 +106,13 @@ describe('Production', () => {
 
   it('should compute effective volume by default', () => {
     const craftable = service.getCraftable('IngotT2');
-    const materials = new Materials();
-    const production = new Production(craftable, materials);
+    const production = new Production(craftable);
     expect(production.effective).toBe(1);
   });
 
   it('should compute effective volume', () => {
     const craftable = service.getCraftable('IngotT2');
-    const materials = new Materials();
-    const production = new Production(craftable, materials);
+    const production = new Production(craftable);
     production.requested.set(3);
     expect(production.effective).toBe(2);
   });
