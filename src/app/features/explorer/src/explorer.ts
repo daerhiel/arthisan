@@ -21,6 +21,7 @@ import { assemblyTable } from './assembly';
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
 export const EXPLORE_ITEM_CLASSES = new InjectionToken<ItemClass[]>('EXPLORE_ITEM_CLASSES');
 
+const APP_EXPLORER_QUERY = 'explorer.query';
 const APP_EXPLORER_FILTERS = 'explorer.filters';
 const defaults = getStorageItem(APP_EXPLORER_FILTERS, {
   category: null,
@@ -114,7 +115,7 @@ export class Explorer implements OnDestroy {
     'entity.type': key => this._i18n.get(key, 'UI', 'UI_ItemTypeDescription'),
   };
 
-  protected readonly _search = new FormControl<string | null>(null);
+  protected readonly _search = new FormControl<string | null>(getStorageItem<string | null>(APP_EXPLORER_QUERY, null));
   protected readonly _category = new FormControl<CraftingCategory | null>(defaults.category);
   protected readonly _family = new FormControl<TradingFamily | null>(defaults.family);
   protected readonly _type = new FormControl<ItemType | null>(defaults.type);
@@ -128,8 +129,10 @@ export class Explorer implements OnDestroy {
     this._data.accessor = getAccessor(this._data.accessor, this.#fields);
     this._data.predicate = getPredicate;
     this.#subscriptions.push(this._search.valueChanges.pipe(
+      startWith(this._search.value),
       distinctUntilChanged(),
       debounceTime(200),
+      tap(value => setStorageItem(APP_EXPLORER_QUERY, value)),
       tap(value => this._data.query = value)
     ).subscribe());
     this.#subscriptions.push(combineLatest([
