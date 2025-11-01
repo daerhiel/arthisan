@@ -15,7 +15,7 @@ import { combineLatest, debounceTime, distinctUntilChanged, startWith, Subscript
 import { getStorageItem, GetterFn, GroupingSet, PredicateFn, QueryFilters, setStorageItem, SyncDataSource, TranslateFn } from '@app/core';
 import { CraftingCategory, CraftingRecipeData, ItemClass, ItemType, MasterItemDefinitions, TradingFamily } from '@app/nw-data';
 import { getAccessor, NwI18n, NwRatio } from '@app/nw-buddy';
-import { Artisan, ColumnPipe, ColumnsPipe, MATERIALS_STORAGE_KEY, MaterialsState, Production, supported } from '@features/artisan';
+import { Artisan, ColumnPipe, ColumnsPipe, Production, supported } from '@features/artisan';
 import { assemblyTable } from './assembly';
 
 export const EXPLORE_ITEM_CATEGORIES = new InjectionToken<CraftingCategory[]>('EXPLORE_ITEM_CATEGORIES');
@@ -176,14 +176,6 @@ export class Explorer implements OnDestroy {
     x => x.margin
   );
 
-  readonly #recover = effect(() => {
-    const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
-    const objects = this.#data();
-    for (const object of objects) {
-      const state = materials[object.entity.id];
-      state && object.materials.setState(state);
-    }
-  });
   readonly #refresh = effect(() => {
     this._data.data = this.#data();
   });
@@ -209,7 +201,6 @@ export class Explorer implements OnDestroy {
     while (this.#subscriptions.length) {
       this.#subscriptions.shift()?.unsubscribe();
     }
-    this.#recover.destroy();
     this.#refresh.destroy();
   }
 
