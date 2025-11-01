@@ -154,7 +154,7 @@ export class Explorer implements OnDestroy {
       const recipes = supported(this.#artisan.data.recipes.get(key));
       if (item && recipes?.length && !this._isExcluded(recipes) && this._isIncluded(item)) {
         const craftable = this.#artisan.getCraftable(key);
-        craftable && objects.push(new Production(craftable));
+        craftable && objects.push(new Production(craftable, { asymptotic: true }));
       }
     }
     return objects;
