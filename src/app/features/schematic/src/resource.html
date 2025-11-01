@@ -18,7 +18,7 @@
       @if (purchase) {
       <mat-card-subtitle class="app-l-flex app-l-flex-row">
         <div class="app-l-flex-spacer-1r">
-          {{purchase.requested()}}
+          {{purchase.requested() | number: '1.0-2'}}
           <span class="app-action"> x </span>
           @if (assembly && purchase.crafted()) {
           <span nw-price [value]="purchase.value"></span>
@@ -60,10 +60,10 @@
             <input matInput type="number" [(ngModel)]="purchase.requested">
             }
             @else{
-            <b [matTooltip]="tooltips.requested">{{purchase.requested()}}</b>
+            <b [matTooltip]="tooltips.requested">{{purchase.requested() | number: '1.0-2'}}</b>
             }
             @if (assembly && purchase.crafted() && purchase.boosted()) {
-            / <b [matTooltip]="tooltips.effective">{{purchase.effective}}</b>
+            / <b [matTooltip]="tooltips.effective">{{purchase.effective | number: '1.0-2'}}</b>
             }
           </div>
         </div>
@@ -95,7 +95,7 @@
           <td mat-cell *matCellDef="let provision" [attr.colspan]="columns.length"> {{provision.ingredient.name | localize}} </td>
         </ng-container>
         <ng-container matColumnDef="quantity">
-          <td mat-cell *matCellDef="let provision"> {{provision.ingredient.quantity}} </td>
+          <td mat-cell *matCellDef="let provision"> {{provision.ingredient.quantity | number: '1.0-2'}} </td>
         </ng-container>
         <ng-container matColumnDef="action">
           <td mat-cell *matCellDef="let provision"> x </td>
