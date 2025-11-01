@@ -1,3 +1,5 @@
+import { signal, WritableSignal } from "@angular/core";
+
 import { Persistent, Providable } from "./contracts";
 import { Assembly } from "./assembly";
 import { Purchase, PurchaseState } from "./purchase";
@@ -43,6 +45,16 @@ export interface MaterialsState {
 export const MATERIALS_STORAGE_KEY = 'materials';
 
 /**
+ * Options for configuring the Materials instance.
+ */
+export interface MaterialsOptions {
+  /**
+   * Indicates whether the price calculations are based on asymptotically infinite requested volumes.
+   */
+  asymptotic?: boolean;
+}
+
+/**
  * Represents an index of materials used in assembly planning.
  */
 export class Materials implements Persistent<MaterialsState> {
@@ -61,6 +73,20 @@ export class Materials implements Persistent<MaterialsState> {
    */
   get assembly(): Assembly | null {
     return this.#assembly;
+  }
+
+  /**
+   * Indicates whether the price calculation are based on asymptotically infinite
+   * requested volumes.
+   */
+  readonly asymptotic: WritableSignal<boolean>;
+
+  /**
+   * Creates a new Materials instance.
+   * @param options The options to configure the materials instance.
+   */
+  constructor(options?: MaterialsOptions) {
+    this.asymptotic = signal(options?.asymptotic ?? false);
   }
 
   /**
