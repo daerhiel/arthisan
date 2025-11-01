@@ -129,9 +129,9 @@ export class Explorer implements OnDestroy {
     this._data.accessor = getAccessor(this._data.accessor, this.#fields);
     this._data.predicate = getPredicate;
     this.#subscriptions.push(this._search.valueChanges.pipe(
-      startWith(this._search.value),
       distinctUntilChanged(),
       debounceTime(200),
+      startWith(this._search.value),
       tap(value => setStorageItem(APP_EXPLORER_QUERY, value)),
       tap(value => this._data.query = value)
     ).subscribe());
