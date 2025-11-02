@@ -1,9 +1,22 @@
 import { MatDialogConfig } from "@angular/material/dialog";
 
-import { defineColumn, defineTable } from "@app/core";
+import { defineColumn, defineTable, getStorageItem } from "@app/core";
 import { getPriceInputs, getRatioInputs, NwIcon, NwPrice, NwRatio } from "@app/nw-buddy";
-import { Assembly, getIconInputs, getOpenerInputs, Opener } from "@features/artisan";
+import { Assembly, getIconInputs, getOpenerInputs, MATERIALS_STORAGE_KEY, MaterialsState, Opener } from "@features/artisan";
 import { Schematic } from "@features/schematic";
+
+/**
+ * Loads the state of the assembly from storage.
+ * @param assembly The assembly to load the state for.
+ */
+function assemblyHandler(assembly: Assembly): Assembly {
+  const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
+  if (materials) {
+    const state = materials[assembly.entity.id];
+    state && assembly.materials.setState(state);
+  }
+  return assembly;
+}
 
 /**
  * Dialog configuration for the Schematic component.
@@ -21,7 +34,13 @@ export const assemblyIcon = defineColumn<Assembly>('entity.icon',
 
 export const assemblyName = defineColumn<Assembly, string>('entity.name',
   'Name',
-  { component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), Schematic, dialog) },
+  {
+    component: Opener, map: getOpenerInputs((x, i18n) => i18n.get(x.entity.name), {
+      component: Schematic,
+      config: dialog,
+      handler: assemblyHandler
+    })
+  },
   { width: '43%' }
 );
 
