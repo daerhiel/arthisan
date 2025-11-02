@@ -27,7 +27,10 @@ export class Purchase implements Persistent<PurchaseState> {
    * The list of provisions that the current purchase is actually crafted in.
    */
   protected get provided(): Provision[] {
-    return this.#provisions;
+    return this.#provisions.filter(provision => {
+      const selected = provision.projection?.assembly?.projection;
+      return selected == null || provision.projection === selected;
+    });
   }
 
   /**
