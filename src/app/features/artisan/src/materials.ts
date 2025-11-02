@@ -76,7 +76,7 @@ export class Materials implements Persistent<MaterialsState> {
   }
 
   /**
-   * Indicates whether the price calculation are based on asymptotically infinite
+   * Indicates whether the price calculations are based on asymptotically infinite
    * requested volumes.
    */
   readonly asymptotic: WritableSignal<boolean>;
