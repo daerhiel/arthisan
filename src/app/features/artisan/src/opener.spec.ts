@@ -90,6 +90,17 @@ describe('Opener', () => {
     const dialog = await loader.getHarness(MatDialogHarness);
     expect(await dialog.getText()).toBe(data.message);
   });
+
+  it('should open dialog with handler', async () => {
+    const data = { message: 'Test Dialog' };
+    const handler = (obj: typeof data) => ({ message: obj.message + ' Handled' });
+    fixture.componentRef.setInput('config', { data });
+    fixture.componentRef.setInput('handler', handler);
+    await harness.click();
+
+    const dialog = await loader.getHarness(MatDialogHarness);
+    expect(await dialog.getText()).toBe('Test Dialog Handled');
+  });
 });
 
 @Component({

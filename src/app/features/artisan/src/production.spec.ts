@@ -117,6 +117,17 @@ describe('Production', () => {
     expect(production.effective).toBe(2);
   });
 
+  it('should clone production', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const production = new Production(craftable);
+
+    const clone = production.clone();
+    expect(clone).toBeInstanceOf(Production);
+    expect(clone.entity).toBe(production.entity);
+    expect(clone).not.toBe(production);
+    expect(clone.materials).not.toBe(production.materials);
+  });
+
   it('should get state', () => {
     const craftable = service.getCraftable('IngotT2');
     const production = new Production(craftable);
