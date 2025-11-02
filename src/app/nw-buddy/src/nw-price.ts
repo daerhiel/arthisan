@@ -16,15 +16,27 @@ interface Components {
   decimalOp: number | null;
 }
 
+/**
+ * Options for configuring the input display.
+ */
 interface InputOptions {
-  state?: boolean | null;
+  /**
+   * The display state of the price.
+   * @remarks If the number is provided, it will be used directly. If the boolean is provided
+   * and the value is true, the state will be rendered based on the value.
+   */
+  state?: number | boolean | null;
+
+  /**
+   * The number format to use for display.
+   */
   format?: string | null;
 }
 
 /**
  * Get the price inputs from a given item.
  * @param fitter A function that gets a value from an item to display.
- * @param getter A function that gets a state from an item to display.
+ * @param options Options for configuring the input display.
  * @returns A function that maps an item to its price inputs.
  */
 export function getPriceInputs<T, R>(fitter: GetterFn<T, R>, { state, format }: InputOptions = {}) {
