@@ -4,15 +4,27 @@ import { DecimalPipe } from '@angular/common';
 import { GetterFn } from '@app/core';
 import { stateAttribute } from './state-pipe';
 
+/**
+ * Options for configuring the input display.
+ */
 interface InputOptions {
-  state?: boolean | null;
+  /**
+   * The display state of the price.
+   * @remarks If the number is provided, it will be used directly. If the boolean is provided
+   * and the value is true, the state will be rendered based on the value.
+   */
+  state?: number | boolean | null;
+
+  /**
+   * The number format to use for display.
+   */
   format?: string | null;
 }
 
 /**
  * Get the ratio inputs from a given item.
  * @param fitter A function that gets a value from an item to display.
- * @param format The format to use for the value.
+ * @param options Options for configuring the input display.
  * @returns A function that maps an item to its ratio inputs.
  */
 export function getRatioInputs<T, R>(fitter: GetterFn<T, R>, { state, format }: InputOptions = {}) {

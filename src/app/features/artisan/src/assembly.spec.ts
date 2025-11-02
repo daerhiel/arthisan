@@ -129,6 +129,26 @@ describe('Assembly', () => {
     expect(assembly.crafted()).toBe(true);
   });
 
+  it('should toggle boosted crafting', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+    expect(assembly.boosted()).toBe(true);
+
+    assembly.toggle();
+    expect(assembly.boosted()).toBe(false);
+  });
+
+  it('should clone assembly', () => {
+    const craftable = service.getCraftable('IngotT2');
+    const assembly = new Assembly(craftable);
+
+    const clone = assembly.clone();
+    expect(clone).toBeInstanceOf(Assembly);
+    expect(clone.entity).toBe(assembly.entity);
+    expect(clone).not.toBe(assembly);
+    expect(clone.materials).not.toBe(assembly.materials);
+  });
+
   it('should get state', () => {
     const craftable = service.getCraftable('IngotT2');
     const assembly = new Assembly(craftable);

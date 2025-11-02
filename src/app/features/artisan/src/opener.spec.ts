@@ -26,8 +26,17 @@ describe('getOpenerInputs', () => {
     const object = { name: 'Test', value: 42 };
     const i18n = { translate: (key: string) => key } as unknown as I18n;
 
-    const inputs = getOpenerInputs<typeof object, string, TestDialog>(x => x.name, TestDialog, {})(object, i18n);
-    expect(inputs).toEqual({ value: 'Test', component: TestDialog, config: { data: object } });
+    const inputs = getOpenerInputs<typeof object, string, TestDialog>(x => x.name, { component: TestDialog, config: {} })(object, i18n);
+    expect(inputs).toEqual({ value: 'Test', component: TestDialog, config: { data: object }, handler: undefined });
+  });
+
+  it('should return opener inputs without handler', () => {
+    const object = { name: 'Test', value: 42 };
+    const i18n = { translate: (key: string) => key } as unknown as I18n;
+    const handler = (value: typeof object) => value;
+
+    const inputs = getOpenerInputs<typeof object, string, TestDialog>(x => x.name, { component: TestDialog, config: {}, handler })(object, i18n);
+    expect(inputs).toEqual({ value: 'Test', component: TestDialog, config: { data: object }, handler });
   });
 });
 
@@ -80,6 +89,17 @@ describe('Opener', () => {
 
     const dialog = await loader.getHarness(MatDialogHarness);
     expect(await dialog.getText()).toBe(data.message);
+  });
+
+  it('should open dialog with handler', async () => {
+    const data = { message: 'Test Dialog' };
+    const handler = (obj: typeof data) => ({ message: obj.message + ' Handled' });
+    fixture.componentRef.setInput('config', { data });
+    fixture.componentRef.setInput('handler', handler);
+    await harness.click();
+
+    const dialog = await loader.getHarness(MatDialogHarness);
+    expect(await dialog.getText()).toBe('Test Dialog Handled');
   });
 });
 

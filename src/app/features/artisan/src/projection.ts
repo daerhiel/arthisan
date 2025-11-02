@@ -107,11 +107,14 @@ export class Projection {
   }
   readonly #effective = computed(() => {
     const chance = this.yieldBonusChance;
-    const requested = this.assembly.requested();
-    if (this.assembly.boosted() && chance && requested) {
-      return Math.max(Math.floor(requested / (1 + chance)), 1);
+    let value = this.assembly.requested();
+    if (this.assembly.boosted() && chance && value) {
+      value = value / (1 + chance);
+      if (!this.materials.asymptotic()) {
+        value = Math.max(Math.floor(value), 1);
+      }
     }
-    return requested;
+    return value;
   });
 
   /**

@@ -2,7 +2,7 @@ import { computed, signal } from '@angular/core';
 
 import { Persistent } from './contracts';
 import { Craftable } from './craftable';
-import { Materials } from './materials';
+import { Materials, MaterialsOptions } from './materials';
 import { Purchase, PurchaseState } from './purchase';
 import { Projection } from './projection';
 
@@ -131,6 +131,15 @@ export class Assembly extends Purchase implements Persistent<AssemblyState> {
    */
   toggle(): void {
     this.boosted.set(!this.boosted());
+  }
+
+  /**
+   * Clones the current assembly instance.
+   * @param options The materials options to use for the new instance.
+   * @returns A new Assembly instance with the same entity.
+   */
+  clone(options?: MaterialsOptions): Assembly {
+    return new Assembly(this.entity, new Materials(options));
   }
 
   /** @inheritdoc */
