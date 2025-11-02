@@ -29,6 +29,11 @@ export class Production extends Assembly implements Persistent<ProductionState> 
   }
 
   /** @inheritdoc */
+  override clone(options?: MaterialsOptions): Production {
+    return new Production(this.entity, options);
+  }
+
+  /** @inheritdoc */
   override getState(): ProductionState {
     return {
       requested: this.requested(),

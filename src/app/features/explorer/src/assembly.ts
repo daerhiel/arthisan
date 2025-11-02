@@ -10,6 +10,7 @@ import { Schematic } from "@features/schematic";
  * @param assembly The assembly to load the state for.
  */
 function assemblyHandler(assembly: Assembly): Assembly {
+  assembly = assembly.clone({ asymptotic: false });
   const materials = getStorageItem<Record<string, MaterialsState>>(MATERIALS_STORAGE_KEY, {});
   if (materials) {
     const state = materials[assembly.entity.id];
